@@ -143,6 +143,25 @@
         .ai-item.highlight .ai-item-val { color: var(--primary); }
         .ai-item.kmt .ai-item-val { color: var(--danger); }
 
+        /* TOMBOL TOGGLE FILTER */
+        .btn-toggle-filter {
+            width: 100%;
+            padding: 10px;
+            background-color: #f1f5f9;
+            color: var(--primary-dark);
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-toggle-filter:hover { background-color: #e2e8f0; border-color: #94a3b8; }
+
         /* SECTION FILTER */
         .filter-section {
             background-color: #f8fafc;
@@ -164,7 +183,7 @@
             align-items: center;
         }
         
-        .filter-columns { display: flex; gap: 12px; }
+        .filter-columns { display: flex; gap: 12px; width: 100%; }
         .filter-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
 
         .filter-item { display: flex; align-items: center; justify-content: flex-start; }
@@ -266,6 +285,7 @@
             </div>
         </div>
 
+        <!-- POSISI AI & AI PRIBADI (TETAP MUNCUL DEFAULT) -->
         <div class="filter-columns">
             <div class="input-group" style="margin:0; flex:1;">
                 <label>Posisi AI:</label>
@@ -284,90 +304,99 @@
             </div>
         </div>
 
-        <!-- FILTER SECTION -->
-        <div class="filter-section">
-            <div class="filter-title">
-                <span>⚙️ Master Filter</span>
-                <label style="font-size: 11px; cursor: pointer; color: var(--primary); margin: 0; display: flex; align-items: center; background: #eff6ff; padding: 2px 6px; border-radius: 4px;">
-                    <input type="checkbox" id="chkAllMaster" onchange="toggleMasterFilters(this)" style="margin-right: 4px;"> Pilih Semua
-                </label>
+        <!-- TOMBOL SWITCH ON/OFF FILTER LANJUTAN -->
+        <button id="btnToggleFilter" class="btn-toggle-filter" onclick="toggleFilters()">
+            ⚙️ Buka Master Filter & Pangkasan ▼
+        </button>
+
+        <!-- WRAPPER FILTER LANJUTAN (DEFAULT DISEMBUNYIKAN) -->
+        <div id="advancedFilters" style="display: none; width: 100%;">
+            <!-- FILTER SECTION -->
+            <div class="filter-section">
+                <div class="filter-title">
+                    <span>⚙️ Master Filter</span>
+                    <label style="font-size: 11px; cursor: pointer; color: var(--primary); margin: 0; display: flex; align-items: center; background: #eff6ff; padding: 2px 6px; border-radius: 4px;">
+                        <input type="checkbox" id="chkAllMaster" onchange="toggleMasterFilters(this)" style="margin-right: 4px;"> Pilih Semua
+                    </label>
+                </div>
+                <div class="filter-columns">
+                    <div class="filter-col">
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkJarak" onchange="hitungSemua()"> Jarak Lemah</label> <span id="infoJarak" class="badge"></span> <span class="info-icon" onclick="showInfo('jarak')">?</span></div>
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkKepala" onchange="hitungSemua()"> Mati Kepala</label> <span id="infoKepala" class="badge"></span> <span class="info-icon" onclick="showInfo('kepala')">?</span></div>
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkEkor" onchange="hitungSemua()"> Mati Ekor</label> <span id="infoEkor" class="badge"></span> <span class="info-icon" onclick="showInfo('ekor')">?</span></div>
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkTesson" onchange="hitungSemua()"> Mati Tesson 2</label> <span id="infoTesson" class="badge"></span> <span class="info-icon" onclick="showInfo('tesson')">?</span></div>
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkKembar" onchange="hitungSemua()"> Anti Kembar</label> <span class="info-icon" onclick="showInfo('kembar')">?</span></div>
+                    </div>
+                    
+                    <div class="filter-col">
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkWakSalarabo" onchange="hitungSemua()"> Mati 54 Line</label> <span class="info-icon" onclick="showInfo('salarabo')">?</span></div>
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkKelipatan" onchange="hitungSemua()"> Kelipatan 12</label> <span class="info-icon" onclick="showInfo('kelipatan')">?</span></div>
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkBijiLemah" onchange="hitungSemua()"> Jml 2D Lemah</label> <span class="info-icon" onclick="showInfo('jumlahlemah')">?</span></div>
+                        <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkMatiGab" onchange="hitungSemua()"> Mati Gabung</label> <span class="info-icon" onclick="showInfo('matigab')">?</span></div>
+                        
+                        <div class="filter-item">
+                            <label class="filter-label"><input type="checkbox" id="chkPasaranJawa" onchange="hitungSemua()"> Matot Jawa</label> 
+                            <select id="pasaranJawa" class="mini-select" onchange="hitungSemua()">
+                                <option value="">-Pilih-</option>
+                                <option value="legi">Legi</option>
+                                <option value="pahing">Pahing</option>
+                                <option value="pon">Pon</option>
+                                <option value="wage">Wage</option>
+                                <option value="kliwon">Kliwon</option>
+                            </select>
+                            <span class="info-icon" onclick="showInfo('pasaran')">?</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="filter-columns">
-                <div class="filter-col">
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkJarak" onchange="hitungSemua()"> Jarak Lemah</label> <span id="infoJarak" class="badge"></span> <span class="info-icon" onclick="showInfo('jarak')">?</span></div>
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkKepala" onchange="hitungSemua()"> Mati Kepala</label> <span id="infoKepala" class="badge"></span> <span class="info-icon" onclick="showInfo('kepala')">?</span></div>
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkEkor" onchange="hitungSemua()"> Mati Ekor</label> <span id="infoEkor" class="badge"></span> <span class="info-icon" onclick="showInfo('ekor')">?</span></div>
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkTesson" onchange="hitungSemua()"> Mati Tesson 2</label> <span id="infoTesson" class="badge"></span> <span class="info-icon" onclick="showInfo('tesson')">?</span></div>
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkKembar" onchange="hitungSemua()"> Anti Kembar</label> <span class="info-icon" onclick="showInfo('kembar')">?</span></div>
+
+            <!-- SIFAT & MANUAL -->
+            <div class="filter-section">
+                <div class="filter-title">
+                    <span>✂️ Pangkas Sifat & Manual</span>
+                    <span style="font-size: 11px; cursor: pointer; color: var(--danger); margin: 0; text-decoration: underline;" onclick="resetManual()">Reset Semua</span>
                 </div>
                 
-                <div class="filter-col">
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkWakSalarabo" onchange="hitungSemua()"> Mati 54 Line</label> <span class="info-icon" onclick="showInfo('salarabo')">?</span></div>
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkKelipatan" onchange="hitungSemua()"> Kelipatan 12</label> <span class="info-icon" onclick="showInfo('kelipatan')">?</span></div>
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkBijiLemah" onchange="hitungSemua()"> Jml 2D Lemah</label> <span class="info-icon" onclick="showInfo('jumlahlemah')">?</span></div>
-                    <div class="filter-item"><label class="filter-label"><input type="checkbox" id="chkMatiGab" onchange="hitungSemua()"> Mati Gabung</label> <span class="info-icon" onclick="showInfo('matigab')">?</span></div>
-                    
-                    <div class="filter-item">
-                        <label class="filter-label"><input type="checkbox" id="chkPasaranJawa" onchange="hitungSemua()"> Matot Jawa</label> 
-                        <select id="pasaranJawa" class="mini-select" onchange="hitungSemua()">
-                            <option value="">-Pilih-</option>
-                            <option value="legi">Legi</option>
-                            <option value="pahing">Pahing</option>
-                            <option value="pon">Pon</option>
-                            <option value="wage">Wage</option>
-                            <option value="kliwon">Kliwon</option>
-                        </select>
-                        <span class="info-icon" onclick="showInfo('pasaran')">?</span>
+                <div class="filter-columns" style="margin-bottom: 10px;">
+                    <div class="filter-col">
+                        <div style="font-size:10px; font-weight:700; color:var(--text-sub); margin-bottom:2px;">MATI KEPALA:</div>
+                        <label class="filter-label"><input type="checkbox" id="kGanjil" onchange="hitungSemua()"> Ganjil</label>
+                        <label class="filter-label"><input type="checkbox" id="kGenap" onchange="hitungSemua()"> Genap</label>
+                        <label class="filter-label"><input type="checkbox" id="kBesar" onchange="hitungSemua()"> Besar</label>
+                        <label class="filter-label"><input type="checkbox" id="kKecil" onchange="hitungSemua()"> Kecil</label>
+                    </div>
+                    <div class="filter-col">
+                        <div style="font-size:10px; font-weight:700; color:var(--text-sub); margin-bottom:2px;">MATI EKOR:</div>
+                        <label class="filter-label"><input type="checkbox" id="eGanjil" onchange="hitungSemua()"> Ganjil</label>
+                        <label class="filter-label"><input type="checkbox" id="eGenap" onchange="hitungSemua()"> Genap</label>
+                        <label class="filter-label"><input type="checkbox" id="eBesar" onchange="hitungSemua()"> Besar</label>
+                        <label class="filter-label"><input type="checkbox" id="eKecil" onchange="hitungSemua()"> Kecil</label>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- SIFAT & MANUAL -->
-        <div class="filter-section">
-            <div class="filter-title">
-                <span>✂️ Pangkas Sifat & Manual</span>
-                <span style="font-size: 11px; cursor: pointer; color: var(--danger); margin: 0; text-decoration: underline;" onclick="resetManual()">Reset Semua</span>
-            </div>
-            
-            <div class="filter-columns" style="margin-bottom: 10px;">
-                <div class="filter-col">
-                    <div style="font-size:10px; font-weight:700; color:var(--text-sub); margin-bottom:2px;">MATI KEPALA:</div>
-                    <label class="filter-label"><input type="checkbox" id="kGanjil" onchange="hitungSemua()"> Ganjil</label>
-                    <label class="filter-label"><input type="checkbox" id="kGenap" onchange="hitungSemua()"> Genap</label>
-                    <label class="filter-label"><input type="checkbox" id="kBesar" onchange="hitungSemua()"> Besar</label>
-                    <label class="filter-label"><input type="checkbox" id="kKecil" onchange="hitungSemua()"> Kecil</label>
-                </div>
-                <div class="filter-col">
-                    <div style="font-size:10px; font-weight:700; color:var(--text-sub); margin-bottom:2px;">MATI EKOR:</div>
-                    <label class="filter-label"><input type="checkbox" id="eGanjil" onchange="hitungSemua()"> Ganjil</label>
-                    <label class="filter-label"><input type="checkbox" id="eGenap" onchange="hitungSemua()"> Genap</label>
-                    <label class="filter-label"><input type="checkbox" id="eBesar" onchange="hitungSemua()"> Besar</label>
-                    <label class="filter-label"><input type="checkbox" id="eKecil" onchange="hitungSemua()"> Kecil</label>
+                <div style="border-top: 1px dashed var(--border-color); padding-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--text-sub);">PANGKAS ANGKA MATI (MANUAL):</span>
+                        <span class="info-icon" onclick="showInfo('pangkasmanual')" style="margin:0;">?</span>
+                    </div>
+                    <div style="display: flex; gap: 6px;">
+                        <div class="input-wrapper" style="flex: 1;">
+                            <input type="text" id="inputMatiKepala" class="input-box" placeholder="Kepala" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
+                            <span class="clear-icon" onclick="clearInput('inputMatiKepala')" style="right: 6px; font-size: 15px;">&times;</span>
+                        </div>
+                        <div class="input-wrapper" style="flex: 1;">
+                            <input type="text" id="inputMatiEkor" class="input-box" placeholder="Ekor" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
+                            <span class="clear-icon" onclick="clearInput('inputMatiEkor')" style="right: 6px; font-size: 15px;">&times;</span>
+                        </div>
+                        <div class="input-wrapper" style="flex: 1;">
+                            <input type="text" id="inputBiji" class="input-box" placeholder="Jumlah" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
+                            <span class="clear-icon" onclick="clearInput('inputBiji')" style="right: 6px; font-size: 15px;">&times;</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div> <!-- End of advancedFilters -->
 
-            <div style="border-top: 1px dashed var(--border-color); padding-top: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-size: 11px; font-weight: 700; color: var(--text-sub);">PANGKAS ANGKA MATI (MANUAL):</span>
-                    <span class="info-icon" onclick="showInfo('pangkasmanual')" style="margin:0;">?</span>
-                </div>
-                <div style="display: flex; gap: 6px;">
-                    <div class="input-wrapper" style="flex: 1;">
-                        <input type="text" id="inputMatiKepala" class="input-box" placeholder="Kepala" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
-                        <span class="clear-icon" onclick="clearInput('inputMatiKepala')" style="right: 6px; font-size: 15px;">&times;</span>
-                    </div>
-                    <div class="input-wrapper" style="flex: 1;">
-                        <input type="text" id="inputMatiEkor" class="input-box" placeholder="Ekor" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
-                        <span class="clear-icon" onclick="clearInput('inputMatiEkor')" style="right: 6px; font-size: 15px;">&times;</span>
-                    </div>
-                    <div class="input-wrapper" style="flex: 1;">
-                        <input type="text" id="inputBiji" class="input-box" placeholder="Jumlah" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
-                        <span class="clear-icon" onclick="clearInput('inputBiji')" style="right: 6px; font-size: 15px;">&times;</span>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- HASIL GENERATE -->
@@ -474,6 +503,19 @@
         window.onclick = function(event) {
             let modal = document.getElementById('infoModal');
             if (event.target == modal) { modal.style.display = 'none'; }
+        }
+
+        // FUNGSI TOGGLE FILTER LANJUTAN
+        function toggleFilters() {
+            let filterDiv = document.getElementById('advancedFilters');
+            let btn = document.getElementById('btnToggleFilter');
+            if (filterDiv.style.display === 'none') {
+                filterDiv.style.display = 'block';
+                btn.innerHTML = '⚙️ Tutup Master Filter & Pangkasan ▲';
+            } else {
+                filterDiv.style.display = 'none';
+                btn.innerHTML = '⚙️ Buka Master Filter & Pangkasan ▼';
+            }
         }
 
         function toggleMasterFilters(source) {
