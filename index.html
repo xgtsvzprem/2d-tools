@@ -226,6 +226,28 @@
         .btn-copy { padding: 5px 12px; background-color: #334155; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; margin-top: 6px; font-weight: 700; float: right; transition: 0.15s; }
         .btn-copy:hover { background-color: var(--primary); }
         .clear { clear: both; }
+
+        /* FOOTER & COUNTER */
+        .app-footer {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            color: var(--text-sub);
+            font-size: 11px;
+            width: 100%;
+            max-width: 440px;
+        }
+        .app-footer b { color: var(--primary); }
+        .visitor-counter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+        .visitor-counter img {
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -475,6 +497,17 @@
             <textarea id="hasilManual" readonly></textarea>
             <button class="btn-copy" style="background:#7e22ce;" onclick="salinTeks('hasilManual', this)">Copy</button>
             <div class="clear"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER & COUNTER -->
+    <div class="app-footer">
+        Created by <b>Koh Aping</b> 🔥
+        <div class="visitor-counter">
+            <!-- Free Visitor Counter Widget -->
+            <a href="https://www.freevisitorcounters.com" target="_blank" rel="noopener noreferrer">
+                <img src="https://www.freevisitorcounters.com/en/home/counter/1337039/t/5" title="Free Visitor Counters" alt="Free Visitor Counters" border="0" />
+            </a>
         </div>
     </div>
 
