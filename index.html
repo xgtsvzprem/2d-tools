@@ -60,6 +60,18 @@
         .input-group { margin-bottom: 10px; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         
+        .input-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+        .clear-icon {
+            position: absolute;
+            right: 12px;
+            color: #94a3b8;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            transition: 0.15s;
+        }
+        .clear-icon:hover { color: var(--danger); transform: scale(1.2); }
+
         input.input-box, select.input-box {
             width: 100%;
             padding: 11px;
@@ -214,7 +226,10 @@
         
         <div class="input-group">
             <label>Keluaran Sebelumnya (4D):</label>
-            <input type="text" inputmode="numeric" id="inputBawah" class="input-box" placeholder="Cth: 5865" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); hitungSemua();" />
+            <div class="input-wrapper">
+                <input type="text" inputmode="numeric" id="inputBawah" class="input-box" placeholder="Cth: 5865" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding-right: 36px; padding-left: 36px;" />
+                <span class="clear-icon" onclick="clearInput('inputBawah')">&times;</span>
+            </div>
         </div>
 
         <!-- LIVE PREVIEW ANGKA IKUT (DASBOR MINI) -->
@@ -262,7 +277,10 @@
             </div>
             <div class="input-group" style="margin:0; flex:1;">
                 <label>AI Pribadi:</label>
-                <input type="text" inputmode="numeric" id="inputAIManual" class="input-box" placeholder="Cth: 159" oninput="this.value = this.value.replace(/[^0-9]/g, ''); hitungSemua();" style="padding:9px; font-size:14px;" />
+                <div class="input-wrapper">
+                    <input type="text" inputmode="numeric" id="inputAIManual" class="input-box" placeholder="Cth: 159" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding:9px 28px; font-size:14px;" />
+                    <span class="clear-icon" onclick="clearInput('inputAIManual')" style="right: 10px;">&times;</span>
+                </div>
             </div>
         </div>
 
@@ -335,9 +353,18 @@
                     <span class="info-icon" onclick="showInfo('pangkasmanual')" style="margin:0;">?</span>
                 </div>
                 <div style="display: flex; gap: 6px;">
-                    <input type="text" id="inputMatiKepala" class="input-box" placeholder="Kepala" oninput="this.value = this.value.replace(/[^0-9]/g, ''); hitungSemua();" style="padding: 7px 4px; font-size: 13px; letter-spacing: 1px; margin: 0; flex: 1;">
-                    <input type="text" id="inputMatiEkor" class="input-box" placeholder="Ekor" oninput="this.value = this.value.replace(/[^0-9]/g, ''); hitungSemua();" style="padding: 7px 4px; font-size: 13px; letter-spacing: 1px; margin: 0; flex: 1;">
-                    <input type="text" id="inputBiji" class="input-box" placeholder="Jumlah" oninput="this.value = this.value.replace(/[^0-9]/g, ''); hitungSemua();" style="padding: 7px 4px; font-size: 13px; letter-spacing: 1px; margin: 0; flex: 1;">
+                    <div class="input-wrapper" style="flex: 1;">
+                        <input type="text" id="inputMatiKepala" class="input-box" placeholder="Kepala" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
+                        <span class="clear-icon" onclick="clearInput('inputMatiKepala')" style="right: 6px; font-size: 15px;">&times;</span>
+                    </div>
+                    <div class="input-wrapper" style="flex: 1;">
+                        <input type="text" id="inputMatiEkor" class="input-box" placeholder="Ekor" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
+                        <span class="clear-icon" onclick="clearInput('inputMatiEkor')" style="right: 6px; font-size: 15px;">&times;</span>
+                    </div>
+                    <div class="input-wrapper" style="flex: 1;">
+                        <input type="text" id="inputBiji" class="input-box" placeholder="Jumlah" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding: 7px 20px; font-size: 13px; letter-spacing: 1px; margin: 0;">
+                        <span class="clear-icon" onclick="clearInput('inputBiji')" style="right: 6px; font-size: 15px;">&times;</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -455,12 +482,33 @@
             hitungSemua();
         }
 
+        // FUNGSI UNTUK MUNCUL/HILANGKAN ICON CLEAR
+        function toggleClear(inputEl) {
+            let clearBtn = inputEl.nextElementSibling;
+            if (clearBtn && clearBtn.classList.contains('clear-icon')) {
+                clearBtn.style.display = inputEl.value.length > 0 ? 'block' : 'none';
+            }
+        }
+
+        // FUNGSI UNTUK MENGHAPUS INPUTAN SAAT ICON DIKLIK
+        function clearInput(inputId) {
+            let inputEl = document.getElementById(inputId);
+            inputEl.value = '';
+            toggleClear(inputEl);
+            hitungSemua();
+            inputEl.focus(); // Kembalikan kursor ke input
+        }
+
         function resetManual() {
             const sifat = ['kGanjil', 'kGenap', 'kBesar', 'kKecil', 'eGanjil', 'eGenap', 'eBesar', 'eKecil'];
             sifat.forEach(id => document.getElementById(id).checked = false);
-            document.getElementById('inputMatiKepala').value = '';
-            document.getElementById('inputMatiEkor').value = '';
-            document.getElementById('inputBiji').value = '';
+            
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
+                let el = document.getElementById(id);
+                el.value = '';
+                toggleClear(el);
+            });
+            
             hitungSemua();
         }
 
