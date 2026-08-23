@@ -320,13 +320,13 @@
             </div>
             
             <div class="ai-grid">
-                <!-- FITUR BARU: COLOK BEBAS & BBFS -->
+                <!-- FITUR BARU: COLOK BEBAS & BBFS (5 DIGIT) -->
                 <div class="ai-item highlight" style="background:#eff6ff; border-color:#93c5fd;">
                     <span class="ai-item-label" style="color:#1d4ed8;">🎯 Colok Bebas</span>
                     <span class="ai-item-val" id="liveCB" style="color:#1e40af; font-size:13px;">-</span>
                 </div>
                 <div class="ai-item highlight" style="background:#eff6ff; border-color:#93c5fd;">
-                    <span class="ai-item-label" style="color:#1d4ed8;">🎲 BBFS 4D (6 Digit)</span>
+                    <span class="ai-item-label" style="color:#1d4ed8;">🎲 BBFS 4D (5 Digit)</span>
                     <span class="ai-item-val" id="liveBBFS" style="color:#1e40af; font-size:13px; letter-spacing:2px;">-</span>
                 </div>
                 
@@ -879,42 +879,41 @@
                     }
                 }
 
-                // ================= PREDIKSI BBFS & COLOK BEBAS (ADAPTIF PASARAN) =================
+                // ================= PREDIKSI BBFS & COLOK BEBAS (5 DIGIT) =================
                 let cb1, cb2;
                 let bbfsArray = [];
                 let j1 = (asB + ekB) % 10;
                 let j2 = (kopB + kepB) % 10;
-                let unitTaysen = taysenVal % 10;
-
+                
                 if (pasaranToggle === 'hk') {
                     cb1 = mapIndex[ekB];
                     cb2 = mapMistikLama[asB];
                     if(cb1 === cb2) cb2 = mapMistikBaru[kepB];
 
-                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[ekB], mapMistikLama[asB], j2]);
-                    if(bbfsSet.size < 6) bbfsSet.add(mapMistikBaru[kopB]);
-                    if(bbfsSet.size < 6) bbfsSet.add((ekB + 2) % 10);
-                    bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
+                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[ekB]]);
+                    if(bbfsSet.size < 5) bbfsSet.add(j2);
+                    if(bbfsSet.size < 5) bbfsSet.add(mapMistikLama[asB]);
+                    bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
 
                 } else if (pasaranToggle === 'sgp') {
                     cb1 = mapMistikBaru[kopB];
                     cb2 = mapIndex[kepB];
                     if(cb1 === cb2) cb2 = mapMistikLama[ekB];
 
-                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapMistikBaru[kopB], mapIndex[kepB], j1]);
-                    if(bbfsSet.size < 6) bbfsSet.add(mapMistikLama[ekB]);
-                    if(bbfsSet.size < 6) bbfsSet.add(unitTaysen);
-                    bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
+                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapMistikBaru[kopB]]);
+                    if(bbfsSet.size < 5) bbfsSet.add(mapIndex[kepB]);
+                    if(bbfsSet.size < 5) bbfsSet.add(j1);
+                    bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
 
                 } else if (pasaranToggle === 'sdy') {
                     cb1 = j1;
                     cb2 = mapMistikBaru[ekB];
                     if(cb1 === cb2) cb2 = mapIndex[kopB];
 
-                    let bbfsSet = new Set([asB, kopB, kepB, ekB, j1, mapMistikBaru[ekB], mapMistikLama[kepB]]);
-                    if(bbfsSet.size < 6) bbfsSet.add(mapIndex[asB]);
-                    if(bbfsSet.size < 6) bbfsSet.add((kepB + 1) % 10);
-                    bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
+                    let bbfsSet = new Set([asB, kopB, kepB, ekB, j1]);
+                    if(bbfsSet.size < 5) bbfsSet.add(mapMistikBaru[ekB]);
+                    if(bbfsSet.size < 5) bbfsSet.add(mapMistikLama[kepB]);
+                    bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
 
                 } else {
                     // UMUM (Default)
@@ -923,10 +922,10 @@
                     if (cb1 === cb2) cb2 = mapMistikBaru[kepB];
                     if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
                     
-                    let bbfsSet = new Set([ asB, kopB, kepB, ekB, mapIndex[kepB], mapMistikBaru[kopB], mapMistikLama[ekB], j1 ]);
-                    let arr = Array.from(bbfsSet);
-                    if (arr.length < 6) { arr.push(mapIndex[asB]); arr.push(mapMistikBaru[ekB]); }
-                    bbfsArray = Array.from(new Set(arr)).slice(0, 6).sort((a,b) => a-b);
+                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[kepB]]);
+                    if(bbfsSet.size < 5) bbfsSet.add(mapMistikBaru[kopB]);
+                    if(bbfsSet.size < 5) bbfsSet.add(j1);
+                    bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
                 }
                 
                 document.getElementById('liveCB').innerText = `${cb1} / ${cb2}`;
