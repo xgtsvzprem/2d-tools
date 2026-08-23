@@ -157,7 +157,7 @@
             border: 1px solid #c084fc;
             border-radius: 4px;
             padding: 4px 2px;
-            font-size: 8px; /* Diperkecil agar Ganjil/Genap muat */
+            font-size: 8px; 
             font-weight: 700;
             color: #6b21a8;
             text-align: center;
@@ -292,11 +292,23 @@
     <div class="container">
         <h2>2D Tools & Formulas 🔥</h2>
         
-        <div class="input-group">
-            <label>Keluaran Sebelumnya (4D):</label>
-            <div class="input-wrapper">
-                <input type="text" inputmode="numeric" id="inputBawah" class="input-box" placeholder="Cth: 5865" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding-right: 36px; padding-left: 36px;" />
-                <span class="clear-icon" onclick="clearInput('inputBawah')">&times;</span>
+        <!-- PEMILIHAN PASARAN & INPUT 4D -->
+        <div class="filter-columns" style="margin-bottom: 12px;">
+            <div class="input-group" style="margin:0; flex:1;">
+                <label>Pilih Pasaran:</label>
+                <select id="jenisPasaran" class="input-box" onchange="hitungSemua()" style="padding:9px; font-size:13px; letter-spacing:0; color:var(--primary-dark);">
+                    <option value="umum">🌍 UMUM / SEMUA</option>
+                    <option value="hk">🇭🇰 HONGKONG (HK)</option>
+                    <option value="sgp">🇸🇬 SINGAPORE (SGP)</option>
+                    <option value="sdy">🇦🇺 SYDNEY (SDY)</option>
+                </select>
+            </div>
+            <div class="input-group" style="margin:0; flex:1.2;">
+                <label>Keluaran Sebelumnya:</label>
+                <div class="input-wrapper">
+                    <input type="text" inputmode="numeric" id="inputBawah" class="input-box" placeholder="4 Digit" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding-right: 32px; padding-left: 12px; font-size: 18px;" />
+                    <span class="clear-icon" onclick="clearInput('inputBawah')">&times;</span>
+                </div>
             </div>
         </div>
 
@@ -475,7 +487,7 @@
     <!-- HASIL GENERATE -->
     <div id="hasilGlobal" class="container" style="display:none; border-top: 4px solid var(--accent);">
         <h2 style="font-size: 15px; color:var(--accent); margin-bottom: 12px; text-align: left;">🎯 Hasil Line Siap Bet</h2>
-        
+
         <!-- BLOK EKSKLUSIF: TOP BOM (IRISAN) -->
         <div class="result-block" style="border-color: #f59e0b; background: #fffbeb;">
             <div class="result-header">
@@ -742,7 +754,7 @@
 
             let inputB = document.getElementById('inputBawah').value;
             let inputManual = document.getElementById('inputAIManual').value;
-            let pasaran = document.getElementById('pasaranJawa').value;
+            let pasaran = document.getElementById('jenisPasaran').value;
             let posisiPilihan = document.getElementById('pilihanPosisi').value; 
 
             if (inputB.length !== 4 && inputManual.length === 0) { 
@@ -841,34 +853,56 @@
                     }
                 }
 
-                // ================= PREDIKSI BBFS & COLOK BEBAS (RUMUS SILANG PATEN) =================
+                // ================= PREDIKSI BBFS & COLOK BEBAS (ADAPTIF PASARAN) =================
+                let cb1, cb2;
+                let bbfsArray = [];
                 let j1 = (asB + ekB) % 10;
                 let j2 = (kopB + kepB) % 10;
                 let unitTaysen = taysenVal % 10;
-                
-                let cb1 = mapMistikLama[j2];
-                let cb2 = mapIndex[ekB];
-                if (cb1 === cb2) cb2 = mapMistikBaru[kepB];
-                if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
-                
-                let bbfsSet = new Set([ 
-                    asB, 
-                    kopB, 
-                    kepB, 
-                    ekB, 
-                    mapIndex[kepB], 
-                    mapMistikBaru[kopB], 
-                    mapMistikLama[ekB],
-                    j1
-                ]);
-                let bbfsArray = Array.from(bbfsSet);
-                if (bbfsArray.length < 6) {
-                    bbfsArray.push(mapIndex[asB]);
-                    bbfsArray.push(mapMistikBaru[ekB]);
+
+                if (pasaran === 'hk') {
+                    cb1 = mapIndex[ekB];
+                    cb2 = mapMistikLama[asB];
+                    if(cb1 === cb2) cb2 = mapMistikBaru[kepB];
+
+                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[ekB], mapMistikLama[asB], j2]);
+                    if(bbfsSet.size < 6) bbfsSet.add(mapMistikBaru[kopB]);
+                    if(bbfsSet.size < 6) bbfsSet.add((ekB + 2) % 10);
+                    bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
+
+                } else if (pasaran === 'sgp') {
+                    cb1 = mapMistikBaru[kopB];
+                    cb2 = mapIndex[kepB];
+                    if(cb1 === cb2) cb2 = mapMistikLama[ekB];
+
+                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapMistikBaru[kopB], mapIndex[kepB], j1]);
+                    if(bbfsSet.size < 6) bbfsSet.add(mapMistikLama[ekB]);
+                    if(bbfsSet.size < 6) bbfsSet.add(unitTaysen);
+                    bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
+
+                } else if (pasaran === 'sdy') {
+                    cb1 = j1;
+                    cb2 = mapMistikBaru[ekB];
+                    if(cb1 === cb2) cb2 = mapIndex[kopB];
+
+                    let bbfsSet = new Set([asB, kopB, kepB, ekB, j1, mapMistikBaru[ekB], mapMistikLama[kepB]]);
+                    if(bbfsSet.size < 6) bbfsSet.add(mapIndex[asB]);
+                    if(bbfsSet.size < 6) bbfsSet.add((kepB + 1) % 10);
+                    bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
+
+                } else {
+                    // UMUM (Default)
+                    cb1 = mapMistikLama[j2];
+                    cb2 = mapIndex[ekB];
+                    if (cb1 === cb2) cb2 = mapMistikBaru[kepB];
+                    if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
+                    
+                    let bbfsSet = new Set([ asB, kopB, kepB, ekB, mapIndex[kepB], mapMistikBaru[kopB], mapMistikLama[ekB], j1 ]);
+                    let arr = Array.from(bbfsSet);
+                    if (arr.length < 6) { arr.push(mapIndex[asB]); arr.push(mapMistikBaru[ekB]); }
+                    bbfsArray = Array.from(new Set(arr)).slice(0, 6).sort((a,b) => a-b);
                 }
-                bbfsSet = new Set(bbfsArray);
-                bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
-                
+
                 document.getElementById('liveCB').innerText = `${cb1} / ${cb2}`;
                 document.getElementById('liveBBFS').innerText = bbfsArray.join(' ');
                 
