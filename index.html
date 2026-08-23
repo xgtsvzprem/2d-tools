@@ -6,9 +6,9 @@
     
     <title>2D Tools & Formulas 🔥</title>
     
-    <meta name="description" content="Aplikasi Kalkulator AI & Pemangkas Line 2D Otomatis. Minimalis, Cepat, dan Akurat.">
+    <meta name="description" content="Aplikasi Kalkulator AI, BBFS, & Pemangkas Line Otomatis. Minimalis, Cepat, dan Akurat.">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="🔥 2D Tools & Formulas | AI & Filter Line">
+    <meta property="og:title" content="🔥 2D Tools & Formulas | AI, BBFS & Filter Line">
     <meta property="og:image" content="https://images.pexels.com/photos/1314543/pexels-photo-1314543.jpeg?auto=compress&cs=tinysrgb&w=600"> 
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
@@ -303,7 +303,7 @@
             </div>
         </div>
 
-        <!-- POSISI AI & AI PRIBADI (TETAP MUNCUL DEFAULT) -->
+        <!-- POSISI AI & AI PRIBADI -->
         <div class="filter-columns">
             <div class="input-group" style="margin:0; flex:1;">
                 <label>Posisi AI:</label>
@@ -421,6 +421,31 @@
     <div id="hasilGlobal" class="container" style="display:none; border-top: 4px solid var(--accent);">
         <h2 style="font-size: 15px; color:var(--accent); margin-bottom: 12px; text-align: left;">🎯 Hasil Line Siap Bet</h2>
         
+        <!-- BLOK CB DAN BBFS -->
+        <div class="result-block" style="border-color: #3b82f6; background: #eff6ff;">
+            <div class="result-header">
+                <div style="display:flex; flex-direction:column;">
+                    <span style="color: #1e40af; font-size: 13px;">🎯 Colok Bebas & BBFS (6 Digit)</span>
+                    <span style="font-size: 9px; color: #3b82f6; font-weight: normal; margin-top:2px;">Rumus Index & Mistik Paten</span>
+                </div>
+                <span class="badge-hit" style="background:#bfdbfe; color:#1e40af; border-color:#93c5fd;">Top</span>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <div style="flex: 1;">
+                    <label style="font-size: 10px; font-weight: 700; color: #3b82f6; display: block; margin-bottom: 4px;">Colok Bebas</label>
+                    <input type="text" id="hasilCB" readonly style="width: 100%; font-size: 14px; font-weight: 800; text-align: center; padding: 8px 4px; color: #1e40af; border: 1px solid #93c5fd; border-radius: 6px; background: #fff; box-sizing: border-box; outline: none; cursor: default;" />
+                </div>
+                <div style="flex: 1.5;">
+                    <label style="font-size: 10px; font-weight: 700; color: #3b82f6; display: block; margin-bottom: 4px;">BBFS 4D/3D/2D</label>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="text" id="hasilBBFS" readonly style="width: 100%; font-size: 14px; font-weight: 800; text-align: center; letter-spacing: 2px; padding: 8px 4px; color: #1e40af; border: 1px solid #93c5fd; border-radius: 6px; background: #fff; box-sizing: border-box; outline: none;" />
+                        <button class="btn-copy" style="background:#2563eb; margin:0; padding: 0 12px; height: auto;" onclick="salinTeks('hasilBBFS', this)">Copy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+
         <!-- BLOK EKSKLUSIF: TOP BOM (IRISAN) -->
         <div class="result-block" style="border-color: #f59e0b; background: #fffbeb;">
             <div class="result-header">
@@ -500,7 +525,6 @@
     <div class="app-footer">
         Created by <b>Koh Aping</b> 🔥
         <div class="visitor-counter">
-            <!-- PENGGANTI VISITOR COUNTER DARI VISITORBADGE.IO -->
             <img src="https://api.visitorbadge.io/api/visitors?path=kalkulator2dpro.kohaping&label=PENGUNJUNG&labelColor=%231e40af&countColor=%232563eb" alt="Visitor Counter" />
         </div>
     </div>
@@ -590,6 +614,9 @@
         document.addEventListener('dragstart', e => e.preventDefault());
 
         const mapMistikLama = [1, 0, 5, 8, 7, 2, 9, 4, 3, 6]; 
+        const mapMistikBaru = [8, 7, 6, 9, 5, 4, 2, 1, 0, 3];
+        const mapIndex = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4];
+
         const tabelTaysen = [
             97, 5, 16, 32, 12, 1, 20, 24, 17, 87, 18, 15, 4, 14, 13, 11, 2, 8, 10, 27,
             6, 22, 21, 30, 7, 35, 31, 19, 29, 28, 23, 26, 3, 9, 36, 25, 34, 38, 37, 55,
@@ -648,9 +675,10 @@
         };
 
         function salinTeks(elementId, btn) {
-            let textarea = document.getElementById(elementId);
-            textarea.select(); textarea.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(textarea.value).then(function() {
+            let elem = document.getElementById(elementId);
+            elem.select(); 
+            elem.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(elem.value).then(function() {
                 let textAwal = btn.innerText; btn.innerText = "Tersalin ✔"; 
                 btn.style.backgroundColor = "#10b981"; 
                 setTimeout(() => { btn.innerText = textAwal; btn.style.backgroundColor = ""; }, 1400);
@@ -692,6 +720,7 @@
                 document.getElementById('hasilGlobal').style.display = 'none'; 
                 document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
+                document.getElementById('hasilCB').value = '- / -'; document.getElementById('hasilBBFS').value = '------';
                 return; 
             }
 
@@ -777,6 +806,22 @@
                     }
                 }
 
+                // ================= PREDIKSI BBFS & COLOK BEBAS =================
+                let cb1 = mapIndex[(asB + kopB) % 10];
+                let cb2 = mapMistikLama[(kepB + ekB) % 10];
+                if (cb1 === cb2) cb2 = mapMistikBaru[ekB];
+                if (cb1 === cb2) cb2 = (cb1 + 1) % 10;
+                document.getElementById('hasilCB').value = `${cb1} / ${cb2}`;
+
+                let bbfsSet = new Set([ asB, kopB, kepB, ekB, mapIndex[(asB + kopB) % 10], mapMistikLama[kepB], mapMistikBaru[ekB] ]);
+                if(bbfsSet.size < 6) bbfsSet.add(mapIndex[ekB]);
+                if(bbfsSet.size < 6) bbfsSet.add(mapMistikLama[asB]);
+                if(bbfsSet.size < 6) bbfsSet.add(mapMistikBaru[kopB]);
+                if(bbfsSet.size < 6) bbfsSet.add((ekB + 1) % 10);
+                let bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
+                document.getElementById('hasilBBFS').value = bbfsArray.join('');
+                // ===============================================================
+
                 document.getElementById('badgeLiveEkor').innerText = `RESULT ${str2D}`;
                 document.getElementById('liveAIEkor').innerText = `${dataAI.ai1.join('')} - ${dataAI.ai2.join('')}`;
                 document.getElementById('liveKMTEkor').innerText = dataAI.kmt.join('');
@@ -790,6 +835,7 @@
                 document.getElementById('aiLiveCard').style.display = 'none';
                 document.getElementById('infoTesson').innerText = ''; document.getElementById('infoJarak').innerText = ''; 
                 document.getElementById('infoKepala').innerText = ''; document.getElementById('infoEkor').innerText = '';
+                document.getElementById('hasilCB').value = '- / -'; document.getElementById('hasilBBFS').value = '------';
             }
 
             function applyFilter(lines) {
