@@ -292,22 +292,41 @@
     <div class="container">
         <h2>2D Tools & Formulas 🔥</h2>
         
-        <!-- PEMILIHAN PASARAN & INPUT 4D -->
+        <!-- PEMILIHAN MODE TARIKAN & PASARAN -->
         <div class="filter-columns" style="margin-bottom: 12px;">
             <div class="input-group" style="margin:0; flex:1;">
-                <label>Pilih Pasaran:</label>
-                <select id="jenisPasaran" class="input-box" onchange="hitungSemua()" style="padding:9px; font-size:13px; letter-spacing:0; color:var(--primary-dark);">
-                    <option value="umum">🌍 UMUM / SEMUA</option>
-                    <option value="hk">🇭🇰 HONGKONG (HK)</option>
-                    <option value="sgp">🇸🇬 SINGAPORE (SGP)</option>
-                    <option value="sdy">🇦🇺 SYDNEY (SDY)</option>
+                <label>Mode Tarikan:</label>
+                <select id="modeTarikan" class="input-box" onchange="toggleTarikanMode()" style="padding:9px; font-size:12px; font-weight:700; background:#f8fafc; border-color:#cbd5e1;">
+                    <option value="h1">Harian (H-1)</option>
+                    <option value="h7">Mingguan (H-7)</option>
+                    <option value="gabung">Gabungan H1+H7</option>
                 </select>
             </div>
-            <div class="input-group" style="margin:0; flex:1.2;">
-                <label>Keluaran Sebelumnya:</label>
+            <div class="input-group" style="margin:0; flex:1;">
+                <label>Pilih Pasaran:</label>
+                <select id="jenisPasaran" class="input-box" onchange="hitungSemua()" style="padding:9px; font-size:12px; font-weight:700; color:#1e40af; background:#eff6ff; border-color:#93c5fd;">
+                    <option value="umum">🌍 UMUM</option>
+                    <option value="hk">🇭🇰 HK POOLS</option>
+                    <option value="sgp">🇸🇬 SGP POOLS</option>
+                    <option value="sdy">🇦🇺 SDY POOLS</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- INPUT 4D (H-1 & H-7) -->
+        <div class="filter-columns" style="margin-bottom: 12px;" id="boxInputs">
+            <div class="input-group" style="margin:0; flex:1;" id="colH1">
+                <label id="lblH1">Keluaran H-1:</label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputBawah" class="input-box" placeholder="4 Digit" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding-right: 32px; padding-left: 12px; font-size: 18px;" />
-                    <span class="clear-icon" onclick="clearInput('inputBawah')">&times;</span>
+                    <input type="text" inputmode="numeric" id="inputH1" class="input-box" placeholder="4 Digit" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
+                    <span class="clear-icon" onclick="clearInput('inputH1')" style="right:8px;">&times;</span>
+                </div>
+            </div>
+            <div class="input-group" style="margin:0; flex:1; display:none;" id="colH7">
+                <label>Keluaran H-7:</label>
+                <div class="input-wrapper">
+                    <input type="text" inputmode="numeric" id="inputH7" class="input-box" placeholder="4 Digit" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
+                    <span class="clear-icon" onclick="clearInput('inputH7')" style="right:8px;">&times;</span>
                 </div>
             </div>
         </div>
@@ -320,13 +339,13 @@
             </div>
             
             <div class="ai-grid">
-                <!-- FITUR BARU: COLOK BEBAS & BBFS (5 DIGIT) -->
+                <!-- FITUR BARU: COLOK BEBAS & BBFS -->
                 <div class="ai-item highlight" style="background:#eff6ff; border-color:#93c5fd;">
                     <span class="ai-item-label" style="color:#1d4ed8;">🎯 Colok Bebas</span>
                     <span class="ai-item-val" id="liveCB" style="color:#1e40af; font-size:13px;">-</span>
                 </div>
                 <div class="ai-item highlight" style="background:#eff6ff; border-color:#93c5fd;">
-                    <span class="ai-item-label" style="color:#1d4ed8;">🎲 BBFS 4D (5 Digit)</span>
+                    <span class="ai-item-label" style="color:#1d4ed8;">🎲 BBFS 4D (5/6 Digit)</span>
                     <span class="ai-item-val" id="liveBBFS" style="color:#1e40af; font-size:13px; letter-spacing:2px;">-</span>
                 </div>
                 
@@ -598,6 +617,28 @@
             if (event.target == modal) { modal.style.display = 'none'; }
         }
 
+        // FUNGSI TOGGLE MODE TARIKAN (H1 / H7 / GABUNG)
+        function toggleTarikanMode() {
+            let mode = document.getElementById('modeTarikan').value;
+            let colH1 = document.getElementById('colH1');
+            let colH7 = document.getElementById('colH7');
+            let lblH1 = document.getElementById('lblH1');
+            
+            if(mode === 'h1') {
+                colH1.style.display = 'block';
+                colH7.style.display = 'none';
+                lblH1.innerText = 'Keluaran H-1:';
+            } else if(mode === 'h7') {
+                colH1.style.display = 'none';
+                colH7.style.display = 'block';
+            } else if(mode === 'gabung') {
+                colH1.style.display = 'block';
+                colH7.style.display = 'block';
+                lblH1.innerText = 'Keluaran H-1:';
+            }
+            hitungSemua();
+        }
+
         // FUNGSI TOGGLE FILTER LANJUTAN
         function toggleFilters() {
             let filterDiv = document.getElementById('advancedFilters');
@@ -747,32 +788,162 @@
             } return res;
         }
 
+        function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
+        function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
+
+        // Core processing logic
+        function process4D(inputStr, pasaranToggle) {
+            let asB = parseInt(inputStr[0]), kopB = parseInt(inputStr[1]), kepB = parseInt(inputStr[2]), ekB = parseInt(inputStr[3]);
+            let str2D = `${kepB}${ekB}`;
+            let num2D = parseInt(str2D);
+            let taysenVal = tabelTaysen[num2D] || 0;
+            let matiEkorTesson = jadikanSatuDigit(taysenVal);
+            
+            let arrWakSalarabo = [];
+            for(let i=1; i<=9; i++) {
+                let nk = (kopB + i) % 10, np = (kepB + i) % 10, ne = (ekB + i) % 10;
+                arrWakSalarabo.push(`${nk}${np}`, `${nk}${ne}`, `${np}${nk}`, `${np}${ne}`, `${ne}${nk}`, `${ne}${np}`);
+            }
+
+            let jarakStart = num2D; 
+            let jarakEnd = (jarakStart + 20) % 100;
+            let matiKepala = Math.abs(asB - kopB).toString(); 
+            let matiEkor = mapMistikLama[jadikanSatuDigit(kepB + ekB)].toString();
+
+            // Pasaran Dinamis
+            let keyEkor = ekB;
+            let key2D = str2D;
+            let valPola1 = jadikanSatuDigit(asB + kopB);
+            let valPola2 = jadikanSatuDigit(kepB + ekB);
+
+            let pAs, pKop, pKep, pEk;
+            let cb1, cb2, bbfsArray = [];
+            let j1 = (asB + ekB) % 10;
+            let j2 = (kopB + kepB) % 10;
+            let unitTaysen = taysenVal % 10;
+
+            if (pasaranToggle === 'hk') {
+                keyEkor = mapMistikLama[ekB];
+                key2D = `${mapMistikLama[kepB]}${mapMistikLama[ekB]}`;
+                valPola1 = jadikanSatuDigit(asB + ekB);
+                valPola2 = jadikanSatuDigit(kopB + kepB);
+
+                cb1 = mapIndex[ekB]; cb2 = mapMistikLama[asB];
+                if(cb1 === cb2) cb2 = mapMistikBaru[kepB];
+                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[ekB]]);
+                if(bbfsSet.size < 5) bbfsSet.add(j2);
+                if(bbfsSet.size < 5) bbfsSet.add(mapMistikLama[asB]);
+                bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
+
+                pAs = (asB + kepB) % 10; pKop = Math.abs(kopB - ekB); pKep = (asB + kopB + kepB) % 10; pEk = (Math.abs(kepB - ekB) + asB) % 10;
+
+            } else if (pasaranToggle === 'sgp') {
+                keyEkor = mapIndex[ekB];
+                key2D = `${mapIndex[kepB]}${mapIndex[ekB]}`;
+                valPola1 = mapIndex[jadikanSatuDigit(asB + kopB)];
+                valPola2 = mapMistikLama[jadikanSatuDigit(kepB + ekB)];
+
+                cb1 = mapMistikBaru[kopB]; cb2 = mapIndex[kepB];
+                if(cb1 === cb2) cb2 = mapMistikLama[ekB];
+                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapMistikBaru[kopB]]);
+                if(bbfsSet.size < 5) bbfsSet.add(mapIndex[kepB]);
+                if(bbfsSet.size < 5) bbfsSet.add(j1);
+                bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
+
+                pAs = Math.abs(asB - kopB); pKop = (kepB + ekB) % 10; pKep = (asB + ekB) % 10; pEk = (kopB + kepB) % 10;
+
+            } else if (pasaranToggle === 'sdy') {
+                keyEkor = mapMistikBaru[ekB];
+                key2D = `${ekB}${kepB}`; // dibalik
+                valPola1 = mapMistikBaru[jadikanSatuDigit(asB + kopB)];
+                valPola2 = mapIndex[jadikanSatuDigit(kepB + ekB)];
+
+                cb1 = j1; cb2 = mapMistikBaru[ekB];
+                if(cb1 === cb2) cb2 = mapIndex[kopB];
+                let bbfsSet = new Set([asB, kopB, kepB, ekB, j1]);
+                if(bbfsSet.size < 5) bbfsSet.add(mapMistikBaru[ekB]);
+                if(bbfsSet.size < 5) bbfsSet.add(mapMistikLama[kepB]);
+                bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
+
+                pAs = (ekB + kepB) % 10; pKop = Math.abs(ekB - asB); pKep = (kopB + asB + ekB) % 10; pEk = (Math.abs(ekB - kopB) + asB) % 10;
+
+            } else {
+                cb1 = mapMistikLama[j2]; cb2 = mapIndex[ekB];
+                if (cb1 === cb2) cb2 = mapMistikBaru[kepB];
+                if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
+                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[kepB]]);
+                if(bbfsSet.size < 5) bbfsSet.add(mapMistikBaru[kopB]);
+                if(bbfsSet.size < 5) bbfsSet.add(j1);
+                bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
+
+                pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kepB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
+            }
+
+            let aiPola1 = buatUrutan4(valPola1);
+            let aiPola2 = buatUrutan4(valPola2);
+
+            let aiTabelStr = aiTabel2DMap[key2D] || aiTabel2DMap[str2D]; 
+            let aiTabel = [];
+            if(aiTabelStr) {
+                for(let i=0; i<aiTabelStr.length; i++) aiTabel.push(parseInt(aiTabelStr[i]));
+            }
+
+            let dataAI = aiEkorMap[keyEkor] || aiEkorMap[0];
+            let baseEkorTop = [], baseEkorCD = [];
+            let allAI = [...dataAI.ai1, ...dataAI.ai2];
+            for (let a of allAI) { for (let k of dataAI.kmt) { baseEkorTop.push(`${a}${k}`); baseEkorTop.push(`${k}${a}`); } }
+            for (let a1 of dataAI.ai1) { for (let a2 of dataAI.ai2) { baseEkorCD.push(`${a1}${a2}`); baseEkorCD.push(`${a2}${a1}`); } }
+            
+            let arrEkorMain = ekorMainMap[keyEkor] || [];
+            let baseEkorMain = [];
+            for(let h=0; h<=9; h++) {
+                for(let e of arrEkorMain) {
+                    baseEkorMain.push(`${h}${e}`);
+                }
+            }
+
+            return {
+                asB, kopB, kepB, ekB, str2D, num2D, matiEkorTesson, arrWakSalarabo, jarakStart, jarakEnd, matiKepala, matiEkor,
+                aiPola1, aiPola2, aiTabel, aiTabelStr, dataAI, baseEkorTop, baseEkorCD, baseEkorMain, arrEkorMain,
+                cb1, cb2, bbfsArray, pAs, pKop, pKep, pEk
+            };
+        }
+
         function hitungSemua() {
             const masterFilters = ['chkJarak', 'chkKepala', 'chkEkor', 'chkTesson', 'chkKembar', 'chkWakSalarabo', 'chkKelipatan', 'chkBijiLemah', 'chkMatiGab', 'chkPasaranJawa'];
             const allChecked = masterFilters.every(id => document.getElementById(id).checked);
             document.getElementById('chkAllMaster').checked = allChecked;
 
-            let inputB = document.getElementById('inputBawah').value;
+            let modeTarikan = document.getElementById('modeTarikan').value;
+            let inputH1 = document.getElementById('inputH1').value;
+            let inputH7 = document.getElementById('inputH7').value;
             let inputManual = document.getElementById('inputAIManual').value;
             let pasaranToggle = document.getElementById('jenisPasaran').value;
+            let pasaranFilter = document.getElementById('pasaranJawa').value;
             let posisiPilihan = document.getElementById('pilihanPosisi').value; 
 
-            if (inputB.length !== 4 && inputManual.length === 0) { 
+            let d1 = null, d2 = null;
+            let isValid = false;
+
+            if (modeTarikan === 'h1' && inputH1.length === 4) { d1 = process4D(inputH1, pasaranToggle); isValid = true; }
+            else if (modeTarikan === 'h7' && inputH7.length === 4) { d2 = process4D(inputH7, pasaranToggle); isValid = true; }
+            else if (modeTarikan === 'gabung' && inputH1.length === 4 && inputH7.length === 4) {
+                d1 = process4D(inputH1, pasaranToggle);
+                d2 = process4D(inputH7, pasaranToggle);
+                isValid = true;
+            }
+
+            if (!isValid && inputManual.length === 0) { 
                 document.getElementById('aiLiveCard').style.display = 'none';
                 document.getElementById('hasilGlobal').style.display = 'none'; 
                 document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
-                document.getElementById('liveCB').innerText = '-'; document.getElementById('liveBBFS').innerText = '-';
-                
-                document.getElementById('predAs').innerText = '-';
-                document.getElementById('predKop').innerText = '-';
-                document.getElementById('predKep').innerText = '-';
-                document.getElementById('predEk').innerText = '-';
                 return; 
             }
 
-            let has4D = (inputB.length === 4);
-            let num2D = -1, jarakStart = -1, jarakEnd = -1, matiKepala = "-1", matiEkor = "-1";
+            let mD = (modeTarikan === 'h7') ? d2 : d1; // Master Display Data
+            let aD = (modeTarikan === 'gabung') ? d2 : null; // Alt Display Data
+
             let useJarak = document.getElementById('chkJarak').checked;
             let useKepala = document.getElementById('chkKepala').checked;
             let useEkor = document.getElementById('chkEkor').checked;
@@ -782,9 +953,6 @@
             let useBijiLemah = document.getElementById('chkBijiLemah').checked;
             let useMatiGab = document.getElementById('chkMatiGab').checked;
             let usePasaran = document.getElementById('chkPasaranJawa').checked;
-            let pasaran = document.getElementById('pasaranJawa').value;
-            
-            let arrWakSalarabo = [];
             let useKembar = document.getElementById('chkKembar').checked;
             
             let inputMatiKepala = document.getElementById('inputMatiKepala').value;
@@ -799,187 +967,67 @@
             let arrBijiMati = [];
             if (inputBiji.length > 0) { for(let i=0; i<inputBiji.length; i++) arrBijiMati.push(parseInt(inputBiji[i])); }
 
-            let matiEkorTesson = -1;
-            let kopB = -1, kepB = -1, ekB = -1;
-
             let kGanjil = document.getElementById('kGanjil').checked, kGenap = document.getElementById('kGenap').checked;
             let kBesar = document.getElementById('kBesar').checked, kKecil = document.getElementById('kKecil').checked;
             let eGanjil = document.getElementById('eGanjil').checked, eGenap = document.getElementById('eGenap').checked;
             let eBesar = document.getElementById('eBesar').checked, eKecil = document.getElementById('eKecil').checked;
 
-            let baseAITabel = [], baseEkorTop = [], baseEkorCD = [], baseEkorMain = [];
-            let aiPola1 = [], aiPola2 = [], aiTabel = [];
-            let bM = []; // Variabel untuk hasil manual (jika ada)
-
-            if (has4D) {
-                let asB = parseInt(inputB[0]); kopB = parseInt(inputB[1]); kepB = parseInt(inputB[2]); ekB = parseInt(inputB[3]);
-                let str2D = `${kepB}${ekB}`;
-                num2D = parseInt(str2D);
-
-                let taysenVal = tabelTaysen[num2D];
-                matiEkorTesson = jadikanSatuDigit(taysenVal);
-                document.getElementById('infoTesson').innerText = `[${matiEkorTesson}]`;
-
-                for(let i=1; i<=9; i++) {
-                    let nk = (kopB + i) % 10, np = (kepB + i) % 10, ne = (ekB + i) % 10;
-                    arrWakSalarabo.push(`${nk}${np}`, `${nk}${ne}`, `${np}${nk}`, `${np}${ne}`, `${ne}${nk}`, `${ne}${np}`);
-                }
-
-                jarakStart = num2D; jarakEnd = (jarakStart + 20) % 100;
-                matiKepala = Math.abs(asB - kopB).toString(); 
-                matiEkor = mapMistikLama[jadikanSatuDigit(kepB + ekB)].toString(); 
-
-                document.getElementById('infoJarak').innerText = `[${jarakStart < 10 ? "0"+jarakStart : jarakStart}-${jarakEnd < 10 ? "0"+jarakEnd : jarakEnd}]`;
-                document.getElementById('infoKepala').innerText = `[${matiKepala}]`;
-                document.getElementById('infoEkor').innerText = `[${matiEkor}]`;
-
-                // ================== LOGIKA DINAMIS PASARAN ==================
-                let keyEkor = ekB;
-                let key2D = str2D;
-                let valPola1 = jadikanSatuDigit(asB + kopB);
-                let valPola2 = jadikanSatuDigit(kepB + ekB);
-
-                if (pasaranToggle === 'hk') {
-                    keyEkor = mapMistikLama[ekB];
-                    key2D = `${mapMistikLama[kepB]}${mapMistikLama[ekB]}`;
-                    valPola1 = jadikanSatuDigit(asB + ekB);
-                    valPola2 = jadikanSatuDigit(kopB + kepB);
-                } else if (pasaranToggle === 'sgp') {
-                    keyEkor = mapIndex[ekB];
-                    key2D = `${mapIndex[kepB]}${mapIndex[ekB]}`;
-                    valPola1 = mapIndex[jadikanSatuDigit(asB + kopB)];
-                    valPola2 = mapMistikLama[jadikanSatuDigit(kepB + ekB)];
-                } else if (pasaranToggle === 'sdy') {
-                    keyEkor = mapMistikBaru[ekB];
-                    key2D = `${ekB}${kepB}`; // dibalik
-                    valPola1 = mapMistikBaru[jadikanSatuDigit(asB + kopB)];
-                    valPola2 = mapIndex[jadikanSatuDigit(kepB + ekB)];
-                }
-
-                aiPola1 = buatUrutan4(valPola1);
-                aiPola2 = buatUrutan4(valPola2);
-
-                let aiTabelStr = aiTabel2DMap[key2D];
-                if (!aiTabelStr) aiTabelStr = aiTabel2DMap[str2D]; 
-
-                if(aiTabelStr) {
-                    for(let i=0; i<aiTabelStr.length; i++) aiTabel.push(parseInt(aiTabelStr[i]));
-                }
-
-                let dataAI = aiEkorMap[keyEkor] || aiEkorMap[0];
-                let allAI = [...dataAI.ai1, ...dataAI.ai2];
-                for (let a of allAI) { for (let k of dataAI.kmt) { baseEkorTop.push(`${a}${k}`); baseEkorTop.push(`${k}${a}`); } }
-                for (let a1 of dataAI.ai1) { for (let a2 of dataAI.ai2) { baseEkorCD.push(`${a1}${a2}`); baseEkorCD.push(`${a2}${a1}`); } }
-                baseEkorTop = Array.from(new Set(baseEkorTop)); baseEkorCD = Array.from(new Set(baseEkorCD));
-
-                let arrEkorMain = ekorMainMap[keyEkor] || [];
-                for(let h=0; h<=9; h++) {
-                    for(let e of arrEkorMain) {
-                        baseEkorMain.push(`${h}${e}`);
-                    }
-                }
-
-                // ================= PREDIKSI BBFS & COLOK BEBAS (5 DIGIT) =================
-                let cb1, cb2;
-                let bbfsArray = [];
-                let j1 = (asB + ekB) % 10;
-                let j2 = (kopB + kepB) % 10;
-                
-                if (pasaranToggle === 'hk') {
-                    cb1 = mapIndex[ekB];
-                    cb2 = mapMistikLama[asB];
-                    if(cb1 === cb2) cb2 = mapMistikBaru[kepB];
-
-                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[ekB]]);
-                    if(bbfsSet.size < 5) bbfsSet.add(j2);
-                    if(bbfsSet.size < 5) bbfsSet.add(mapMistikLama[asB]);
-                    bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
-
-                } else if (pasaranToggle === 'sgp') {
-                    cb1 = mapMistikBaru[kopB];
-                    cb2 = mapIndex[kepB];
-                    if(cb1 === cb2) cb2 = mapMistikLama[ekB];
-
-                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapMistikBaru[kopB]]);
-                    if(bbfsSet.size < 5) bbfsSet.add(mapIndex[kepB]);
-                    if(bbfsSet.size < 5) bbfsSet.add(j1);
-                    bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
-
-                } else if (pasaranToggle === 'sdy') {
-                    cb1 = j1;
-                    cb2 = mapMistikBaru[ekB];
-                    if(cb1 === cb2) cb2 = mapIndex[kopB];
-
-                    let bbfsSet = new Set([asB, kopB, kepB, ekB, j1]);
-                    if(bbfsSet.size < 5) bbfsSet.add(mapMistikBaru[ekB]);
-                    if(bbfsSet.size < 5) bbfsSet.add(mapMistikLama[kepB]);
-                    bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
-
+            if (isValid) {
+                if (aD) {
+                    document.getElementById('infoTesson').innerText = `[${mD.matiEkorTesson} & ${aD.matiEkorTesson}]`;
+                    document.getElementById('infoJarak').innerText = `[${mD.jarakStart<10?"0"+mD.jarakStart:mD.jarakStart}-${mD.jarakEnd<10?"0"+mD.jarakEnd:mD.jarakEnd}] & [${aD.jarakStart<10?"0"+aD.jarakStart:aD.jarakStart}-${aD.jarakEnd<10?"0"+aD.jarakEnd:aD.jarakEnd}]`;
+                    document.getElementById('infoKepala').innerText = `[${mD.matiKepala} & ${aD.matiKepala}]`;
+                    document.getElementById('infoEkor').innerText = `[${mD.matiEkor} & ${aD.matiEkor}]`;
                 } else {
-                    // UMUM (Default)
-                    cb1 = mapMistikLama[j2];
-                    cb2 = mapIndex[ekB];
-                    if (cb1 === cb2) cb2 = mapMistikBaru[kepB];
-                    if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
+                    document.getElementById('infoTesson').innerText = `[${mD.matiEkorTesson}]`;
+                    document.getElementById('infoJarak').innerText = `[${mD.jarakStart<10?"0"+mD.jarakStart:mD.jarakStart}-${mD.jarakEnd<10?"0"+mD.jarakEnd:mD.jarakEnd}]`;
+                    document.getElementById('infoKepala').innerText = `[${mD.matiKepala}]`;
+                    document.getElementById('infoEkor').innerText = `[${mD.matiEkor}]`;
+                }
+
+                if (modeTarikan === 'gabung') {
+                    let cbSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2]);
+                    document.getElementById('liveCB').innerText = Array.from(cbSet).slice(0, 3).join(' / ');
                     
-                    let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[kepB]]);
-                    if(bbfsSet.size < 5) bbfsSet.add(mapMistikBaru[kopB]);
-                    if(bbfsSet.size < 5) bbfsSet.add(j1);
-                    bbfsArray = Array.from(bbfsSet).slice(0, 5).sort((a,b) => a-b);
-                }
-                
-                document.getElementById('liveCB').innerText = `${cb1} / ${cb2}`;
-                document.getElementById('liveBBFS').innerText = bbfsArray.join(' ');
-                
-                // ================= PREDIKSI GANJIL/GENAP & BESAR/KECIL =================
-                function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
-                function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
+                    let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
+                    document.getElementById('liveBBFS').innerText = Array.from(bbfsSet).slice(0, 6).sort((a,b)=>a-b).join('');
 
-                let pAs, pKop, pKep, pEk;
+                    function cbPred(v1, v2, type) {
+                        let s1 = type==='gj' ? getGJ(v1) : getBK(v1);
+                        let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
+                        if(s1===s2) return `<span style="color:#dc2626; font-weight:800">${s1} 🔥</span>`;
+                        return `<span style="color:#64748b; font-weight:normal;">Tardal</span>`;
+                    }
 
-                if (pasaranToggle === 'hk') {
-                    pAs = (asB + kepB) % 10;
-                    pKop = Math.abs(kopB - ekB);
-                    pKep = (asB + kopB + kepB) % 10;
-                    pEk = (Math.abs(kepB - ekB) + asB) % 10;
-                } else if (pasaranToggle === 'sgp') {
-                    pAs = Math.abs(asB - kopB);
-                    pKop = (kepB + ekB) % 10;
-                    pKep = (asB + ekB) % 10;
-                    pEk = (kopB + kepB) % 10;
-                } else if (pasaranToggle === 'sdy') {
-                    pAs = (ekB + kepB) % 10;
-                    pKop = Math.abs(ekB - asB);
-                    pKep = (kopB + asB + ekB) % 10;
-                    pEk = (Math.abs(ekB - kopB) + asB) % 10;
+                    document.getElementById('predAs').innerHTML = `${cbPred(mD.pAs, aD.pAs, 'gj')}<br>${cbPred(mD.pAs, aD.pAs, 'bk')}`;
+                    document.getElementById('predKop').innerHTML = `${cbPred(mD.pKop, aD.pKop, 'gj')}<br>${cbPred(mD.pKop, aD.pKop, 'bk')}`;
+                    document.getElementById('predKep').innerHTML = `${cbPred(mD.pKep, aD.pKep, 'gj')}<br>${cbPred(mD.pKep, aD.pKep, 'bk')}`;
+                    document.getElementById('predEk').innerHTML = `${cbPred(mD.pEk, aD.pEk, 'gj')}<br>${cbPred(mD.pEk, aD.pEk, 'bk')}`;
+
+                    document.getElementById('badgeLiveEkor').innerText = `GABUNGAN H1+H7`;
+                    document.getElementById('liveAIEkor').innerText = `Merge: ${Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2])).join('')}`;
+                    document.getElementById('liveKMTEkor').innerText = `Merge: ${Array.from(new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt])).join('')}`;
+                    document.getElementById('livePola1').innerText = `Merge: ${Array.from(new Set([...mD.aiPola1, ...aD.aiPola1])).join('')}`;
+                    document.getElementById('livePola2').innerText = `Merge: ${Array.from(new Set([...mD.aiPola2, ...aD.aiPola2])).join('')}`;
+                    document.getElementById('liveAITabel').innerText = `Gabungan Tabel (Di bawah)`;
+                    document.getElementById('liveEkorMain').innerText = `Gabungan Pola (Di bawah)`;
                 } else {
-                    pAs = (kopB + ekB) % 10;
-                    pKop = Math.abs(asB - kepB);
-                    pKep = (kopB + kepB + ekB) % 10;
-                    pEk = (Math.abs(asB - ekB) + kepB) % 10;
+                    document.getElementById('liveCB').innerText = `${mD.cb1} / ${mD.cb2}`;
+                    document.getElementById('liveBBFS').innerText = mD.bbfsArray.join('');
+                    document.getElementById('predAs').innerHTML = `${getGJ(mD.pAs)}<br>${getBK(mD.pAs)}`;
+                    document.getElementById('predKop').innerHTML = `${getGJ(mD.pKop)}<br>${getBK(mD.pKop)}`;
+                    document.getElementById('predKep').innerHTML = `${getGJ(mD.pKep)}<br>${getBK(mD.pKep)}`;
+                    document.getElementById('predEk').innerHTML = `${getGJ(mD.pEk)}<br>${getBK(mD.pEk)}`;
+
+                    document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
+                    document.getElementById('liveAIEkor').innerText = `${mD.dataAI.ai1.join('')} - ${mD.dataAI.ai2.join('')}`;
+                    document.getElementById('liveKMTEkor').innerText = mD.dataAI.kmt.join('');
+                    document.getElementById('livePola1').innerText = mD.aiPola1.join(' ');
+                    document.getElementById('livePola2').innerText = mD.aiPola2.join(' ');
+                    document.getElementById('liveAITabel').innerText = mD.aiTabelStr ? mD.aiTabelStr.split('').join(' ') : '-';
+                    document.getElementById('liveEkorMain').innerText = mD.arrEkorMain.length > 0 ? mD.arrEkorMain.join(' ') : '-';
                 }
-
-                document.getElementById('predAs').innerHTML = `${getGJ(pAs)}<br>${getBK(pAs)}`;
-                document.getElementById('predKop').innerHTML = `${getGJ(pKop)}<br>${getBK(pKop)}`;
-                document.getElementById('predKep').innerHTML = `${getGJ(pKep)}<br>${getBK(pKep)}`;
-                document.getElementById('predEk').innerHTML = `${getGJ(pEk)}<br>${getBK(pEk)}`;
-
-                // ===============================================================
-
-                document.getElementById('badgeLiveEkor').innerText = `RESULT ${str2D}`;
-                document.getElementById('liveAIEkor').innerText = `${dataAI.ai1.join('')} - ${dataAI.ai2.join('')}`;
-                document.getElementById('liveKMTEkor').innerText = dataAI.kmt.join('');
-                document.getElementById('livePola1').innerText = aiPola1.join(' ');
-                document.getElementById('livePola2').innerText = aiPola2.join(' ');
-                document.getElementById('liveAITabel').innerText = aiTabelStr ? aiTabelStr.split('').join(' ') : '-';
-                document.getElementById('liveEkorMain').innerText = arrEkorMain.length > 0 ? arrEkorMain.join(' ') : '-';
-                
                 document.getElementById('aiLiveCard').style.display = 'block';
-            } else {
-                document.getElementById('aiLiveCard').style.display = 'none';
-                document.getElementById('infoTesson').innerText = ''; document.getElementById('infoJarak').innerText = ''; 
-                document.getElementById('infoKepala').innerText = ''; document.getElementById('infoEkor').innerText = '';
-                document.getElementById('liveCB').innerText = '-'; document.getElementById('liveBBFS').innerText = '-';
             }
 
             function applyFilter(lines) {
@@ -990,7 +1038,6 @@
                     if (kGenap && k % 2 === 0) return false;
                     if (kBesar && k >= 5) return false;
                     if (kKecil && k <= 4) return false;
-
                     if (eGanjil && e % 2 !== 0) return false;
                     if (eGenap && e % 2 === 0) return false;
                     if (eBesar && e >= 5) return false;
@@ -1002,83 +1049,100 @@
                     if (arrMatiKepalaManual.length > 0 && arrMatiKepalaManual.includes(k)) return false;
                     if (arrMatiEkorManual.length > 0 && arrMatiEkorManual.includes(e)) return false;
                     
-                    if (has4D) {
-                        if (useTesson && e == matiEkorTesson) return false;
-                        if (useWakSalarabo && arrWakSalarabo.includes(n)) return false;
-                        if (useKelipatan && Math.abs(v - num2D) % 12 == 0) return false;
-                        
+                    if (usePasaran && pasaranFilter !== "") {
+                        if (pasaranFilter === "legi" && v >= 24 && v <= 44) return false;
+                        if (pasaranFilter === "pahing" && (v >= 80 || v === 0)) return false;
+                        if (pasaranFilter === "pon" && v >= 46 && v <= 69) return false;
+                        if (pasaranFilter === "wage" && v >= 16 && v <= 36) return false;
+                        if (pasaranFilter === "kliwon" && v >= 64 && v <= 84) return false;
+                    }
+
+                    if (d1) {
+                        if (useTesson && e == d1.matiEkorTesson) return false;
+                        if (useWakSalarabo && d1.arrWakSalarabo.includes(n)) return false;
+                        if (useKelipatan && Math.abs(v - d1.num2D) % 12 == 0) return false;
                         if (useBijiLemah) {
-                            let jmlMod = (kepB + ekB) % 10;
+                            let jmlMod = (d1.kepB + d1.ekB) % 10;
                             if (bijiLemahMap[jmlMod].includes(n)) return false;
                         }
-
                         if (useMatiGab) {
-                            let mgStr = matiGabungMap[Math.abs(kopB - kepB)];
+                            let mgStr = matiGabungMap[Math.abs(d1.kopB - d1.kepB)];
                             if (mgStr.includes(k.toString()) && mgStr.includes(e.toString())) return false;
                         }
-
-                        if (usePasaran && pasaran !== "") {
-                            if (pasaran === "legi" && v >= 24 && v <= 44) return false;
-                            if (pasaran === "pahing" && (v >= 80 || v === 0)) return false;
-                            if (pasaran === "pon" && v >= 46 && v <= 69) return false;
-                            if (pasaran === "wage" && v >= 16 && v <= 36) return false;
-                            if (pasaran === "kliwon" && v >= 64 && v <= 84) return false;
-                        }
-                        
                         if (useJarak) {
-                            if (jarakStart <= jarakEnd) { if (v >= jarakStart && v <= jarakEnd) return false; } 
-                            else { if (v >= jarakStart || v <= jarakEnd) return false; }
+                            if (d1.jarakStart <= d1.jarakEnd) { if (v >= d1.jarakStart && v <= d1.jarakEnd) return false; } 
+                            else { if (v >= d1.jarakStart || v <= d1.jarakEnd) return false; }
                         }
-                        
-                        if (useKepala && k == matiKepala) return false;
-                        if (useEkor && e == matiEkor) return false;
+                        if (useKepala && k == d1.matiKepala) return false;
+                        if (useEkor && e == d1.matiEkor) return false;
+                    }
+
+                    if (d2) {
+                        if (useTesson && e == d2.matiEkorTesson) return false;
+                        if (useWakSalarabo && d2.arrWakSalarabo.includes(n)) return false;
+                        if (useKelipatan && Math.abs(v - d2.num2D) % 12 == 0) return false;
+                        if (useBijiLemah) {
+                            let jmlMod = (d2.kepB + d2.ekB) % 10;
+                            if (bijiLemahMap[jmlMod].includes(n)) return false;
+                        }
+                        if (useMatiGab) {
+                            let mgStr = matiGabungMap[Math.abs(d2.kopB - d2.kepB)];
+                            if (mgStr.includes(k.toString()) && mgStr.includes(e.toString())) return false;
+                        }
+                        if (useJarak) {
+                            if (d2.jarakStart <= d2.jarakEnd) { if (v >= d2.jarakStart && v <= d2.jarakEnd) return false; } 
+                            else { if (v >= d2.jarakStart || v <= d2.jarakEnd) return false; }
+                        }
+                        if (useKepala && k == d2.matiKepala) return false;
+                        if (useEkor && e == d2.matiEkor) return false;
                     }
                     return true;
                 });
             }
 
-            let bGab = []; // Variabel gabungan diakses global
+            let bAITabel = [], bEkorTop = [], bEkorCD = [], bEkorMain = [], p1 = [], p2 = [], bM = [];
 
-            if(has4D) {
-                // 1. AI Tabel 2D
-                if(aiTabel.length > 0) {
-                    baseAITabel = applyFilter(generate2DAI(aiTabel, posisiPilihan)).sort((a,b) => parseInt(a)-parseInt(b));
-                    let strAITabel = baseAITabel.join('*'); if(strAITabel) strAITabel += '#';
-                    document.getElementById('lineAITabel').innerText = baseAITabel.length + " LN";
-                    document.getElementById('hasilAITabel').value = strAITabel;
-                } else {
-                    document.getElementById('lineAITabel').innerText = "0 LN";
-                    document.getElementById('hasilAITabel').value = "Data AI Tidak Ditemukan";
-                }
-
-                // 2. Ekor Top
-                baseEkorTop = applyFilter(baseEkorTop).sort((a,b) => parseInt(a)-parseInt(b));
-                let strTop = baseEkorTop.join('*'); if(strTop) strTop += '#';
-                document.getElementById('lineEkorTop').innerText = baseEkorTop.length + " LN";
-                document.getElementById('hasilEkorTop').value = strTop;
-
-                // 3. Ekor CD
-                baseEkorCD = applyFilter(baseEkorCD).sort((a,b) => parseInt(a)-parseInt(b));
-                let strCD = baseEkorCD.join('*'); if(strCD) strCD += '#';
-                document.getElementById('lineEkorCd').innerText = baseEkorCD.length + " LN";
-                document.getElementById('hasilEkorCd').value = strCD;
-
-                // 4. Pola Ekor Main Tabel
-                baseEkorMain = applyFilter(baseEkorMain).sort((a,b) => parseInt(a)-parseInt(b));
-                let strEkorMain = baseEkorMain.join('*'); if(strEkorMain) strEkorMain += '#';
-                document.getElementById('lineEkorMain').innerText = baseEkorMain.length + " LN";
-                document.getElementById('hasilEkorMain').value = strEkorMain;
-
-                // 5. Gabungan P1+P2
-                let b1 = applyFilter(generate2DAI(aiPola1, posisiPilihan));
-                let b2 = applyFilter(generate2DAI(aiPola2, posisiPilihan));
-                bGab = Array.from(new Set([...b1, ...b2])).sort((a, b) => parseInt(a) - parseInt(b));
-                let strGab = bGab.join('*'); if(strGab) strGab += '#';
-                document.getElementById('lineGabungan').innerText = bGab.length + " LN";
-                document.getElementById('hasilGabungan').value = strGab;
+            if (d1) {
+                bAITabel.push(...d1.aiTabel); bEkorTop.push(...d1.baseEkorTop); bEkorCD.push(...d1.baseEkorCD); bEkorMain.push(...d1.baseEkorMain); p1.push(...d1.aiPola1); p2.push(...d1.aiPola2);
+            }
+            if (d2) {
+                bAITabel.push(...d2.aiTabel); bEkorTop.push(...d2.baseEkorTop); bEkorCD.push(...d2.baseEkorCD); bEkorMain.push(...d2.baseEkorMain); p1.push(...d2.aiPola1); p2.push(...d2.aiPola2);
             }
 
-            // 6. Manual AI
+            if(isValid) {
+                if(bAITabel.length > 0) {
+                    let finalTabel = applyFilter(generate2DAI(bAITabel, posisiPilihan)).sort((a,b) => parseInt(a)-parseInt(b));
+                    let strAITabel = finalTabel.join('*'); if(strAITabel) strAITabel += '#';
+                    document.getElementById('lineAITabel').innerText = finalTabel.length + " LN";
+                    document.getElementById('hasilAITabel').value = strAITabel;
+                    bAITabel = finalTabel; 
+                } else {
+                    document.getElementById('lineAITabel').innerText = "0 LN";
+                    document.getElementById('hasilAITabel').value = "Data Tidak Ditemukan";
+                }
+
+                bEkorTop = applyFilter(bEkorTop).sort((a,b) => parseInt(a)-parseInt(b));
+                let strTop = bEkorTop.join('*'); if(strTop) strTop += '#';
+                document.getElementById('lineEkorTop').innerText = bEkorTop.length + " LN";
+                document.getElementById('hasilEkorTop').value = strTop;
+
+                bEkorCD = applyFilter(bEkorCD).sort((a,b) => parseInt(a)-parseInt(b));
+                let strCD = bEkorCD.join('*'); if(strCD) strCD += '#';
+                document.getElementById('lineEkorCd').innerText = bEkorCD.length + " LN";
+                document.getElementById('hasilEkorCd').value = strCD;
+
+                bEkorMain = applyFilter(bEkorMain).sort((a,b) => parseInt(a)-parseInt(b));
+                let strEkorMain = bEkorMain.join('*'); if(strEkorMain) strEkorMain += '#';
+                document.getElementById('lineEkorMain').innerText = bEkorMain.length + " LN";
+                document.getElementById('hasilEkorMain').value = strEkorMain;
+
+                let polas = Array.from(new Set([...applyFilter(generate2DAI(p1, posisiPilihan)), ...applyFilter(generate2DAI(p2, posisiPilihan))])).sort((a, b) => parseInt(a) - parseInt(b));
+                let strGab = polas.join('*'); if(strGab) strGab += '#';
+                document.getElementById('lineGabungan').innerText = polas.length + " LN";
+                document.getElementById('hasilGabungan').value = strGab;
+                p1 = polas; 
+            }
+
             if (inputManual.length > 0) {
                 let aiM = []; for(let i=0; i<inputManual.length; i++) aiM.push(parseInt(inputManual[i]));
                 bM = applyFilter(generate2DAI(aiM, posisiPilihan)).sort((a,b) => parseInt(a)-parseInt(b)); 
@@ -1090,13 +1154,12 @@
                 document.getElementById('segmenManual').style.display = 'none'; 
             }
 
-            // LOGIKA PENCARIAN TOP BOM (IRISAN / ANGKA SAMA)
             let allGeneratedSets = [];
-            if (baseAITabel.length > 0) allGeneratedSets.push(baseAITabel);
-            if (baseEkorTop.length > 0) allGeneratedSets.push(baseEkorTop);
-            if (baseEkorCD.length > 0) allGeneratedSets.push(baseEkorCD);
-            if (baseEkorMain.length > 0) allGeneratedSets.push(baseEkorMain);
-            if (bGab.length > 0) allGeneratedSets.push(bGab);
+            if (bAITabel.length > 0) allGeneratedSets.push(bAITabel);
+            if (bEkorTop.length > 0) allGeneratedSets.push(bEkorTop);
+            if (bEkorCD.length > 0) allGeneratedSets.push(bEkorCD);
+            if (bEkorMain.length > 0) allGeneratedSets.push(bEkorMain);
+            if (p1.length > 0) allGeneratedSets.push(p1);
             if (bM.length > 0) allGeneratedSets.push(bM);
 
             let crashCounts = {};
@@ -1107,7 +1170,6 @@
                 });
             });
 
-            // Ekstrak angka yang muncul di >= 2 set
             let bomLines = Object.keys(crashCounts).filter(num => crashCounts[num] >= 2).sort((a,b) => parseInt(a) - parseInt(b));
             let strBom = bomLines.join('*'); if(strBom) strBom += '#';
 
