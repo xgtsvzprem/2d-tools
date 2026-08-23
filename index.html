@@ -431,31 +431,6 @@
     <div id="hasilGlobal" class="container" style="display:none; border-top: 4px solid var(--accent);">
         <h2 style="font-size: 15px; color:var(--accent); margin-bottom: 12px; text-align: left;">🎯 Hasil Line Siap Bet</h2>
         
-        <!-- BLOK CB DAN BBFS DENGAN TOMBOL COPY -->
-        <div class="result-block" style="border-color: #3b82f6; background: #eff6ff;">
-            <div class="result-header">
-                <div style="display:flex; flex-direction:column;">
-                    <span style="color: #1e40af; font-size: 13px;">🎯 Colok Bebas & BBFS (6 Digit)</span>
-                    <span style="font-size: 9px; color: #3b82f6; font-weight: normal; margin-top:2px;">Rumus Index & Silang Paten</span>
-                </div>
-                <span class="badge-hit" style="background:#bfdbfe; color:#1e40af; border-color:#93c5fd;">Top</span>
-            </div>
-            <div style="display: flex; gap: 8px; margin-top: 8px;">
-                <div style="flex: 1;">
-                    <label style="font-size: 10px; font-weight: 700; color: #3b82f6; display: block; margin-bottom: 4px;">Colok Bebas</label>
-                    <input type="text" id="hasilCB" readonly style="width: 100%; font-size: 14px; font-weight: 800; text-align: center; padding: 8px 4px; color: #1e40af; border: 1px solid #93c5fd; border-radius: 6px; background: #fff; box-sizing: border-box; outline: none;" />
-                </div>
-                <div style="flex: 1.5;">
-                    <label style="font-size: 10px; font-weight: 700; color: #3b82f6; display: block; margin-bottom: 4px;">BBFS 4D/3D/2D</label>
-                    <div style="display: flex; gap: 6px;">
-                        <input type="text" id="hasilBBFS" readonly style="width: 100%; font-size: 14px; font-weight: 800; text-align: center; letter-spacing: 2px; padding: 8px 4px; color: #1e40af; border: 1px solid #93c5fd; border-radius: 6px; background: #fff; box-sizing: border-box; outline: none;" />
-                        <button class="btn-copy" style="background:#2563eb; margin:0; padding: 0 12px; height: auto;" onclick="salinTeks('hasilBBFS', this)">Copy</button>
-                    </div>
-                </div>
-            </div>
-            <div class="clear"></div>
-        </div>
-
         <!-- BLOK EKSKLUSIF: TOP BOM (IRISAN) -->
         <div class="result-block" style="border-color: #f59e0b; background: #fffbeb;">
             <div class="result-header">
@@ -731,7 +706,6 @@
                 document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
                 document.getElementById('liveCB').innerText = '-'; document.getElementById('liveBBFS').innerText = '-';
-                document.getElementById('hasilCB').value = '- / -'; document.getElementById('hasilBBFS').value = '------';
                 return; 
             }
 
@@ -827,7 +801,16 @@
                 if (cb1 === cb2) cb2 = mapMistikBaru[kepB];
                 if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
                 
-                let bbfsSet = new Set([ asB, kopB, kepB, ekB, j1, j2, unitTaysen, mapMistikLama[kepB] ]);
+                let bbfsSet = new Set([ 
+                    asB, 
+                    kopB, 
+                    kepB, 
+                    ekB, 
+                    mapIndex[kepB], 
+                    mapMistikBaru[kopB], 
+                    mapMistikLama[ekB],
+                    j1
+                ]);
                 let bbfsArray = Array.from(bbfsSet);
                 if (bbfsArray.length < 6) {
                     bbfsArray.push(mapIndex[asB]);
@@ -839,10 +822,6 @@
                 // Tampilkan di Live Dashboard
                 document.getElementById('liveCB').innerText = `${cb1} / ${cb2}`;
                 document.getElementById('liveBBFS').innerText = bbfsArray.join(' ');
-                
-                // Tampilkan di Hasil Bawah
-                document.getElementById('hasilCB').value = `${cb1} / ${cb2}`;
-                document.getElementById('hasilBBFS').value = bbfsArray.join('');
                 // ===============================================================
 
                 document.getElementById('badgeLiveEkor').innerText = `RESULT ${str2D}`;
@@ -859,7 +838,6 @@
                 document.getElementById('infoTesson').innerText = ''; document.getElementById('infoJarak').innerText = ''; 
                 document.getElementById('infoKepala').innerText = ''; document.getElementById('infoEkor').innerText = '';
                 document.getElementById('liveCB').innerText = '-'; document.getElementById('liveBBFS').innerText = '-';
-                document.getElementById('hasilCB').value = '- / -'; document.getElementById('hasilBBFS').value = '------';
             }
 
             function applyFilter(lines) {
