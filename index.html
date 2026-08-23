@@ -86,6 +86,10 @@
             background: #fff;
             transition: border-color 0.2s;
         }
+        
+        /* Modifikasi ukuran font placeholder agar teks panjang bisa muat */
+        input.input-box::placeholder { font-size: 12px; letter-spacing: normal; color: #94a3b8; font-weight: 500; }
+        
         select.input-box { letter-spacing: normal; cursor: pointer; }
         input.input-box:focus, select.input-box:focus, textarea:focus { outline: none; border-color: var(--primary); }
 
@@ -316,16 +320,16 @@
         <!-- INPUT 4D (H-1 & H-7) -->
         <div class="filter-columns" style="margin-bottom: 12px;" id="boxInputs">
             <div class="input-group" style="margin:0; flex:1;" id="colH1">
-                <label id="lblH1">Keluaran H-1:</label>
+                <label id="lblH1">Result Terakhir (H-1):</label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputH1" class="input-box" placeholder="4 Digit" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
+                    <input type="text" inputmode="numeric" id="inputH1" class="input-box" placeholder="Keluaran sebelumnya" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
                     <span class="clear-icon" onclick="clearInput('inputH1')" style="right:8px;">&times;</span>
                 </div>
             </div>
             <div class="input-group" style="margin:0; flex:1; display:none;" id="colH7">
-                <label>Keluaran H-7:</label>
+                <label>Result Mg Lalu (H-7):</label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputH7" class="input-box" placeholder="4 Digit" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
+                    <input type="text" inputmode="numeric" id="inputH7" class="input-box" placeholder="Keluaran minggu lalu" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
                     <span class="clear-icon" onclick="clearInput('inputH7')" style="right:8px;">&times;</span>
                 </div>
             </div>
@@ -627,14 +631,14 @@
             if(mode === 'h1') {
                 colH1.style.display = 'block';
                 colH7.style.display = 'none';
-                lblH1.innerText = 'Keluaran H-1:';
+                lblH1.innerText = 'Result Terakhir (H-1):';
             } else if(mode === 'h7') {
                 colH1.style.display = 'none';
                 colH7.style.display = 'block';
             } else if(mode === 'gabung') {
                 colH1.style.display = 'block';
                 colH7.style.display = 'block';
-                lblH1.innerText = 'Keluaran H-1:';
+                lblH1.innerText = 'Result Terakhir (H-1):';
             }
             hitungSemua();
         }
