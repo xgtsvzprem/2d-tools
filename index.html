@@ -360,11 +360,11 @@
                 </div>
                 
                 <div class="ai-item">
-                    <span class="ai-item-label">Pola 1 (As+Kop)</span>
+                    <span class="ai-item-label">Pola 1</span>
                     <span class="ai-item-val" id="livePola1">-</span>
                 </div>
                 <div class="ai-item">
-                    <span class="ai-item-label">Pola 2 (Kep+Ek)</span>
+                    <span class="ai-item-label">Pola 2</span>
                     <span class="ai-item-val" id="livePola2">-</span>
                 </div>
             </div>
@@ -544,7 +544,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>5. Gabungan (As+Kop & Kep+Ek)</span>
+                <span>5. Gabungan Pola 1 & 2</span>
                 <span class="badge-hit" id="lineGabungan">0 LN</span>
             </div>
             <textarea id="hasilGabungan" readonly></textarea>
@@ -754,7 +754,7 @@
 
             let inputB = document.getElementById('inputBawah').value;
             let inputManual = document.getElementById('inputAIManual').value;
-            let pasaran = document.getElementById('jenisPasaran').value;
+            let pasaranToggle = document.getElementById('jenisPasaran').value;
             let posisiPilihan = document.getElementById('pilihanPosisi').value; 
 
             if (inputB.length !== 4 && inputManual.length === 0) { 
@@ -782,6 +782,7 @@
             let useBijiLemah = document.getElementById('chkBijiLemah').checked;
             let useMatiGab = document.getElementById('chkMatiGab').checked;
             let usePasaran = document.getElementById('chkPasaranJawa').checked;
+            let pasaran = document.getElementById('pasaranJawa').value;
             
             let arrWakSalarabo = [];
             let useKembar = document.getElementById('chkKembar').checked;
@@ -832,35 +833,60 @@
                 document.getElementById('infoKepala').innerText = `[${matiKepala}]`;
                 document.getElementById('infoEkor').innerText = `[${matiEkor}]`;
 
-                aiPola1 = buatUrutan4(jadikanSatuDigit(asB + kopB));
-                aiPola2 = buatUrutan4(jadikanSatuDigit(kepB + ekB));
+                // ================== LOGIKA DINAMIS PASARAN ==================
+                let keyEkor = ekB;
+                let key2D = str2D;
+                let valPola1 = jadikanSatuDigit(asB + kopB);
+                let valPola2 = jadikanSatuDigit(kepB + ekB);
 
-                let aiTabelStr = aiTabel2DMap[str2D];
+                if (pasaranToggle === 'hk') {
+                    keyEkor = mapMistikLama[ekB];
+                    key2D = `${mapMistikLama[kepB]}${mapMistikLama[ekB]}`;
+                    valPola1 = jadikanSatuDigit(asB + ekB);
+                    valPola2 = jadikanSatuDigit(kopB + kepB);
+                } else if (pasaranToggle === 'sgp') {
+                    keyEkor = mapIndex[ekB];
+                    key2D = `${mapIndex[kepB]}${mapIndex[ekB]}`;
+                    valPola1 = mapIndex[jadikanSatuDigit(asB + kopB)];
+                    valPola2 = mapMistikLama[jadikanSatuDigit(kepB + ekB)];
+                } else if (pasaranToggle === 'sdy') {
+                    keyEkor = mapMistikBaru[ekB];
+                    key2D = `${ekB}${kepB}`; // dibalik
+                    valPola1 = mapMistikBaru[jadikanSatuDigit(asB + kopB)];
+                    valPola2 = mapIndex[jadikanSatuDigit(kepB + ekB)];
+                }
+
+                aiPola1 = buatUrutan4(valPola1);
+                aiPola2 = buatUrutan4(valPola2);
+
+                let aiTabelStr = aiTabel2DMap[key2D];
+                if (!aiTabelStr) aiTabelStr = aiTabel2DMap[str2D]; 
+
                 if(aiTabelStr) {
                     for(let i=0; i<aiTabelStr.length; i++) aiTabel.push(parseInt(aiTabelStr[i]));
                 }
 
-                let dataAI = aiEkorMap[ekB];
+                let dataAI = aiEkorMap[keyEkor] || aiEkorMap[0];
                 let allAI = [...dataAI.ai1, ...dataAI.ai2];
                 for (let a of allAI) { for (let k of dataAI.kmt) { baseEkorTop.push(`${a}${k}`); baseEkorTop.push(`${k}${a}`); } }
                 for (let a1 of dataAI.ai1) { for (let a2 of dataAI.ai2) { baseEkorCD.push(`${a1}${a2}`); baseEkorCD.push(`${a2}${a1}`); } }
                 baseEkorTop = Array.from(new Set(baseEkorTop)); baseEkorCD = Array.from(new Set(baseEkorCD));
 
-                let arrEkorMain = ekorMainMap[ekB] || [];
+                let arrEkorMain = ekorMainMap[keyEkor] || [];
                 for(let h=0; h<=9; h++) {
                     for(let e of arrEkorMain) {
                         baseEkorMain.push(`${h}${e}`);
                     }
                 }
 
-                // ================= PREDIKSI BBFS & COLOK BEBAS (ADAPTIF PASARAN) =================
+                // ================= PREDIKSI BBFS & COLOK BEBAS (RUMUS SILANG PATEN) =================
                 let cb1, cb2;
                 let bbfsArray = [];
                 let j1 = (asB + ekB) % 10;
                 let j2 = (kopB + kepB) % 10;
                 let unitTaysen = taysenVal % 10;
 
-                if (pasaran === 'hk') {
+                if (pasaranToggle === 'hk') {
                     cb1 = mapIndex[ekB];
                     cb2 = mapMistikLama[asB];
                     if(cb1 === cb2) cb2 = mapMistikBaru[kepB];
@@ -870,7 +896,7 @@
                     if(bbfsSet.size < 6) bbfsSet.add((ekB + 2) % 10);
                     bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
 
-                } else if (pasaran === 'sgp') {
+                } else if (pasaranToggle === 'sgp') {
                     cb1 = mapMistikBaru[kopB];
                     cb2 = mapIndex[kepB];
                     if(cb1 === cb2) cb2 = mapMistikLama[ekB];
@@ -880,7 +906,7 @@
                     if(bbfsSet.size < 6) bbfsSet.add(unitTaysen);
                     bbfsArray = Array.from(bbfsSet).slice(0, 6).sort((a,b) => a-b);
 
-                } else if (pasaran === 'sdy') {
+                } else if (pasaranToggle === 'sdy') {
                     cb1 = j1;
                     cb2 = mapMistikBaru[ekB];
                     if(cb1 === cb2) cb2 = mapIndex[kopB];
@@ -902,7 +928,7 @@
                     if (arr.length < 6) { arr.push(mapIndex[asB]); arr.push(mapMistikBaru[ekB]); }
                     bbfsArray = Array.from(new Set(arr)).slice(0, 6).sort((a,b) => a-b);
                 }
-
+                
                 document.getElementById('liveCB').innerText = `${cb1} / ${cb2}`;
                 document.getElementById('liveBBFS').innerText = bbfsArray.join(' ');
                 
