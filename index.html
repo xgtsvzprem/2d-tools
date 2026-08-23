@@ -124,8 +124,8 @@
         .filter-label input[type="checkbox"] { margin-right: 6px; cursor: pointer; accent-color: var(--primary); }
         .badge { font-weight: 800; color: var(--danger); margin-left: 4px; font-size: 11px; }
 
-        select.mini-select { margin-left: 4px; padding: 2px 4px; font-size: 11px; border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; cursor: pointer; outline: none; font-weight: 700; color: var(--text-main); }
-        .info-icon { display: inline-flex; justify-content: center; align-items: center; background-color: #cbd5e1; color: #475569; border-radius: 50%; width: 15px; height: 15px; font-size: 10px; font-weight: bold; margin-left: 5px; cursor: pointer; transition: 0.15s; }
+        select.mini-select { margin-left: 4px; padding: 2px 4px; font-size: 11px; border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; cursor: pointer; outline: none; font-weight: 700; color: var(--text-main); width: 100%; max-width: 110px;}
+        .info-icon { display: inline-flex; justify-content: center; align-items: center; background-color: #cbd5e1; color: #475569; border-radius: 50%; width: 15px; height: 15px; font-size: 10px; font-weight: bold; margin-left: 5px; cursor: pointer; transition: 0.15s; flex-shrink:0; }
         .info-icon:hover { background-color: var(--primary); color: #fff; transform: scale(1.1); }
 
         /* FLOATING MODAL - UMUM */
@@ -431,7 +431,6 @@
                 </div>
             </div>
         </div> <!-- End of advancedFilters -->
-
     </div>
 
     <!-- HASIL GENERATE -->
@@ -522,6 +521,35 @@
     </div>
 
     <script>
+        // ================= AUTO SET PASARAN JAWA (HARI INI WIB) =================
+        function autoSetPasaranJawa() {
+            // Mengambil waktu server (WIB / Jakarta) agar akurat di mana pun aplikasi diakses
+            let d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            let utcDate = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+            let daysSinceEpoch = Math.floor(utcDate / 86400000);
+            
+            // Rumus siklus Pasaran Jawa: 1 Jan 1970 = Wage (index 3)
+            let idx = (daysSinceEpoch + 3) % 5;
+            const pasarans = ["legi", "pahing", "pon", "wage", "kliwon"];
+            let hariIni = pasarans[idx];
+            
+            let selectElement = document.getElementById("pasaranJawa");
+            selectElement.value = hariIni;
+            
+            // Tambahkan label "(Hari Ini)" pada dropdown agar Koh Aping tahu itu settingan otomatis
+            for(let i=0; i<selectElement.options.length; i++){
+                if(selectElement.options[i].value === hariIni) {
+                    selectElement.options[i].text += " (Hari Ini)";
+                }
+            }
+        }
+
+        // Panggil fungsi auto-set ketika aplikasi pertama kali dibuka
+        document.addEventListener("DOMContentLoaded", function() {
+            autoSetPasaranJawa();
+        });
+
+
         // ================= FITUR KALKULATOR BET =================
         function kalkulasiBet() {
             let lines = parseInt(document.getElementById('betLine').value) || 0;
@@ -551,7 +579,7 @@
             'kelipatan': { title: 'Pangkas Kelipatan 12', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Angka 2D terakhir ditambah/dikurangi kelipatan 12.' },
             'jumlahlemah': { title: 'Pangkas Jumlah 2D Lemah', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Membuang kombinasi berdasarkan tabel jumlah Kepala+Ekor.' },
             'matigab': { title: 'Pangkas Mati Gabung', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Membuang kombinasi dari 4 angka tabel selisih Kop & Kepala.' },
-            'pasaran': { title: 'Matot Pasaran Jawa', desc: '<b>Syarat:</b> Wajib memilih Hari Jawa.<br><br><b>Rumus:</b> Membuang rentang 20 line sesuai hari pasaran.' },
+            'pasaran': { title: 'Matot Pasaran Jawa', desc: '<b>Syarat:</b> Otomatis memilih hari pasaran saat ini.<br><br><b>Rumus:</b> Membuang rentang 20 line sesuai hari pasaran.' },
             'pangkasmanual': { title: 'Pangkas Ketik Manual', desc: '<b>Cara Kerja:</b> Ketik angka berjejer (misal: <b>479</b>).<br><br><b>Kepala:</b> Buang awalan 4,7,9.<br><b>Ekor:</b> Buang akhiran 4,7,9.<br><b>Jumlah:</b> Buang yg jumlahnya 4,7,9.' }
         };
 
@@ -741,7 +769,6 @@
                 pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kepB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
             }
 
-            // CM LOGIC
             cm1 = `${cb1}${cb2}`;
             cm2 = `${(cb1+2)%10}${(cb2+3)%10}`;
             if (cm1[0] === cm1[1]) cm1 = `${cb1}${(cb2+1)%10}`;
