@@ -157,16 +157,16 @@
             border: 1px solid #c084fc;
             border-radius: 4px;
             padding: 4px 2px;
-            font-size: 9px;
+            font-size: 8px; /* Diperkecil agar Ganjil/Genap muat */
             font-weight: 700;
             color: #6b21a8;
             text-align: center;
-            line-height: 1.3;
+            line-height: 1.4;
         }
         .gj-box span {
             display: block;
             color: #475569;
-            font-size: 8px;
+            font-size: 7.5px;
             margin-bottom: 1px;
             text-transform: uppercase;
         }
@@ -873,8 +873,8 @@
                 document.getElementById('liveBBFS').innerText = bbfsArray.join(' ');
                 
                 // ================= PREDIKSI GANJIL/GENAP & BESAR/KECIL =================
-                function getGJ(num) { return num % 2 === 0 ? "GnP" : "GjL"; }
-                function getBK(num) { return num > 4 ? "BsR" : "KcL"; }
+                function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
+                function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
 
                 let pAs = (kopB + ekB) % 10;
                 let pKop = Math.abs(asB - kepB);
