@@ -144,7 +144,32 @@
             letter-spacing: 1px;
         }
         
-        .gj-item { font-size: 9px; font-weight: 700; color: #1e40af; margin-top: 2px; letter-spacing: normal;}
+        /* STYLE KHUSUS KOTAK AS, KOP, KEP, EKOR */
+        .gj-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 4px;
+            width: 100%;
+            margin-top: 4px;
+        }
+        .gj-box {
+            background: #ffffff;
+            border: 1px solid #c084fc;
+            border-radius: 4px;
+            padding: 4px 2px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #6b21a8;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .gj-box span {
+            display: block;
+            color: #475569;
+            font-size: 8px;
+            margin-bottom: 1px;
+            text-transform: uppercase;
+        }
         
         .ai-item.highlight .ai-item-val { color: var(--primary); }
         .ai-item.kmt .ai-item-val { color: var(--danger); }
@@ -293,14 +318,14 @@
                     <span class="ai-item-val" id="liveBBFS" style="color:#1e40af; font-size:13px; letter-spacing:2px;">-</span>
                 </div>
                 
-                <!-- FITUR BARU: GANJIL GENAP & BESAR KECIL -->
+                <!-- FITUR BARU: GANJIL GENAP & BESAR KECIL (DIPISAH KOTAK) -->
                 <div class="ai-item" style="grid-column: span 2; background: #faf5ff; border-color: #d8b4fe; padding: 6px;">
-                    <span class="ai-item-label" style="color: #7e22ce; margin-bottom:4px;">🔮 Prediksi Posisi (As, Kop, Kep, Ek)</span>
-                    <div style="display: flex; justify-content: space-around; font-size: 11px; font-weight: 700; color: #6b21a8;">
-                        <span id="predAs">As: -</span>
-                        <span id="predKop">Kop: -</span>
-                        <span id="predKep">Kep: -</span>
-                        <span id="predEk">Ek: -</span>
+                    <span class="ai-item-label" style="color: #7e22ce; margin-bottom:2px;">🔮 Prediksi Posisi Angka</span>
+                    <div class="gj-container">
+                        <div class="gj-box"><span>As</span><div id="predAs">-</div></div>
+                        <div class="gj-box"><span>Kop</span><div id="predKop">-</div></div>
+                        <div class="gj-box"><span>Kepala</span><div id="predKep">-</div></div>
+                        <div class="gj-box"><span>Ekor</span><div id="predEk">-</div></div>
                     </div>
                 </div>
 
@@ -727,10 +752,10 @@
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
                 document.getElementById('liveCB').innerText = '-'; document.getElementById('liveBBFS').innerText = '-';
                 
-                document.getElementById('predAs').innerText = 'As: -';
-                document.getElementById('predKop').innerText = 'Kop: -';
-                document.getElementById('predKep').innerText = 'Kep: -';
-                document.getElementById('predEk').innerText = 'Ek: -';
+                document.getElementById('predAs').innerText = '-';
+                document.getElementById('predKop').innerText = '-';
+                document.getElementById('predKep').innerText = '-';
+                document.getElementById('predEk').innerText = '-';
                 return; 
             }
 
@@ -848,18 +873,18 @@
                 document.getElementById('liveBBFS').innerText = bbfsArray.join(' ');
                 
                 // ================= PREDIKSI GANJIL/GENAP & BESAR/KECIL =================
-                function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
-                function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
+                function getGJ(num) { return num % 2 === 0 ? "GnP" : "GjL"; }
+                function getBK(num) { return num > 4 ? "BsR" : "KcL"; }
 
                 let pAs = (kopB + ekB) % 10;
                 let pKop = Math.abs(asB - kepB);
                 let pKep = (kopB + kepB + ekB) % 10;
                 let pEk = (Math.abs(asB - ekB) + kepB) % 10;
 
-                document.getElementById('predAs').innerText = `As: ${getGJ(pAs)} / ${getBK(pAs)}`;
-                document.getElementById('predKop').innerText = `Kop: ${getGJ(pKop)} / ${getBK(pKop)}`;
-                document.getElementById('predKep').innerText = `Kep: ${getGJ(pKep)} / ${getBK(pKep)}`;
-                document.getElementById('predEk').innerText = `Ek: ${getGJ(pEk)} / ${getBK(pEk)}`;
+                document.getElementById('predAs').innerHTML = `${getGJ(pAs)}<br>${getBK(pAs)}`;
+                document.getElementById('predKop').innerHTML = `${getGJ(pKop)}<br>${getBK(pKop)}`;
+                document.getElementById('predKep').innerHTML = `${getGJ(pKep)}<br>${getBK(pKep)}`;
+                document.getElementById('predEk').innerHTML = `${getGJ(pEk)}<br>${getBK(pEk)}`;
 
                 // ===============================================================
 
