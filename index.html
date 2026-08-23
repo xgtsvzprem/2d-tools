@@ -430,17 +430,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ADU MEKANIK (PANGKAS LINE LUAR) -->
-            <div style="border-top: 1px dashed var(--border-color); padding-top: 10px; margin-top: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-size: 11px; font-weight: 800; color: #1e40af;">⚔️ ADU MEKANIK (PANGKAS LINE BEBAS):</span>
-                    <span class="badge-hit" id="badgePangkasLuar" style="font-size: 9px; padding: 2px 6px; background:#eff6ff; color:#1d4ed8; border-color:#93c5fd;">0 LN</span>
-                </div>
-                <textarea id="inputPangkasLuar" placeholder="Paste line buatan master lain ke sini (cth: 12*15*89...)" style="height: 40px; font-size: 11px; border-color: #bfdbfe; font-weight:normal; color:#334155;" oninput="hitungSemua()"></textarea>
-                <textarea id="hasilPangkasLuar" readonly placeholder="Aplikasi akan membuang line yg lemah..." style="height: 44px; font-size: 13px; color: #b91c1c; border-color: #fca5a5; margin-top: 4px; display: none; background:#fef2f2;"></textarea>
-            </div>
-
         </div> <!-- End of advancedFilters -->
 
     </div>
@@ -608,7 +597,7 @@
         function resetManual() {
             const sifat = ['kGanjil', 'kGenap', 'kBesar', 'kKecil', 'eGanjil', 'eGenap', 'eBesar', 'eKecil'];
             sifat.forEach(id => document.getElementById(id).checked = false);
-            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji', 'inputPangkasLuar'].forEach(id => {
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
                 let el = document.getElementById(id); el.value = ''; toggleClear(el);
             });
             hitungSemua();
@@ -792,7 +781,6 @@
             let inputH1 = document.getElementById('inputH1').value;
             let inputH7 = document.getElementById('inputH7').value;
             let inputManual = document.getElementById('inputAIManual').value;
-            let textPangkasLuar = document.getElementById('inputPangkasLuar').value;
             
             let pasaranToggle = document.getElementById('jenisPasaran').value;
             let pasaranFilter = document.getElementById('pasaranJawa').value;
@@ -857,23 +845,6 @@
                     }
                     return true;
                 });
-            }
-
-            // PROSES PANGKAS LINE LUAR (ADU MEKANIK)
-            if (textPangkasLuar.length > 0) {
-                let nums = textPangkasLuar.match(/\d{2}/g) || [];
-                let uniqueNums = Array.from(new Set(nums));
-                if (uniqueNums.length > 0) {
-                    let filteredLuar = applyFilter(uniqueNums).sort((a,b) => parseInt(a)-parseInt(b));
-                    let strLuar = filteredLuar.join('*'); if(strLuar) strLuar += '#';
-                    document.getElementById('hasilPangkasLuar').value = strLuar;
-                    document.getElementById('hasilPangkasLuar').style.display = 'block';
-                    document.getElementById('badgePangkasLuar').innerText = filteredLuar.length + " LN";
-                } else {
-                    document.getElementById('hasilPangkasLuar').style.display = 'none'; document.getElementById('badgePangkasLuar').innerText = "0 LN";
-                }
-            } else {
-                document.getElementById('hasilPangkasLuar').style.display = 'none'; document.getElementById('badgePangkasLuar').innerText = "0 LN";
             }
 
             if (!isValid && inputManual.length === 0) { 
