@@ -544,7 +544,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>5. Gabungan Pola 1 & 2</span>
+                <span>5. Gabungan (As+Kop & Kep+Ek)</span>
                 <span class="badge-hit" id="lineGabungan">0 LN</span>
             </div>
             <textarea id="hasilGabungan" readonly></textarea>
@@ -879,7 +879,7 @@
                     }
                 }
 
-                // ================= PREDIKSI BBFS & COLOK BEBAS (RUMUS SILANG PATEN) =================
+                // ================= PREDIKSI BBFS & COLOK BEBAS (ADAPTIF PASARAN) =================
                 let cb1, cb2;
                 let bbfsArray = [];
                 let j1 = (asB + ekB) % 10;
@@ -936,10 +936,29 @@
                 function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
                 function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
 
-                let pAs = (kopB + ekB) % 10;
-                let pKop = Math.abs(asB - kepB);
-                let pKep = (kopB + kepB + ekB) % 10;
-                let pEk = (Math.abs(asB - ekB) + kepB) % 10;
+                let pAs, pKop, pKep, pEk;
+
+                if (pasaranToggle === 'hk') {
+                    pAs = (asB + kepB) % 10;
+                    pKop = Math.abs(kopB - ekB);
+                    pKep = (asB + kopB + kepB) % 10;
+                    pEk = (Math.abs(kepB - ekB) + asB) % 10;
+                } else if (pasaranToggle === 'sgp') {
+                    pAs = Math.abs(asB - kopB);
+                    pKop = (kepB + ekB) % 10;
+                    pKep = (asB + ekB) % 10;
+                    pEk = (kopB + kepB) % 10;
+                } else if (pasaranToggle === 'sdy') {
+                    pAs = (ekB + kepB) % 10;
+                    pKop = Math.abs(ekB - asB);
+                    pKep = (kopB + asB + ekB) % 10;
+                    pEk = (Math.abs(ekB - kopB) + asB) % 10;
+                } else {
+                    pAs = (kopB + ekB) % 10;
+                    pKop = Math.abs(asB - kepB);
+                    pKep = (kopB + kepB + ekB) % 10;
+                    pEk = (Math.abs(asB - ekB) + kepB) % 10;
+                }
 
                 document.getElementById('predAs').innerHTML = `${getGJ(pAs)}<br>${getBK(pAs)}`;
                 document.getElementById('predKop').innerHTML = `${getGJ(pKop)}<br>${getBK(pKop)}`;
