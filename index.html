@@ -104,9 +104,6 @@
         .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 2px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; }
         .gj-box span { display: block; color: #475569; font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
         
-        .ai-item.highlight .ai-item-val { color: var(--primary); }
-        .ai-item.kmt .ai-item-val { color: var(--danger); }
-
         /* TOMBOL COPY PREDIKSI */
         .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-copy-prediksi:hover { background: #2563eb; }
@@ -231,10 +228,10 @@
                     <span class="ai-item-val" id="liveBBFS" style="color:#6b21a8; font-size:14px; letter-spacing:2px;">-</span>
                 </div>
 
-                <!-- FITUR SHIO & JALUR -->
-                <div class="ai-item" style="grid-column: span 2; background: #fff1f2; border-color: #fecdd3; padding: 6px;">
-                    <span class="ai-item-label" style="color: #be123c; margin-bottom:2px;">🐉 Prediksi Shio & Jalur</span>
-                    <div style="font-size: 11px; font-weight: 800; color: #9f1239;" id="liveShio">-</div>
+                <!-- FITUR SHIO & JALUR (DIPERBARUI) -->
+                <div class="ai-item" style="grid-column: span 2; background: #fff1f2; border-color: #fecdd3; padding: 6px; text-align: left;">
+                    <span class="ai-item-label" style="color: #be123c; margin-bottom:4px; text-align: center;">🐉 Prediksi Shio & Jalur</span>
+                    <div style="font-size: 11px; font-weight: 700; color: #881337; line-height: 1.5; padding-left: 8px;" id="liveShio">-</div>
                 </div>
                 
                 <!-- GANJIL GENAP & BESAR KECIL -->
@@ -484,11 +481,14 @@
             let cm = document.getElementById("liveCM").innerText;
             let bbfs = document.getElementById("liveBBFS").innerText;
             
-            let shioText = document.getElementById("liveShio").innerText;
-            
-            // Mengubah tag <br> menjadi " - " sebelum tag HTML lainnya dihapus
+            // Ambil text shio dan bersihkan tag HTML-nya dengan mempertahankan enter (\n)
+            let shioHtml = document.getElementById("liveShio").innerHTML;
+            let shioText = shioHtml.replace(/<br\s*[\/]?>/gi, '\n').replace(/<[^>]+>/g, '').trim();
+
             function formatPos(id) {
-                return document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').trim();
+                // Menambahkan - di antara kata-kata
+                let text = document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, '-').replace(/<[^>]+>/g, '').trim();
+                return text;
             }
 
             let asText = formatPos("predAs");
@@ -496,7 +496,9 @@
             let kepText = formatPos("predKep");
             let ekText = formatPos("predEk");
 
-            let format = `• CB: ${cb}
+            let format = `🎯 ANALITIK AI & PREDIKSI
+
+• CB: ${cb}
 • CM: ${cm}
 • BBFS: ${bbfs}
 
@@ -664,6 +666,22 @@ Ekr: ${ekText}`;
             9: ["06","08","17","18","19","22","26","35","37","44","45","48","53","54","55","56","59","60","62","65","66","67","71","73","76","77","80","81","84","88","91","95"]
         };
 
+        // TABEL RUMUS SHIO ON/MAIN BERDASARKAN SHIO H-1
+        const rumusShioMain = {
+            1: [2,5,8,10,11],
+            2: [1,4,7,9,12],
+            3: [2,5,6,8,11],
+            4: [1,4,7,9,10],
+            5: [2,3,6,8,11],
+            6: [1,4,5,7,12],
+            7: [2,6,8,10,11],
+            8: [1,4,7,9,12],
+            9: [2,5,8,10,11],
+            10: [1,3,6,9,12],
+            11: [2,4,7,10,11],
+            12: [1,3,6,9,12]
+        };
+
         function salinTeks(elementId, btn) {
             let elem = document.getElementById(elementId); elem.select(); elem.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(elem.value).then(function() {
@@ -748,7 +766,6 @@ Ekr: ${ekText}`;
                 pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kepB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
             }
 
-            // CM LOGIC
             cm1 = `${cb1}${cb2}`;
             cm2 = `${(cb1+2)%10}${(cb2+3)%10}`;
             if (cm1[0] === cm1[1]) cm1 = `${cb1}${(cb2+1)%10}`;
@@ -769,13 +786,19 @@ Ekr: ${ekText}`;
             let baseEkorMain = [];
             for(let h=0; h<=9; h++) { for(let e of arrEkorMain) { baseEkorMain.push(`${h}${e}`); } }
             
+            // ANALITIK SHIO
+            let shioAwal = num2D % 12; if(shioAwal === 0) shioAwal = 12;
+            let shioON = rumusShioMain[shioAwal] || [];
             let shioLemah = (kepB + ekB) % 12; if(shioLemah === 0) shioLemah = 12;
+            
             let jalurLemah = (asB + kopB + kepB + ekB) % 3 + 1;
+            let jalurMainArr = [1,2,3].filter(j => j !== jalurLemah);
 
             return {
                 asB, kopB, kepB, ekB, str2D, num2D, matiEkorTesson, arrWakSalarabo, jarakStart, jarakEnd, matiKepala, matiEkor,
                 aiPola1, aiPola2, aiTabel, aiTabelStr, dataAI, baseEkorTop, baseEkorCD, baseEkorMain, arrEkorMain,
-                cb1, cb2, cm1, cm2, bbfsArray, pAs, pKop, pKep, pEk, shioLemah, jalurLemah
+                cb1, cb2, cm1, cm2, bbfsArray, pAs, pKop, pKep, pEk, 
+                shioON, shioLemah, jalurLemah, jalurMainArr
             };
         }
 
@@ -884,11 +907,15 @@ Ekr: ${ekText}`;
                     let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
                     document.getElementById('liveBBFS').innerText = Array.from(bbfsSet).slice(0, 6).sort((a,b)=>a-b).join('');
 
-                    document.getElementById('liveShio').innerHTML = `Jalur Lemah: <b>${mD.jalurLemah} & ${aD.jalurLemah}</b> | Shio Lemah: <b>${mD.shioLemah} & ${aD.shioLemah}</b>`;
+                    // RUMUS SHIO GABUNGAN
+                    let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
+                    let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
+                    
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${gabShioON.join(', ')}</b><br>Jalur Main: <b>${gabJalurMain.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah} & ${aD.shioLemah}</b>`;
 
                     function cbPred(v1, v2, type) {
                         let s1 = type==='gj' ? getGJ(v1) : getBK(v1); let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
-                        if(s1===s2) return `<span style="color:#dc2626; font-weight:800">${s1} 🔥</span>`;
+                        if(s1===s2) return `<span style="color:#dc2626; font-weight:800">${s1}</span>`;
                         return `<span style="color:#64748b; font-weight:normal;">Tardal</span>`;
                     }
 
@@ -908,7 +935,9 @@ Ekr: ${ekText}`;
                     document.getElementById('liveCB').innerText = `${mD.cb1} / ${mD.cb2}`;
                     document.getElementById('liveCM').innerText = `${mD.cm1} / ${mD.cm2}`;
                     document.getElementById('liveBBFS').innerText = mD.bbfsArray.join('');
-                    document.getElementById('liveShio').innerHTML = `Jalur Lemah: <b>${mD.jalurLemah}</b> | Shio Mati: <b>${mD.shioLemah}</b>`;
+                    
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${mD.shioON.join(', ')}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah}</b>`;
+
                     document.getElementById('predAs').innerHTML = `${getGJ(mD.pAs)}<br>${getBK(mD.pAs)}`;
                     document.getElementById('predKop').innerHTML = `${getGJ(mD.pKop)}<br>${getBK(mD.pKop)}`;
                     document.getElementById('predKep').innerHTML = `${getGJ(mD.pKep)}<br>${getBK(mD.pKep)}`;
