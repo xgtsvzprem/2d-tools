@@ -220,6 +220,23 @@
             </div>
         </div>
 
+        <!-- MANAJEMEN PROFIL -->
+        <div class="filter-section" style="padding: 10px; margin-bottom: 12px; border-color: #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 11px; font-weight: 800; color: var(--text-main);">💾 MANAJEMEN PROFIL:</span>
+            </div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+                <select id="selectProfile" class="input-box" style="padding: 6px; font-size: 11px; flex: 2; height: 32px; letter-spacing: normal;" onchange="loadProfile()">
+                    <option value="">-- Pilih Profil Disimpan --</option>
+                </select>
+                <button onclick="hapusProfile()" style="background: var(--danger); color: white; border: none; border-radius: 6px; padding: 0 10px; height: 32px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;">Hapus</button>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 6px; align-items: center;">
+                <input type="text" id="inputProfileName" class="input-box" placeholder="Ketik nama profil baru..." style="padding: 6px 10px; font-size: 12px; flex: 2; height: 32px; letter-spacing: normal; text-align: left;">
+                <button onclick="saveProfile()" style="background: var(--primary); color: white; border: none; border-radius: 6px; padding: 0 10px; height: 32px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;">Simpan</button>
+            </div>
+        </div>
+
         <button id="btnToggleFilter" class="btn-toggle-filter" onclick="toggleFilters()">
             ⚙️ Buka Master Filter & Pangkasan ▼
         </button>
@@ -417,11 +434,83 @@
             document.getElementById('btnDark').innerText = 'DARK MODE: OFF';
         }
 
-        // ================= AUTO SAVE & LOAD SETTINGS =================
+        // ================= SISTEM PROFIL =================
+        function getProfiles() {
+            let p = localStorage.getItem('2d_profiles');
+            return p ? JSON.parse(p) : {};
+        }
+
+        function saveProfile() {
+            let name = document.getElementById('inputProfileName').value.trim();
+            if(!name) { alert("Ketik nama profil dulu di kotak sebelahnya!"); return; }
+            
+            const settings = {};
+            document.querySelectorAll('input[type="checkbox"]:not(#useH1):not(#useH7)').forEach(el => settings[el.id] = el.checked);
+            document.querySelectorAll('select:not(#selectProfile)').forEach(el => settings[el.id] = el.value);
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
+            
+            let profiles = getProfiles();
+            profiles[name] = settings;
+            localStorage.setItem('2d_profiles', JSON.stringify(profiles));
+            
+            document.getElementById('inputProfileName').value = '';
+            updateProfileDropdown(name);
+            alert("Profil '" + name + "' berhasil disimpan!");
+        }
+
+        function loadProfile() {
+            let name = document.getElementById('selectProfile').value;
+            if(!name) return;
+            
+            let profiles = getProfiles();
+            let settings = profiles[name];
+            if(settings) {
+                document.querySelectorAll('input[type="checkbox"]:not(#useH1):not(#useH7)').forEach(el => {
+                    if(settings[el.id] !== undefined) el.checked = settings[el.id];
+                });
+                document.querySelectorAll('select:not(#selectProfile)').forEach(el => {
+                    if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
+                });
+                ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
+                    if(settings[id] !== undefined) {
+                        let el = document.getElementById(id);
+                        el.value = settings[id];
+                        toggleClear(el);
+                    }
+                });
+                hitungSemua();
+            }
+        }
+
+        function hapusProfile() {
+            let name = document.getElementById('selectProfile').value;
+            if(!name) { alert("Pilih dulu profil yang mau dihapus dari dropdown!"); return; }
+            if(confirm("Yakin ingin menghapus profil '" + name + "'?")) {
+                let profiles = getProfiles();
+                delete profiles[name];
+                localStorage.setItem('2d_profiles', JSON.stringify(profiles));
+                updateProfileDropdown();
+            }
+        }
+
+        function updateProfileDropdown(selectedName = "") {
+            let select = document.getElementById('selectProfile');
+            select.innerHTML = '<option value="">-- Pilih Profil Disimpan --</option>';
+            let profiles = getProfiles();
+            for(let name in profiles) {
+                let opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                if(name === selectedName) opt.selected = true;
+                select.appendChild(opt);
+            }
+        }
+
+        // ================= AUTO SAVE CURRENT SETTINGS =================
         function saveSettings() {
             const settings = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
-            document.querySelectorAll('select').forEach(el => settings[el.id] = el.value);
+            document.querySelectorAll('select:not(#selectProfile)').forEach(el => settings[el.id] = el.value);
             ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
             localStorage.setItem('2d_settings', JSON.stringify(settings));
         }
@@ -433,7 +522,7 @@
                 document.querySelectorAll('input[type="checkbox"]').forEach(el => {
                     if(settings[el.id] !== undefined) el.checked = settings[el.id];
                 });
-                document.querySelectorAll('select').forEach(el => {
+                document.querySelectorAll('select:not(#selectProfile)').forEach(el => {
                     if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
                 });
                 ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
@@ -443,7 +532,7 @@
                         toggleClear(el);
                     }
                 });
-                hitungSemua(); // Trigger perhitungan langsung
+                hitungSemua(); 
             }
         }
 
@@ -502,6 +591,7 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             autoSetPasaranJawa();
+            updateProfileDropdown(); // Muat daftar profil ke dropdown
             loadSettings();
         });
 
@@ -555,6 +645,7 @@
             ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
                 let el = document.getElementById(id); el.value = ''; toggleClear(el);
             });
+            document.getElementById('selectProfile').value = '';
             hitungSemua();
         }
 
