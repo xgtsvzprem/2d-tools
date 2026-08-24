@@ -228,7 +228,7 @@
                     <span class="ai-item-val" id="liveBBFS" style="color:#6b21a8; font-size:14px; letter-spacing:2px;">-</span>
                 </div>
 
-                <!-- FITUR SHIO & JALUR (DIPERBARUI DENGAN EMOJI) -->
+                <!-- FITUR SHIO & JALUR (DIPERBARUI DENGAN NAMA SHIO) -->
                 <div class="ai-item" style="grid-column: span 2; background: #fff1f2; border-color: #fecdd3; padding: 6px; text-align: left;">
                     <span class="ai-item-label" style="color: #be123c; margin-bottom:4px; text-align: center;">🐉 Prediksi Shio & Jalur</span>
                     <div style="font-size: 11px; font-weight: 700; color: #881337; line-height: 1.5; padding-left: 8px;" id="liveShio">-</div>
@@ -487,7 +487,7 @@
 
             function formatPos(id) {
                 // Menambahkan - di antara kata-kata
-                let text = document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, '-').replace(/<[^>]+>/g, '').trim();
+                let text = document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').trim();
                 return text;
             }
 
@@ -682,10 +682,10 @@ Ekr: ${ekText}`;
             12: [1,3,6,9,12]
         };
 
-        // KAMUS EMOJI SHIO (STANDAR TABEL 2024: 1=Naga)
-        const shioEmoji = {
-            1: "🐉", 2: "🐇", 3: "🐅", 4: "🐃", 5: "🐁", 6: "🐖",
-            7: "🐕", 8: "🐓", 9: "🐒", 10: "🐐", 11: "🐎", 12: "🐍"
+        // KAMUS NAMA SHIO
+        const shioNama = {
+            1: "Naga", 2: "Kelinci", 3: "Harimau", 4: "Kerbau", 5: "Tikus", 6: "Babi",
+            7: "Anjing", 8: "Ayam", 9: "Monyet", 10: "Kambing", 11: "Kuda", 12: "Ular"
         };
 
         function salinTeks(elementId, btn) {
@@ -772,6 +772,7 @@ Ekr: ${ekText}`;
                 pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kepB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
             }
 
+            // CM LOGIC
             cm1 = `${cb1}${cb2}`;
             cm2 = `${(cb1+2)%10}${(cb2+3)%10}`;
             if (cm1[0] === cm1[1]) cm1 = `${cb1}${(cb2+1)%10}`;
@@ -913,13 +914,13 @@ Ekr: ${ekText}`;
                     let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
                     document.getElementById('liveBBFS').innerText = Array.from(bbfsSet).slice(0, 6).sort((a,b)=>a-b).join('');
 
-                    // RUMUS SHIO GABUNGAN + EMOJI
+                    // RUMUS SHIO GABUNGAN + NAMA SHIO
                     let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
                     let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
                     
-                    let strGabShioON = gabShioON.map(s => s + shioEmoji[s]).join(', ');
+                    let strGabShioON = gabShioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     
-                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah}${shioEmoji[mD.shioLemah]} & ${aD.shioLemah}${shioEmoji[aD.shioLemah]}</b>`;
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) & ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
 
                     function cbPred(v1, v2, type) {
                         let s1 = type==='gj' ? getGJ(v1) : getBK(v1); let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
@@ -944,10 +945,10 @@ Ekr: ${ekText}`;
                     document.getElementById('liveCM').innerText = `${mD.cm1} / ${mD.cm2}`;
                     document.getElementById('liveBBFS').innerText = mD.bbfsArray.join('');
                     
-                    // RUMUS SHIO TUNGGAL + EMOJI
-                    let strShioON = mD.shioON.map(s => s + shioEmoji[s]).join(', ');
+                    // RUMUS SHIO TUNGGAL + NAMA SHIO
+                    let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     
-                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah}${shioEmoji[mD.shioLemah]}</b>`;
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
 
                     document.getElementById('predAs').innerHTML = `${getGJ(mD.pAs)}<br>${getBK(mD.pAs)}`;
                     document.getElementById('predKop').innerHTML = `${getGJ(mD.pKop)}<br>${getBK(mD.pKop)}`;
