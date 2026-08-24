@@ -9,8 +9,6 @@
     <meta name="description" content="Aplikasi Kalkulator AI, BBFS, & Pemangkas Line Otomatis. Minimalis, Cepat, dan Akurat.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="🔥 2D Tools & Formulas | AI, BBFS & Filter Line">
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#1e293b">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
 
     <style>
@@ -191,7 +189,7 @@
         .visitor-counter { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
     </style>
 </head>
-<body class="dark-mode">
+<body class="dark-mode"> <!-- BAWAAN LANGSUNG GELAP -->
 
     <!-- MODAL INFO RUMUS -->
     <div id="infoModal" class="modal-overlay" onclick="closeModal(event, 'infoModal')">
@@ -206,7 +204,7 @@
     <div class="container">
         <div class="header-container">
             <h2>2D Tools & Formulas 🔥</h2>
-            <!-- TOMBOL DARK MODE -->
+            <!-- TOMBOL DARK MODE TEKS ON/OFF -->
             <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: ON</button>
         </div>
 
@@ -522,15 +520,6 @@
     </div>
 
     <script>
-        // ================= SERVICE WORKER REGISTRATION (UNTUK PWA / INSTALL HP) =================
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => {
-                    console.log('SW terdaftar bosku:', reg.scope);
-                }).catch(err => console.log('SW Gagal:', err));
-            });
-        }
-
         // ================= DARK MODE TOGGLE (JADI DEFAULT DAN PAKE TEKS) =================
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
