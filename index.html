@@ -9,6 +9,7 @@
     <meta name="description" content="Aplikasi Kalkulator AI, BBFS, & Pemangkas Line Otomatis. Minimalis, Cepat, dan Akurat.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="🔥 2D Tools & Formulas | AI, BBFS & Filter Line">
+    <meta name="theme-color" content="#ffffff">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
 
     <style>
@@ -42,7 +43,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
         
-        /* TEMA DARK MODE 🌙 (JADI DEFAULT) */
+        /* TEMA DARK MODE 🌙 */
         body.dark-mode {
             --bg-main: #0f172a;
             --card-bg: #1e293b;
@@ -189,7 +190,7 @@
         .visitor-counter { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
     </style>
 </head>
-<body class="dark-mode"> <!-- BAWAAN LANGSUNG GELAP -->
+<body> <!-- BAWAAN TERANG (OFF) -->
 
     <!-- MODAL INFO RUMUS -->
     <div id="infoModal" class="modal-overlay" onclick="closeModal(event, 'infoModal')">
@@ -205,7 +206,7 @@
         <div class="header-container">
             <h2>2D Tools & Formulas 🔥</h2>
             <!-- TOMBOL DARK MODE TEKS ON/OFF -->
-            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: ON</button>
+            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: OFF</button>
         </div>
 
         <!-- PEMILIHAN MODE TARIKAN & PASARAN -->
@@ -528,11 +529,11 @@
             localStorage.setItem('2d_darkmode', isDark);
         }
 
-        // Init Dark Mode (Jika belum ada settingan sama sekali, paksa ON)
+        // Init Dark Mode (Jika belum ada settingan sama sekali, paksa OFF / Terang)
         let savedTheme = localStorage.getItem('2d_darkmode');
         if (savedTheme === null) {
-            savedTheme = 'true';
-            localStorage.setItem('2d_darkmode', 'true');
+            savedTheme = 'false';
+            localStorage.setItem('2d_darkmode', 'false');
         }
 
         if (savedTheme === 'true') {
