@@ -480,23 +480,23 @@
     <script>
         // ================= FITUR COPY PREDIKSI KE CLIPBOARD =================
         function copyPrediksiTeks(btn) {
-            // Ambil data-data dari DOM Live Analitik
             let cb = document.getElementById("liveCB").innerText;
             let cm = document.getElementById("liveCM").innerText;
             let bbfs = document.getElementById("liveBBFS").innerText;
             
-            // Ambil text shio & hilangkan tag HTML (b)
             let shioText = document.getElementById("liveShio").innerText;
             
-            // Posisi
-            let asHtml = document.getElementById("predAs").innerHTML.replace(/<[^>]+>/g, '');
-            let kopHtml = document.getElementById("predKop").innerHTML.replace(/<[^>]+>/g, '');
-            let kepHtml = document.getElementById("predKep").innerHTML.replace(/<[^>]+>/g, '');
-            let ekHtml = document.getElementById("predEk").innerHTML.replace(/<[^>]+>/g, '');
+            // Mengubah tag <br> menjadi " - " sebelum tag HTML lainnya dihapus
+            function formatPos(id) {
+                return document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').trim();
+            }
 
-            let format = `🎯 ANALITIK AI & PREDIKSI
+            let asText = formatPos("predAs");
+            let kopText = formatPos("predKop");
+            let kepText = formatPos("predKep");
+            let ekText = formatPos("predEk");
 
-• CB: ${cb}
+            let format = `• CB: ${cb}
 • CM: ${cm}
 • BBFS: ${bbfs}
 
@@ -504,19 +504,18 @@
 ${shioText}
 
 🔮 POSISI ANGKA
-As: ${asHtml.replace(/\n/g, ' - ')}
-Kop: ${kopHtml.replace(/\n/g, ' - ')}
-Kep: ${kepHtml.replace(/\n/g, ' - ')}
-Ekr: ${ekHtml.replace(/\n/g, ' - ')}`;
+As: ${asText}
+Kop: ${kopText}
+Kep: ${kepText}
+Ekr: ${ekText}`;
 
-            // Proses Copy Teks Format ke Clipboard
             navigator.clipboard.writeText(format).then(function() {
                 let textAwal = btn.innerText; 
                 btn.innerText = "✔ TERSALIN"; 
                 btn.style.backgroundColor = "#10b981"; 
                 setTimeout(() => { 
                     btn.innerText = textAwal; 
-                    btn.style.backgroundColor = "#3b82f6"; 
+                    btn.style.backgroundColor = ""; 
                 }, 1400);
             }).catch(function(err) { 
                 alert("Berhasil disalin!"); 
@@ -749,6 +748,7 @@ Ekr: ${ekHtml.replace(/\n/g, ' - ')}`;
                 pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kepB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
             }
 
+            // CM LOGIC
             cm1 = `${cb1}${cb2}`;
             cm2 = `${(cb1+2)%10}${(cb2+3)%10}`;
             if (cm1[0] === cm1[1]) cm1 = `${cb1}${(cb2+1)%10}`;
