@@ -78,9 +78,27 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
         
-        .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; }
-        h2 { margin: 0; font-size: 19px; color: var(--text-main); }
-        .btn-dark { background: none; border: none; font-size: 22px; cursor: pointer; padding: 0; outline: none; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+        h2 { margin: 0; font-size: 16px; color: var(--text-main); font-weight: 800; }
+        
+        /* TOMBOL DARK MODE SWITCH */
+        .btn-dark { 
+            background: #e2e8f0; 
+            color: #475569; 
+            border: 1px solid #cbd5e1; 
+            font-size: 10px; 
+            font-weight: 800; 
+            padding: 4px 8px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            letter-spacing: 0.5px;
+        }
+        body.dark-mode .btn-dark { 
+            background: #334155; 
+            color: #38bdf8; 
+            border-color: #475569; 
+        }
 
         .input-group { margin-bottom: 10px; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -129,9 +147,6 @@
         .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 2px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; transition: background-color 0.3s; }
         .gj-box span { display: block; color: var(--text-sub); font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
         
-        .ai-item.highlight .ai-item-val { color: var(--primary); }
-        .ai-item.kmt .ai-item-val { color: var(--danger); }
-
         /* TOMBOL COPY PREDIKSI */
         .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-copy-prediksi:hover { background: #2563eb; }
@@ -191,8 +206,8 @@
     <div class="container">
         <div class="header-container">
             <h2>2D Tools & Formulas 🔥</h2>
-            <!-- TOMBOL DARK MODE -->
-            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">🌙</button>
+            <!-- TOMBOL DARK MODE (DIPERBARUI) -->
+            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: OFF</button>
         </div>
 
         <!-- PEMILIHAN MODE TARIKAN & PASARAN -->
@@ -516,18 +531,20 @@
             });
         }
 
-        // ================= DARK MODE TOGGLE =================
+        // ================= DARK MODE TOGGLE (DIPERBARUI) =================
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             let isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('btnDark').innerText = isDark ? '☀️' : '🌙';
+            document.getElementById('btnDark').innerText = isDark ? 'DARK MODE: ON' : 'DARK MODE: OFF';
             localStorage.setItem('2d_darkmode', isDark);
         }
 
         // Init Dark Mode
         if (localStorage.getItem('2d_darkmode') === 'true') {
             document.body.classList.add('dark-mode');
-            document.getElementById('btnDark').innerText = '☀️';
+            document.getElementById('btnDark').innerText = 'DARK MODE: ON';
+        } else {
+            document.getElementById('btnDark').innerText = 'DARK MODE: OFF';
         }
 
         // ================= AUTO SAVE & LOAD SETTINGS =================
@@ -992,7 +1009,7 @@ Ekr: ${ekText}`;
                     let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
                     document.getElementById('liveBBFS').innerText = Array.from(bbfsSet).slice(0, 6).sort((a,b)=>a-b).join('');
 
-                    // RUMUS SHIO GABUNGAN + NAMA SHIO
+                    // RUMUS SHIO GABUNGAN + NAMA SHIO (TANPA EMOJI)
                     let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
                     let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
                     
@@ -1023,7 +1040,7 @@ Ekr: ${ekText}`;
                     document.getElementById('liveCM').innerText = `${mD.cm1} / ${mD.cm2}`;
                     document.getElementById('liveBBFS').innerText = mD.bbfsArray.join('');
                     
-                    // RUMUS SHIO TUNGGAL + NAMA SHIO
+                    // RUMUS SHIO TUNGGAL + NAMA SHIO (TANPA EMOJI)
                     let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     
                     document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
