@@ -109,23 +109,30 @@
             </div>
         </div>
 
+        <!-- AREA CHECKBOX & INPUT H-1 DAN H-7 -->
         <div class="filter-columns" style="margin-bottom: 6px;" id="boxInputs">
             <div class="input-group" style="margin:0; flex:1;" id="colH1">
-                <label id="lblH1">Result Harian (H-1):</label>
+                <label style="display: flex; align-items: center; cursor: pointer; padding-bottom: 2px;">
+                    <input type="checkbox" id="useH1" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
+                    Result Harian (H-1):
+                </label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputH1" class="input-box" placeholder="Harian" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
+                    <input type="text" inputmode="numeric" id="inputH1" class="input-box" placeholder="Harian" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px; transition: opacity 0.3s;" />
                     <span class="clear-icon" onclick="clearInput('inputH1')" style="right:8px;">&times;</span>
                 </div>
             </div>
             <div class="input-group" style="margin:0; flex:1;" id="colH7">
-                <label>Result Mg Lalu (H-7):</label>
+                <label style="display: flex; align-items: center; cursor: pointer; padding-bottom: 2px;">
+                    <input type="checkbox" id="useH7" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
+                    Result Mg Lalu (H-7):
+                </label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputH7" class="input-box" placeholder="Mingguan" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
+                    <input type="text" inputmode="numeric" id="inputH7" class="input-box" placeholder="Mingguan" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px; transition: opacity 0.3s;" />
                     <span class="clear-icon" onclick="clearInput('inputH7')" style="right:8px;">&times;</span>
                 </div>
             </div>
         </div>
-        <div style="font-size:10px; color:var(--text-sub); text-align:center; margin-bottom:12px;">*Isi keduanya untuk mengaktifkan AI Gabungan (Tarung H1+H7).</div>
+        <div style="font-size:10px; color:var(--text-sub); text-align:center; margin-bottom:12px;">*Centang box untuk beralih mode. Centang keduanya untuk AI Gabungan.</div>
 
         <div id="aiLiveCard" class="ai-live-card">
             <div class="ai-live-title">
@@ -738,12 +745,20 @@
             let inputH1 = document.getElementById('inputH1').value;
             let inputH7 = document.getElementById('inputH7').value;
             let inputManual = document.getElementById('inputAIManual').value;
+
+            // Baca status checkbox
+            let useH1 = document.getElementById('useH1').checked;
+            let useH7 = document.getElementById('useH7').checked;
+
+            // Efek visual: redupkan input box jika tidak dicentang
+            document.getElementById('inputH1').style.opacity = useH1 ? '1' : '0.4';
+            document.getElementById('inputH7').style.opacity = useH7 ? '1' : '0.4';
             
-            // Logika Auto-Detect Mode Tarikan
+            // Logika Auto-Detect Mode Tarikan berdasarkan Checkbox
             let modeTarikan = '';
-            if (inputH1.length === 4 && inputH7.length === 4) modeTarikan = 'gabung';
-            else if (inputH1.length === 4) modeTarikan = 'h1';
-            else if (inputH7.length === 4) modeTarikan = 'h7';
+            if (useH1 && useH7 && inputH1.length === 4 && inputH7.length === 4) modeTarikan = 'gabung';
+            else if (useH1 && inputH1.length === 4) modeTarikan = 'h1';
+            else if (useH7 && inputH7.length === 4) modeTarikan = 'h7';
             
             let pasaranToggle = document.getElementById('jenisPasaran').value;
             let pasaranFilter = document.getElementById('pasaranJawa').value;
