@@ -228,7 +228,7 @@
                     <span class="ai-item-val" id="liveBBFS" style="color:#6b21a8; font-size:14px; letter-spacing:2px;">-</span>
                 </div>
 
-                <!-- FITUR SHIO & JALUR (DIPERBARUI) -->
+                <!-- FITUR SHIO & JALUR (DIPERBARUI DENGAN EMOJI) -->
                 <div class="ai-item" style="grid-column: span 2; background: #fff1f2; border-color: #fecdd3; padding: 6px; text-align: left;">
                     <span class="ai-item-label" style="color: #be123c; margin-bottom:4px; text-align: center;">🐉 Prediksi Shio & Jalur</span>
                     <div style="font-size: 11px; font-weight: 700; color: #881337; line-height: 1.5; padding-left: 8px;" id="liveShio">-</div>
@@ -682,6 +682,12 @@ Ekr: ${ekText}`;
             12: [1,3,6,9,12]
         };
 
+        // KAMUS EMOJI SHIO (STANDAR TABEL 2024: 1=Naga)
+        const shioEmoji = {
+            1: "🐉", 2: "🐇", 3: "🐅", 4: "🐃", 5: "🐁", 6: "🐖",
+            7: "🐕", 8: "🐓", 9: "🐒", 10: "🐐", 11: "🐎", 12: "🐍"
+        };
+
         function salinTeks(elementId, btn) {
             let elem = document.getElementById(elementId); elem.select(); elem.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(elem.value).then(function() {
@@ -907,11 +913,13 @@ Ekr: ${ekText}`;
                     let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
                     document.getElementById('liveBBFS').innerText = Array.from(bbfsSet).slice(0, 6).sort((a,b)=>a-b).join('');
 
-                    // RUMUS SHIO GABUNGAN
+                    // RUMUS SHIO GABUNGAN + EMOJI
                     let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
                     let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
                     
-                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${gabShioON.join(', ')}</b><br>Jalur Main: <b>${gabJalurMain.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah} & ${aD.shioLemah}</b>`;
+                    let strGabShioON = gabShioON.map(s => s + shioEmoji[s]).join(', ');
+                    
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah}${shioEmoji[mD.shioLemah]} & ${aD.shioLemah}${shioEmoji[aD.shioLemah]}</b>`;
 
                     function cbPred(v1, v2, type) {
                         let s1 = type==='gj' ? getGJ(v1) : getBK(v1); let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
@@ -936,7 +944,10 @@ Ekr: ${ekText}`;
                     document.getElementById('liveCM').innerText = `${mD.cm1} / ${mD.cm2}`;
                     document.getElementById('liveBBFS').innerText = mD.bbfsArray.join('');
                     
-                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${mD.shioON.join(', ')}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah}</b>`;
+                    // RUMUS SHIO TUNGGAL + EMOJI
+                    let strShioON = mD.shioON.map(s => s + shioEmoji[s]).join(', ');
+                    
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah}${shioEmoji[mD.shioLemah]}</b>`;
 
                     document.getElementById('predAs').innerHTML = `${getGJ(mD.pAs)}<br>${getBK(mD.pAs)}`;
                     document.getElementById('predKop').innerHTML = `${getGJ(mD.pKop)}<br>${getBK(mD.pKop)}`;
