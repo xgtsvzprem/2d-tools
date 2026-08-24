@@ -482,12 +482,13 @@
             let bbfs = document.getElementById("liveBBFS").innerText;
             
             // Ambil text shio dan bersihkan tag HTML-nya dengan mempertahankan enter (\n)
+            // (Mengubah &amp; menjadi & agar Jalur Main tampil dengan benar: 2 & 3)
             let shioHtml = document.getElementById("liveShio").innerHTML;
-            let shioText = shioHtml.replace(/<br\s*[\/]?>/gi, '\n').replace(/<[^>]+>/g, '').trim();
+            let shioText = shioHtml.replace(/<br\s*[\/]?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
 
             function formatPos(id) {
-                // Menambahkan - di antara kata-kata
-                let text = document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').trim();
+                // Menambahkan - di antara kata-kata dan mengubah &amp; menjadi &
+                let text = document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
                 return text;
             }
 
@@ -920,7 +921,7 @@ Ekr: ${ekText}`;
                     
                     let strGabShioON = gabShioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     
-                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) & ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) &amp; ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
 
                     function cbPred(v1, v2, type) {
                         let s1 = type==='gj' ? getGJ(v1) : getBK(v1); let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
@@ -948,7 +949,7 @@ Ekr: ${ekText}`;
                     // RUMUS SHIO TUNGGAL + NAMA SHIO
                     let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     
-                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' & ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
 
                     document.getElementById('predAs').innerHTML = `${getGJ(mD.pAs)}<br>${getBK(mD.pAs)}`;
                     document.getElementById('predKop').innerHTML = `${getGJ(mD.pKop)}<br>${getBK(mD.pKop)}`;
