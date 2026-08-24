@@ -61,15 +61,6 @@
         body.dark-mode .gj-box { background-color: #0f172a; border-color: #6b21a8; }
         body.dark-mode .btn-toggle-filter { background-color: #0f172a; border-color: #334155; color: #60a5fa; }
         body.dark-mode .btn-toggle-filter:hover { background-color: #334155; }
-        
-        /* DARK MODE UNTUK CUSTOM SELECT */
-        body.dark-mode .custom-select-display { background-color: #0f172a; color: #f8fafc; border-color: #334155; }
-        body.dark-mode .custom-select-options { background-color: #1e293b; border-color: #334155; }
-        body.dark-mode .custom-select-search { background-color: #0f172a; color: #f8fafc; border-color: #334155; }
-        body.dark-mode .custom-select-option { color: #f8fafc; border-bottom-color: #334155; }
-        body.dark-mode .custom-select-option:hover { background-color: #334155; }
-        body.dark-mode .custom-select-option.selected { background-color: #3b82f6; color: #fff; }
-        body.dark-mode .custom-select-group { color: #94a3b8; background-color: #0f172a; }
 
         input, textarea, select { user-select: text; }
 
@@ -141,37 +132,6 @@
         select.input-box { letter-spacing: normal; cursor: pointer; }
         input.input-box:focus, select.input-box:focus, textarea:focus { outline: none; border-color: var(--primary); }
 
-        /* CUSTOM SELECT DENGAN SEARCH */
-        .custom-select-wrapper { position: relative; width: 100%; }
-        .custom-select-display {
-            width: 100%; padding: 9px; font-size: 12px; font-weight: 700; text-align: left;
-            border: 1.5px solid var(--border-color); border-radius: 8px; background: #fff;
-            color: var(--text-main); cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-            box-sizing: border-box;
-        }
-        .custom-select-display::after { content: '▼'; font-size: 10px; color: var(--text-sub); }
-        .custom-select-options {
-            position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
-            background: #fff; border: 1px solid var(--border-color); border-radius: 8px;
-            margin-top: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-height: 250px; overflow-y: auto; display: none;
-        }
-        .custom-select-search {
-            width: 100%; padding: 10px; font-size: 13px; border: none; border-bottom: 1px solid var(--border-color);
-            box-sizing: border-box; outline: none; position: sticky; top: 0; z-index: 101; background: #fff;
-        }
-        .custom-select-group {
-            font-size: 10px; font-weight: 800; color: #64748b; background: #f8fafc;
-            padding: 4px 10px; text-transform: uppercase;
-        }
-        .custom-select-option {
-            padding: 10px; font-size: 13px; font-weight: 600; color: var(--text-main); cursor: pointer;
-            border-bottom: 1px solid #f1f5f9; text-align: left;
-        }
-        .custom-select-option:last-child { border-bottom: none; }
-        .custom-select-option:hover { background-color: #f1f5f9; }
-        .custom-select-option.selected { background-color: var(--primary); color: #fff; }
-
         /* LIVE PREVIEW ANGKA IKUT (DASBOR MINI) */
         .ai-live-card { display: none; background: #fff; border: 1px solid var(--primary); border-radius: 8px; padding: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08); position: relative; transition: background-color 0.3s; }
         .ai-live-title { font-size: 10px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #bfdbfe; padding-bottom: 4px; }
@@ -230,7 +190,7 @@
         .visitor-counter { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
     </style>
 </head>
-<body class="dark-mode">
+<body> <!-- BAWAAN TERANG (OFF) -->
 
     <!-- MODAL INFO RUMUS -->
     <div id="infoModal" class="modal-overlay" onclick="closeModal(event, 'infoModal')">
@@ -245,11 +205,11 @@
     <div class="container">
         <div class="header-container">
             <h2>2D Tools & Formulas 🔥</h2>
-            <!-- TOMBOL DARK MODE -->
-            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: ON</button>
+            <!-- TOMBOL DARK MODE TEKS ON/OFF -->
+            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: OFF</button>
         </div>
 
-        <!-- PEMILIHAN MODE TARIKAN & PASARAN (CUSTOM) -->
+        <!-- PEMILIHAN MODE TARIKAN & PASARAN -->
         <div class="filter-columns" style="margin-bottom: 12px;">
             <div class="input-group" style="margin:0; flex:1;">
                 <label>Mode Tarikan:</label>
@@ -259,20 +219,14 @@
                     <option value="gabung">Gabungan H1+H7</option>
                 </select>
             </div>
-            
             <div class="input-group" style="margin:0; flex:1;">
                 <label>Pilih Pasaran:</label>
-                <div class="custom-select-wrapper" id="pasaranWrapper">
-                    <div class="custom-select-display" id="pasaranDisplay" onclick="togglePasaranDropdown()">🌍 UMUM</div>
-                    <div class="custom-select-options" id="pasaranOptions">
-                        <input type="text" class="custom-select-search" id="pasaranSearch" placeholder="Cari pasaran..." onkeyup="filterPasaran()" autocomplete="off">
-                        <div id="pasaranList">
-                            <!-- List pasaran akan di-generate oleh JS -->
-                        </div>
-                    </div>
-                </div>
-                <!-- Hidden input untuk menyimpan value asli -->
-                <input type="hidden" id="jenisPasaran" value="umum">
+                <select id="jenisPasaran" class="input-box" onchange="hitungSemua()" style="padding:9px; font-size:12px; font-weight:700;">
+                    <option value="umum">🌍 UMUM</option>
+                    <option value="hk">🇭🇰 HK POOLS</option>
+                    <option value="sgp">🇸🇬 SGP POOLS</option>
+                    <option value="sdy">🇦🇺 SDY POOLS</option>
+                </select>
             </div>
         </div>
 
@@ -567,124 +521,7 @@
     </div>
 
     <script>
-        // ================= DATABASE PASARAN (Top 3 + Abjad Besar) =================
-        const pasaranDB = [
-            { id: "hk", label: "🇭🇰 HK POOLS", type: "top" },
-            { id: "sgp", label: "🇸🇬 SGP POOLS", type: "top" },
-            { id: "sdy", label: "🇦🇺 SDY POOLS", type: "top" },
-            { id: "arizona", label: "Arizona", type: "other" },
-            { id: "bullseye", label: "Bullseye", type: "other" },
-            { id: "california", label: "California", type: "other" },
-            { id: "cambodia", label: "Cambodia", type: "other" },
-            { id: "carolina-day", label: "Carolina Day", type: "other" },
-            { id: "china", label: "China", type: "other" },
-            { id: "florida-eve", label: "Florida Eve", type: "other" },
-            { id: "florida-mid", label: "Florida Mid", type: "other" },
-            { id: "georgia-eve", label: "Georgia Evening", type: "other" },
-            { id: "georgia-mid", label: "Georgia Midday", type: "other" },
-            { id: "indiana-eve", label: "Indiana Evening", type: "other" },
-            { id: "indiana-mid", label: "Indiana Midday", type: "other" },
-            { id: "japan", label: "Japan", type: "other" },
-            { id: "kansas", label: "Kansas", type: "other" },
-            { id: "kentucky-eve", label: "Kentucky Eve", type: "other" },
-            { id: "kentucky-mid", label: "Kentucky Mid", type: "other" },
-            { id: "louisiana", label: "Louisiana", type: "other" },
-            { id: "macau", label: "Macau", type: "other" },
-            { id: "michigan-eve", label: "Michigan Evening", type: "other" },
-            { id: "michigan-mid", label: "Michigan Midday", type: "other" },
-            { id: "missouri-eve", label: "Missouri Evening", type: "other" },
-            { id: "missouri-mid", label: "Missouri Midday", type: "other" },
-            { id: "nevada", label: "Nevada", type: "other" },
-            { id: "new-york-eve", label: "New York Eve", type: "other" },
-            { id: "new-york-mid", label: "New York Mid", type: "other" },
-            { id: "ohio-eve", label: "Ohio Evening", type: "other" },
-            { id: "ohio-mid", label: "Ohio Midday", type: "other" },
-            { id: "oregon-03", label: "Oregon 03:00", type: "other" },
-            { id: "oregon-06", label: "Oregon 06:00", type: "other" },
-            { id: "oregon-09", label: "Oregon 09:00", type: "other" },
-            { id: "oregon-12", label: "Oregon 12:00", type: "other" },
-            { id: "pcso", label: "PCSO", type: "other" },
-            { id: "pennsylvania-day", label: "Pennsylvania Day", type: "other" },
-            { id: "pennsylvania-eve", label: "Pennsylvania Eve", type: "other" },
-            { id: "taiwan", label: "Taiwan", type: "other" },
-            { id: "tennessee-eve", label: "Tennessee Evening", type: "other" },
-            { id: "tennessee-mid", label: "Tennessee Midday", type: "other" },
-            { id: "tennessee-morn", label: "Tennessee Morning", type: "other" },
-            { id: "texas-day", label: "Texas Day", type: "other" },
-            { id: "texas-eve", label: "Texas Eve", type: "other" },
-            { id: "texas-morn", label: "Texas Morning", type: "other" },
-            { id: "texas-night", label: "Texas Night", type: "other" },
-            { id: "virginia-day", label: "Virginia Day", type: "other" },
-            { id: "virginia-night", label: "Virginia Night", type: "other" },
-            { id: "washington-dc-eve", label: "Washington DC Evening", type: "other" },
-            { id: "washington-dc-mid", label: "Washington DC Midday", type: "other" }
-        ];
-
-        // Init Dropdown
-        function initPasaranDropdown() {
-            const list = document.getElementById('pasaranList');
-            list.innerHTML = '';
-            
-            // Tambahkan opsi Umum/Default di paling atas
-            list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('umum', '🌍 UMUM')">🌍 UMUM</div>`;
-            
-            // Tambahkan Grup Top 3
-            list.innerHTML += `<div class="custom-select-group">🔥 Pasaran Utama</div>`;
-            pasaranDB.filter(p => p.type === 'top').forEach(p => {
-                list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('${p.id}', '${p.label}')">${p.label}</div>`;
-            });
-            
-            // Tambahkan Grup Lainnya (A-Z)
-            list.innerHTML += `<div class="custom-select-group">WLA & LOKAL (A-Z)</div>`;
-            pasaranDB.filter(p => p.type === 'other').forEach(p => {
-                list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('${p.id}', '${p.label}')">${p.label}</div>`;
-            });
-        }
-
-        function togglePasaranDropdown() {
-            const options = document.getElementById('pasaranOptions');
-            options.style.display = options.style.display === 'block' ? 'none' : 'block';
-            if(options.style.display === 'block') {
-                document.getElementById('pasaranSearch').focus();
-            }
-        }
-
-        function filterPasaran() {
-            const keyword = document.getElementById('pasaranSearch').value.toLowerCase();
-            const options = document.querySelectorAll('.custom-select-option');
-            options.forEach(opt => {
-                const text = opt.innerText.toLowerCase();
-                if(text.includes(keyword)) {
-                    opt.style.display = 'block';
-                } else {
-                    opt.style.display = 'none';
-                }
-            });
-        }
-
-        function selectPasaran(id, label) {
-            document.getElementById('jenisPasaran').value = id;
-            
-            // Clean up label khusus untuk display dan copy
-            let cleanLabel = label.replace(/🇭🇰|🇸🇬|🇦🇺|🌍/g, '').trim().toUpperCase();
-            if(id !== 'umum') { cleanLabel += ' POOLS'; }
-            
-            document.getElementById('pasaranDisplay').innerHTML = label + " <span style='font-size:10px; color:#94a3b8;'>▼</span>";
-            document.getElementById('pasaranDisplay').setAttribute('data-clean', cleanLabel);
-            
-            document.getElementById('pasaranOptions').style.display = 'none';
-            hitungSemua();
-        }
-
-        // Close dropdown when click outside
-        document.addEventListener('click', function(e) {
-            const wrapper = document.getElementById('pasaranWrapper');
-            if (wrapper && !wrapper.contains(e.target)) {
-                document.getElementById('pasaranOptions').style.display = 'none';
-            }
-        });
-
-        // ================= DARK MODE TOGGLE =================
+        // ================= DARK MODE TOGGLE (JADI DEFAULT DAN PAKE TEKS) =================
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             let isDark = document.body.classList.contains('dark-mode');
@@ -692,12 +529,11 @@
             localStorage.setItem('2d_darkmode', isDark);
         }
 
-        // Init Dark Mode
+        // Init Dark Mode (Jika belum ada settingan sama sekali, paksa OFF / Terang)
         let savedTheme = localStorage.getItem('2d_darkmode');
-        // Jika tidak ada memori = otomatis nyalakan Dark Mode (Default)
         if (savedTheme === null) {
-            savedTheme = 'true';
-            localStorage.setItem('2d_darkmode', 'true');
+            savedTheme = 'false';
+            localStorage.setItem('2d_darkmode', 'false');
         }
 
         if (savedTheme === 'true') {
@@ -712,13 +548,7 @@
         function saveSettings() {
             const settings = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
-            document.querySelectorAll('select.input-box').forEach(el => settings[el.id] = el.value);
-            
-            // Save custom select
-            settings['jenisPasaran'] = document.getElementById('jenisPasaran').value;
-            settings['jenisPasaranDisplay'] = document.getElementById('pasaranDisplay').innerHTML;
-            settings['jenisPasaranClean'] = document.getElementById('pasaranDisplay').getAttribute('data-clean');
-
+            document.querySelectorAll('select').forEach(el => settings[el.id] = el.value);
             ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
             localStorage.setItem('2d_settings', JSON.stringify(settings));
         }
@@ -730,17 +560,10 @@
                 document.querySelectorAll('input[type="checkbox"]').forEach(el => {
                     if(settings[el.id] !== undefined) el.checked = settings[el.id];
                 });
-                document.querySelectorAll('select.input-box').forEach(el => {
+                document.querySelectorAll('select').forEach(el => {
+                    // Pasaran Jawa kita set dari penanggalan, bukan dari save-an
                     if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
                 });
-                
-                // Load custom select
-                if(settings['jenisPasaran']) {
-                    document.getElementById('jenisPasaran').value = settings['jenisPasaran'];
-                    if(settings['jenisPasaranDisplay']) document.getElementById('pasaranDisplay').innerHTML = settings['jenisPasaranDisplay'];
-                    if(settings['jenisPasaranClean']) document.getElementById('pasaranDisplay').setAttribute('data-clean', settings['jenisPasaranClean']);
-                }
-
                 ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
                     if(settings[id] !== undefined) {
                         let el = document.getElementById(id);
@@ -748,6 +571,7 @@
                         toggleClear(el);
                     }
                 });
+                // Trigger perhitungan dengan data tersimpan
                 toggleTarikanMode();
             }
         }
@@ -761,6 +585,7 @@
             let shioHtml = document.getElementById("liveShio").innerHTML;
             let shioText = shioHtml.replace(/<br\s*[\/]?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
 
+            // TRANSLASI NAMA SHIO KE EMOJI KHUSUS UNTUK HASIL COPY
             const shioGantiEmoji = {
                 "(Naga)": "🐉", "(Kelinci)": "🐇", "(Harimau)": "🐅", "(Kerbau)": "🐃", 
                 "(Tikus)": "🐁", "(Babi)": "🐖", "(Anjing)": "🐕", "(Ayam)": "🐓", 
@@ -771,7 +596,8 @@
             }
 
             function formatPos(id) {
-                return document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
+                let text = document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
+                return text;
             }
 
             let asText = formatPos("predAs");
@@ -779,10 +605,7 @@
             let kepText = formatPos("predKep");
             let ekText = formatPos("predEk");
 
-            // Ambil nama pasaran dari custom select data-clean
-            let namaPasaran = document.getElementById('pasaranDisplay').getAttribute('data-clean') || 'UMUM';
-
-            let format = `🎯 PREDIKSI ${namaPasaran}
+            let format = `🎯 ANALITIK AI & PREDIKSI
 
 • CB: ${cb}
 • CM: ${cm}
@@ -831,9 +654,8 @@ Ekr: ${ekText}`;
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            initPasaranDropdown();
             autoSetPasaranJawa();
-            loadSettings(); 
+            loadSettings(); // Memuat settingan auto-save
         });
 
         // ================= SISTEM MODAL UMUM =================
@@ -899,7 +721,16 @@ Ekr: ${ekText}`;
             hitungSemua();
         }
 
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
+            if (e.ctrlKey && e.shiftKey && (['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key))) { e.preventDefault(); return false; }
+            if (e.ctrlKey && (['u', 'U', 's', 'S'].includes(e.key))) { e.preventDefault(); return false; }
+        });
+        document.addEventListener('dragstart', e => e.preventDefault());
+
         const mapMistikLama = [1, 0, 5, 8, 7, 2, 9, 4, 3, 6]; const mapMistikBaru = [8, 7, 6, 9, 5, 4, 2, 1, 0, 3]; const mapIndex = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4];
+
         const tabelTaysen = [
             97, 5, 16, 32, 12, 1, 20, 24, 17, 87, 18, 15, 4, 14, 13, 11, 2, 8, 10, 27, 6, 22, 21, 30, 7, 35, 31, 19, 29, 28, 23, 26, 3, 9, 36, 25, 34, 38, 37, 55,
             43, 49, 45, 40, 46, 42, 44, 50, 51, 41, 47, 48, 53, 52, 56, 39, 54, 58, 57, 59, 68, 65, 69, 64, 63, 61, 67, 66, 60, 62, 73, 72, 71, 70, 78, 85, 81, 86, 74, 93,
@@ -1060,6 +891,7 @@ Ekr: ${ekText}`;
             let baseEkorMain = [];
             for(let h=0; h<=9; h++) { for(let e of arrEkorMain) { baseEkorMain.push(`${h}${e}`); } }
             
+            // ANALITIK SHIO
             let shioAwal = num2D % 12; if(shioAwal === 0) shioAwal = 12;
             let shioON = rumusShioMain[shioAwal] || [];
             let shioLemah = (kepB + ekB) % 12; if(shioLemah === 0) shioLemah = 12;
@@ -1183,6 +1015,7 @@ Ekr: ${ekText}`;
                     let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
                     document.getElementById('liveBBFS').innerText = Array.from(bbfsSet).slice(0, 6).sort((a,b)=>a-b).join('');
 
+                    // RUMUS SHIO GABUNGAN + NAMA SHIO (TANPA EMOJI)
                     let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
                     let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
                     
@@ -1213,6 +1046,7 @@ Ekr: ${ekText}`;
                     document.getElementById('liveCM').innerText = `${mD.cm1} / ${mD.cm2}`;
                     document.getElementById('liveBBFS').innerText = mD.bbfsArray.join('');
                     
+                    // RUMUS SHIO TUNGGAL + NAMA SHIO (TANPA EMOJI)
                     let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     
                     document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
@@ -1299,6 +1133,7 @@ Ekr: ${ekText}`;
 
             document.getElementById('hasilGlobal').style.display = 'block';
 
+            // Simpan setiap kali perhitungan selesai
             saveSettings();
         }
     </script>
