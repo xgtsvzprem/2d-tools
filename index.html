@@ -9,8 +9,8 @@
     <meta name="description" content="Aplikasi Kalkulator AI, BBFS, & Pemangkas Line Otomatis. Minimalis, Cepat, dan Akurat.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="🔥 2D Tools & Formulas | AI, BBFS & Filter Line">
-    <meta property="og:image" content="https://images.pexels.com/photos/1314543/pexels-photo-1314543.jpeg?auto=compress&cs=tinysrgb&w=600"> 
-    
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#2563eb">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
 
     <style>
@@ -41,7 +41,28 @@
             flex-direction: column;
             -webkit-user-select: none;
             user-select: none;
+            transition: background-color 0.3s, color 0.3s;
         }
+        
+        /* TEMA DARK MODE 🌙 */
+        body.dark-mode {
+            --bg-main: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: #334155;
+        }
+        body.dark-mode input.input-box, body.dark-mode select.input-box { background-color: #0f172a; color: #f8fafc; border-color: #334155; }
+        body.dark-mode .filter-section { background-color: #0f172a; border-color: #334155; }
+        body.dark-mode .ai-live-card { background-color: #1e293b; border-color: #3b82f6; }
+        body.dark-mode .ai-item { background-color: #0f172a !important; border-color: #334155 !important; }
+        body.dark-mode .ai-item-val { color: #60a5fa !important; }
+        body.dark-mode textarea { background-color: #0f172a; color: #f87171; border-color: #334155; }
+        body.dark-mode .modal-box { background-color: #1e293b; border-top-color: #3b82f6; }
+        body.dark-mode .gj-box { background-color: #0f172a; border-color: #6b21a8; }
+        body.dark-mode .btn-toggle-filter { background-color: #0f172a; border-color: #334155; color: #60a5fa; }
+        body.dark-mode .btn-toggle-filter:hover { background-color: #334155; }
+
         input, textarea, select { user-select: text; }
 
         .container {
@@ -54,8 +75,12 @@
             box-shadow: 0 4px 16px rgba(0,0,0,0.03);
             margin-bottom: 12px;
             box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s;
         }
-        h2 { text-align: center; color: var(--text-main); margin: 0 0 14px 0; font-size: 19px; }
+        
+        .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; }
+        h2 { margin: 0; font-size: 19px; color: var(--text-main); }
+        .btn-dark { background: none; border: none; font-size: 22px; cursor: pointer; padding: 0; outline: none; }
 
         .input-group { margin-bottom: 10px; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -84,26 +109,29 @@
             font-weight: 700;
             color: var(--text-main);
             background: #fff;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, background-color 0.3s;
         }
         input.input-box::placeholder { font-size: 12px; letter-spacing: normal; color: #94a3b8; font-weight: 500; }
         select.input-box { letter-spacing: normal; cursor: pointer; }
         input.input-box:focus, select.input-box:focus, textarea:focus { outline: none; border-color: var(--primary); }
 
         /* LIVE PREVIEW ANGKA IKUT (DASBOR MINI) */
-        .ai-live-card { display: none; background: #fff; border: 1px solid var(--primary); border-radius: 8px; padding: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08); position: relative; }
+        .ai-live-card { display: none; background: #fff; border: 1px solid var(--primary); border-radius: 8px; padding: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08); position: relative; transition: background-color 0.3s; }
         .ai-live-title { font-size: 10px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #bfdbfe; padding-bottom: 4px; }
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 8px; }
-        .ai-item { background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #e2e8f0; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .ai-item { background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #e2e8f0; text-align: center; display: flex; flex-direction: column; justify-content: center; transition: background-color 0.3s; }
         .ai-item.highlight { background: #eff6ff; border-color: #bfdbfe; }
         .ai-item.kmt { background: #fef2f2; border-color: #fecaca; }
-        .ai-item-label { display: block; font-size: 8.5px; color: #64748b; font-weight: 700; margin-bottom: 2px; }
+        .ai-item-label { display: block; font-size: 8.5px; color: var(--text-sub); font-weight: 700; margin-bottom: 2px; }
         .ai-item-val { display: block; font-size: 12px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
         
         .gj-container { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; width: 100%; margin-top: 4px; }
-        .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 2px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; }
-        .gj-box span { display: block; color: #475569; font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
+        .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 2px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; transition: background-color 0.3s; }
+        .gj-box span { display: block; color: var(--text-sub); font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
         
+        .ai-item.highlight .ai-item-val { color: var(--primary); }
+        .ai-item.kmt .ai-item-val { color: var(--danger); }
+
         /* TOMBOL COPY PREDIKSI */
         .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-copy-prediksi:hover { background: #2563eb; }
@@ -113,31 +141,31 @@
         .btn-toggle-filter:hover { background-color: #e2e8f0; border-color: #94a3b8; }
 
         /* SECTION FILTER */
-        .filter-section { background-color: #f8fafc; border: 1px solid var(--border-color); padding: 12px 14px; border-radius: 10px; margin-top: 10px; margin-bottom: 10px; }
+        .filter-section { background-color: #f8fafc; border: 1px solid var(--border-color); padding: 12px 14px; border-radius: 10px; margin-top: 10px; margin-bottom: 10px; transition: background-color 0.3s; }
         .filter-title { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .filter-columns { display: flex; gap: 12px; width: 100%; }
         .filter-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .filter-item { display: flex; align-items: center; justify-content: flex-start; }
-        .filter-label { font-size: 12px; color: #334155; display: flex; align-items: center; cursor: pointer; margin: 0; }
+        .filter-label { font-size: 12px; color: var(--text-main); display: flex; align-items: center; cursor: pointer; margin: 0; }
         .filter-label input[type="checkbox"] { margin-right: 6px; cursor: pointer; accent-color: var(--primary); }
         .badge { font-weight: 800; color: var(--danger); margin-left: 4px; font-size: 11px; }
 
-        select.mini-select { margin-left: 4px; padding: 2px 4px; font-size: 11px; border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; cursor: pointer; outline: none; font-weight: 700; color: var(--text-main); width: 100%; max-width: 110px;}
+        select.mini-select { margin-left: 4px; padding: 2px 4px; font-size: 11px; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--bg-main); cursor: pointer; outline: none; font-weight: 700; color: var(--text-main); width: 100%; max-width: 110px;}
         .info-icon { display: inline-flex; justify-content: center; align-items: center; background-color: #cbd5e1; color: #475569; border-radius: 50%; width: 15px; height: 15px; font-size: 10px; font-weight: bold; margin-left: 5px; cursor: pointer; transition: 0.15s; flex-shrink:0; }
         .info-icon:hover { background-color: var(--primary); color: #fff; transform: scale(1.1); }
 
         /* FLOATING MODAL - UMUM */
         .modal-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.45); align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-        .modal-box { background-color: #fff; padding: 18px; border-radius: 12px; width: 85%; max-width: 340px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); position: relative; border-top: 4px solid var(--primary); max-height: 80vh; overflow-y: auto; }
+        .modal-box { background-color: #fff; padding: 18px; border-radius: 12px; width: 85%; max-width: 340px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); position: relative; border-top: 4px solid var(--primary); max-height: 80vh; overflow-y: auto; transition: background-color 0.3s; }
         .modal-close { position: absolute; right: 14px; top: 10px; font-size: 22px; color: #94a3b8; cursor: pointer; }
         .modal-close:hover { color: var(--danger); }
-        .modal-title { margin: 0 0 12px 0; color: var(--text-main); font-size: 14px; font-weight: 800; padding-right: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;}
+        .modal-title { margin: 0 0 12px 0; color: var(--text-main); font-size: 14px; font-weight: 800; padding-right: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;}
         
         /* RESULTS AREA */
-        .result-block { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+        .result-block { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 8px; transition: background-color 0.3s;}
         .result-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
         .result-header span.badge-hit { color: var(--accent); background: #ecfdf5; padding: 2px 8px; border-radius: 6px; font-size: 11px; border: 1px solid #a7f3d0; }
-        textarea { width: 100%; height: 56px; padding: 8px; font-size: 12px; font-family: monospace; border: 1px solid var(--border-color); border-radius: 6px; resize: none; color: #b91c1c; font-weight: 700; background: #fff; box-sizing: border-box; }
+        textarea { width: 100%; height: 56px; padding: 8px; font-size: 12px; font-family: monospace; border: 1px solid var(--border-color); border-radius: 6px; resize: none; color: #b91c1c; font-weight: 700; background: #fff; box-sizing: border-box; transition: background-color 0.3s; }
         .btn-copy { padding: 5px 12px; background-color: #334155; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; margin-top: 6px; font-weight: 700; float: right; transition: 0.15s; }
         .btn-copy:hover { background-color: var(--primary); }
         .clear { clear: both; }
@@ -155,19 +183,23 @@
         <div class="modal-box">
             <span class="modal-close" onclick="closeModalForce('infoModal')">&times;</span>
             <h4 class="modal-title" id="modalTitle">Judul</h4>
-            <p class="modal-desc" id="modalDesc" style="font-size: 12px; color: #475569; line-height: 1.5; margin: 0;"></p>
+            <p class="modal-desc" id="modalDesc" style="font-size: 12px; color: var(--text-sub); line-height: 1.5; margin: 0;"></p>
         </div>
     </div>
 
     <!-- KALKULATOR UTAMA -->
     <div class="container">
-        <h2>2D Tools & Formulas 🔥</h2>
+        <div class="header-container">
+            <h2>2D Tools & Formulas 🔥</h2>
+            <!-- TOMBOL DARK MODE -->
+            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">🌙</button>
+        </div>
 
         <!-- PEMILIHAN MODE TARIKAN & PASARAN -->
         <div class="filter-columns" style="margin-bottom: 12px;">
             <div class="input-group" style="margin:0; flex:1;">
                 <label>Mode Tarikan:</label>
-                <select id="modeTarikan" class="input-box" onchange="toggleTarikanMode()" style="padding:9px; font-size:12px; font-weight:700; background:#f8fafc; border-color:#cbd5e1;">
+                <select id="modeTarikan" class="input-box" onchange="toggleTarikanMode()" style="padding:9px; font-size:12px; font-weight:700;">
                     <option value="h1">Harian (H-1)</option>
                     <option value="h7">Mingguan (H-7)</option>
                     <option value="gabung">Gabungan H1+H7</option>
@@ -175,7 +207,7 @@
             </div>
             <div class="input-group" style="margin:0; flex:1;">
                 <label>Pilih Pasaran:</label>
-                <select id="jenisPasaran" class="input-box" onchange="hitungSemua()" style="padding:9px; font-size:12px; font-weight:700; color:#1e40af; background:#eff6ff; border-color:#93c5fd;">
+                <select id="jenisPasaran" class="input-box" onchange="hitungSemua()" style="padding:9px; font-size:12px; font-weight:700;">
                     <option value="umum">🌍 UMUM</option>
                     <option value="hk">🇭🇰 HK POOLS</option>
                     <option value="sgp">🇸🇬 SGP POOLS</option>
@@ -214,28 +246,28 @@
             
             <div class="ai-grid">
                 <!-- COLOK BEBAS & COLOK MACAU (2D) -->
-                <div class="ai-item highlight" style="background:#eff6ff; border-color:#93c5fd;">
+                <div class="ai-item highlight">
                     <span class="ai-item-label" style="color:#1d4ed8;">🎯 Colok Bebas</span>
-                    <span class="ai-item-val" id="liveCB" style="color:#1e40af; font-size:13px;">-</span>
+                    <span class="ai-item-val" id="liveCB" style="font-size:13px;">-</span>
                 </div>
-                <div class="ai-item highlight" style="background:#eff6ff; border-color:#93c5fd;">
+                <div class="ai-item highlight">
                     <span class="ai-item-label" style="color:#1d4ed8;">🎯 Colok Macau</span>
-                    <span class="ai-item-val" id="liveCM" style="color:#1e40af; font-size:13px;">-</span>
+                    <span class="ai-item-val" id="liveCM" style="font-size:13px;">-</span>
                 </div>
                 
-                <div class="ai-item highlight" style="grid-column: span 2; background:#f0f9ff; border-color:#c7d2fe;">
+                <div class="ai-item highlight" style="grid-column: span 2;">
                     <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 4D (5/6 Digit)</span>
                     <span class="ai-item-val" id="liveBBFS" style="color:#6b21a8; font-size:14px; letter-spacing:2px;">-</span>
                 </div>
 
-                <!-- FITUR SHIO & JALUR (DIPERBARUI DENGAN NAMA SHIO) -->
-                <div class="ai-item" style="grid-column: span 2; background: #fff1f2; border-color: #fecdd3; padding: 6px; text-align: left;">
+                <!-- FITUR SHIO & JALUR -->
+                <div class="ai-item" style="grid-column: span 2; text-align: left;">
                     <span class="ai-item-label" style="color: #be123c; margin-bottom:4px; text-align: center;">🐉 Prediksi Shio & Jalur</span>
                     <div style="font-size: 11px; font-weight: 700; color: #881337; line-height: 1.5; padding-left: 8px;" id="liveShio">-</div>
                 </div>
                 
                 <!-- GANJIL GENAP & BESAR KECIL -->
-                <div class="ai-item" style="grid-column: span 2; background: #faf5ff; border-color: #d8b4fe; padding: 6px;">
+                <div class="ai-item" style="grid-column: span 2;">
                     <span class="ai-item-label" style="color: #7e22ce; margin-bottom:2px;">🔮 Prediksi Posisi Angka</span>
                     <div class="gj-container">
                         <div class="gj-box"><span>As</span><div id="predAs">-</div></div>
@@ -254,11 +286,11 @@
                     <span class="ai-item-val" id="liveKMTEkor">-</span>
                 </div>
                 
-                <div class="ai-item" style="grid-column: span 2; background: #fffbeb; border-color: #fde68a;">
+                <div class="ai-item" style="grid-column: span 2;">
                     <span class="ai-item-label" style="color: #b45309;">AI 2D TABEL (Berdasar 2D)</span>
                     <span class="ai-item-val" id="liveAITabel" style="color: #d97706; font-size: 13px;">-</span>
                 </div>
-                <div class="ai-item" style="grid-column: span 2; background: #f0fdf4; border-color: #bbf7d0;">
+                <div class="ai-item" style="grid-column: span 2;">
                     <span class="ai-item-label" style="color: #166534;">EKOR MAIN TABEL (Berdasar Ekor)</span>
                     <span class="ai-item-val" id="liveEkorMain" style="color: #15803d; font-size: 13px;">-</span>
                 </div>
@@ -475,19 +507,71 @@
     </div>
 
     <script>
+        // ================= SERVICE WORKER REGISTRATION (UNTUK PWA / INSTALL HP) =================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('SW terdaftar bosku:', reg.scope);
+                }).catch(err => console.log('SW Gagal:', err));
+            });
+        }
+
+        // ================= DARK MODE TOGGLE =================
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            let isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('btnDark').innerText = isDark ? '☀️' : '🌙';
+            localStorage.setItem('2d_darkmode', isDark);
+        }
+
+        // Init Dark Mode
+        if (localStorage.getItem('2d_darkmode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('btnDark').innerText = '☀️';
+        }
+
+        // ================= AUTO SAVE & LOAD SETTINGS =================
+        function saveSettings() {
+            const settings = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
+            document.querySelectorAll('select').forEach(el => settings[el.id] = el.value);
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
+            localStorage.setItem('2d_settings', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('2d_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+                    if(settings[el.id] !== undefined) el.checked = settings[el.id];
+                });
+                document.querySelectorAll('select').forEach(el => {
+                    // Pasaran Jawa kita set dari penanggalan, bukan dari save-an
+                    if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
+                });
+                ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
+                    if(settings[id] !== undefined) {
+                        let el = document.getElementById(id);
+                        el.value = settings[id];
+                        toggleClear(el);
+                    }
+                });
+                // Trigger perhitungan dengan data tersimpan
+                toggleTarikanMode();
+            }
+        }
+
         // ================= FITUR COPY PREDIKSI KE CLIPBOARD =================
         function copyPrediksiTeks(btn) {
             let cb = document.getElementById("liveCB").innerText;
             let cm = document.getElementById("liveCM").innerText;
             let bbfs = document.getElementById("liveBBFS").innerText;
             
-            // Ambil text shio dan bersihkan tag HTML-nya dengan mempertahankan enter (\n)
-            // (Mengubah &amp; menjadi & agar Jalur Main tampil dengan benar: 2 & 3)
             let shioHtml = document.getElementById("liveShio").innerHTML;
             let shioText = shioHtml.replace(/<br\s*[\/]?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
 
             function formatPos(id) {
-                // Menambahkan - di antara kata-kata dan mengubah &amp; menjadi &
                 let text = document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
                 return text;
             }
@@ -548,6 +632,7 @@ Ekr: ${ekText}`;
 
         document.addEventListener("DOMContentLoaded", function() {
             autoSetPasaranJawa();
+            loadSettings(); // Memuat settingan auto-save
         });
 
         // ================= SISTEM MODAL UMUM =================
@@ -667,23 +752,12 @@ Ekr: ${ekText}`;
             9: ["06","08","17","18","19","22","26","35","37","44","45","48","53","54","55","56","59","60","62","65","66","67","71","73","76","77","80","81","84","88","91","95"]
         };
 
-        // TABEL RUMUS SHIO ON/MAIN BERDASARKAN SHIO H-1
         const rumusShioMain = {
-            1: [2,5,8,10,11],
-            2: [1,4,7,9,12],
-            3: [2,5,6,8,11],
-            4: [1,4,7,9,10],
-            5: [2,3,6,8,11],
-            6: [1,4,5,7,12],
-            7: [2,6,8,10,11],
-            8: [1,4,7,9,12],
-            9: [2,5,8,10,11],
-            10: [1,3,6,9,12],
-            11: [2,4,7,10,11],
-            12: [1,3,6,9,12]
+            1: [2,5,8,10,11], 2: [1,4,7,9,12], 3: [2,5,6,8,11], 4: [1,4,7,9,10],
+            5: [2,3,6,8,11], 6: [1,4,5,7,12], 7: [2,6,8,10,11], 8: [1,4,7,9,12],
+            9: [2,5,8,10,11], 10: [1,3,6,9,12], 11: [2,4,7,10,11], 12: [1,3,6,9,12]
         };
 
-        // KAMUS NAMA SHIO
         const shioNama = {
             1: "Naga", 2: "Kelinci", 3: "Harimau", 4: "Kerbau", 5: "Tikus", 6: "Babi",
             7: "Anjing", 8: "Ayam", 9: "Monyet", 10: "Kambing", 11: "Kuda", 12: "Ular"
@@ -889,6 +963,9 @@ Ekr: ${ekText}`;
                 document.getElementById('aiLiveCard').style.display = 'none'; document.getElementById('hasilGlobal').style.display = 'none'; 
                 document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
+                
+                // Simpan state bahkan ketika tidak ada output
+                saveSettings();
                 return; 
             }
 
@@ -926,7 +1003,7 @@ Ekr: ${ekText}`;
                     function cbPred(v1, v2, type) {
                         let s1 = type==='gj' ? getGJ(v1) : getBK(v1); let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
                         if(s1===s2) return `<span style="color:#dc2626; font-weight:800">${s1}</span>`;
-                        return `<span style="color:#64748b; font-weight:normal;">Tardal</span>`;
+                        return `<span style="color:var(--text-sub); font-weight:normal;">Tardal</span>`;
                     }
 
                     document.getElementById('predAs').innerHTML = `${cbPred(mD.pAs, aD.pAs, 'gj')}<br>${cbPred(mD.pAs, aD.pAs, 'bk')}`;
@@ -1032,6 +1109,9 @@ Ekr: ${ekText}`;
             document.getElementById('hasilBom').value = strBom;
 
             document.getElementById('hasilGlobal').style.display = 'block';
+
+            // Simpan setiap kali perhitungan selesai
+            saveSettings();
         }
     </script>
 </body>
