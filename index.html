@@ -191,7 +191,7 @@
         .visitor-counter { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
     </style>
 </head>
-<body class="dark-mode"> <!-- BAWAAN LANGSUNG GELAP -->
+<body class="dark-mode">
 
     <!-- MODAL INFO RUMUS -->
     <div id="infoModal" class="modal-overlay" onclick="closeModal(event, 'infoModal')">
@@ -206,7 +206,7 @@
     <div class="container">
         <div class="header-container">
             <h2>2D Tools & Formulas 🔥</h2>
-            <!-- TOMBOL DARK MODE (DIPERBARUI DENGAN TEKS) -->
+            <!-- TOMBOL DARK MODE -->
             <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: ON</button>
         </div>
 
@@ -594,6 +594,16 @@
             
             let shioHtml = document.getElementById("liveShio").innerHTML;
             let shioText = shioHtml.replace(/<br\s*[\/]?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
+
+            // TRANSLASI NAMA SHIO KE EMOJI KHUSUS UNTUK HASIL COPY
+            const shioGantiEmoji = {
+                "(Naga)": "🐉", "(Kelinci)": "🐇", "(Harimau)": "🐅", "(Kerbau)": "🐃", 
+                "(Tikus)": "🐁", "(Babi)": "🐖", "(Anjing)": "🐕", "(Ayam)": "🐓", 
+                "(Monyet)": "🐒", "(Kambing)": "🐐", "(Kuda)": "🐎", "(Ular)": "🐍"
+            };
+            for (let nama in shioGantiEmoji) {
+                shioText = shioText.split(nama).join(shioGantiEmoji[nama]);
+            }
 
             function formatPos(id) {
                 let text = document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
