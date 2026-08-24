@@ -10,7 +10,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="🔥 2D Tools & Formulas | AI, BBFS & Filter Line">
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#1e293b">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
 
     <style>
@@ -44,7 +44,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
         
-        /* TEMA DARK MODE 🌙 */
+        /* TEMA DARK MODE 🌙 (JADI DEFAULT) */
         body.dark-mode {
             --bg-main: #0f172a;
             --card-bg: #1e293b;
@@ -78,27 +78,20 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
         
-        .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; transition: border-color 0.3s; }
         h2 { margin: 0; font-size: 16px; color: var(--text-main); font-weight: 800; }
         
-        /* TOMBOL DARK MODE SWITCH */
+        /* TOMBOL DARK MODE SWITCH IKON */
         .btn-dark { 
-            background: #e2e8f0; 
-            color: #475569; 
-            border: 1px solid #cbd5e1; 
-            font-size: 10px; 
-            font-weight: 800; 
-            padding: 4px 8px; 
-            border-radius: 6px; 
+            background: none; 
+            border: none; 
+            font-size: 20px; 
             cursor: pointer; 
-            transition: 0.2s; 
-            letter-spacing: 0.5px;
+            padding: 0; 
+            outline: none; 
+            transition: transform 0.2s; 
         }
-        body.dark-mode .btn-dark { 
-            background: #334155; 
-            color: #38bdf8; 
-            border-color: #475569; 
-        }
+        .btn-dark:hover { transform: scale(1.15); }
 
         .input-group { margin-bottom: 10px; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -191,7 +184,8 @@
         .visitor-counter { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
     </style>
 </head>
-<body>
+<!-- SECARA DEFAULT MENGGUNAKAN CLASS DARK-MODE DI BODY -->
+<body class="dark-mode">
 
     <!-- MODAL INFO RUMUS -->
     <div id="infoModal" class="modal-overlay" onclick="closeModal(event, 'infoModal')">
@@ -206,8 +200,8 @@
     <div class="container">
         <div class="header-container">
             <h2>2D Tools & Formulas 🔥</h2>
-            <!-- TOMBOL DARK MODE (DIPERBARUI) -->
-            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: OFF</button>
+            <!-- TOMBOL DARK MODE -->
+            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">☀️</button>
         </div>
 
         <!-- PEMILIHAN MODE TARIKAN & PASARAN -->
@@ -531,20 +525,23 @@
             });
         }
 
-        // ================= DARK MODE TOGGLE (DIPERBARUI) =================
+        // ================= DARK MODE TOGGLE (JADI DEFAULT) =================
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             let isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('btnDark').innerText = isDark ? 'DARK MODE: ON' : 'DARK MODE: OFF';
+            document.getElementById('btnDark').innerText = isDark ? '☀️' : '🌙';
             localStorage.setItem('2d_darkmode', isDark);
         }
 
-        // Init Dark Mode
-        if (localStorage.getItem('2d_darkmode') === 'true') {
-            document.body.classList.add('dark-mode');
-            document.getElementById('btnDark').innerText = 'DARK MODE: ON';
+        // Init Dark Mode (Jika belum ada settingan di memori, atau jika diset true)
+        let savedTheme = localStorage.getItem('2d_darkmode');
+        if (savedTheme === 'false') {
+            document.body.classList.remove('dark-mode');
+            document.getElementById('btnDark').innerText = '🌙';
         } else {
-            document.getElementById('btnDark').innerText = 'DARK MODE: OFF';
+            // Default adalah true (Dark Mode nyala)
+            document.body.classList.add('dark-mode');
+            document.getElementById('btnDark').innerText = '☀️';
         }
 
         // ================= AUTO SAVE & LOAD SETTINGS =================
@@ -625,7 +622,6 @@ Ekr: ${ekText}`;
                 alert("Berhasil disalin!"); 
             });
         }
-
 
         // ================= AUTO SET PASARAN JAWA (HARI INI WIB) =================
         function autoSetPasaranJawa() {
