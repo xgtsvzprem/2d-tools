@@ -21,7 +21,6 @@
         body.dark-mode .ai-item-val { color: #60a5fa !important; }
         body.dark-mode textarea { background-color: #0f172a; color: #f87171; border-color: #334155; }
         body.dark-mode .modal-box { background-color: #1e293b; border-top-color: #3b82f6; }
-        body.dark-mode .gj-box { background-color: #0f172a; border-color: #6b21a8; }
         body.dark-mode .btn-toggle-filter { background-color: #0f172a; border-color: #334155; color: #60a5fa; }
         body.dark-mode .btn-toggle-filter:hover { background-color: #334155; }
         input, textarea, select { user-select: text; }
@@ -47,9 +46,6 @@
         .ai-item.kmt { background: #fef2f2; border-color: #fecaca; }
         .ai-item-label { display: block; font-size: 8.5px; color: var(--text-sub); font-weight: 700; margin-bottom: 2px; }
         .ai-item-val { display: block; font-size: 12px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
-        .gj-container { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; width: 100%; margin-top: 4px; }
-        .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 2px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; transition: background-color 0.3s; }
-        .gj-box span { display: block; color: var(--text-sub); font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
         .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-copy-prediksi:hover { background: #2563eb; }
         .btn-toggle-filter { width: 100%; padding: 10px; background-color: #f1f5f9; color: var(--primary-dark); border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 10px; margin-bottom: 4px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -162,9 +158,10 @@
                     <div style="font-size: 11px; font-weight: 700; color: #881337; line-height: 1.5; padding-left: 8px;" id="liveShio">-</div>
                 </div>
                 
+                <!-- PENGGANTI GJ-CONTAINER: POLTAR 4D UTUH -->
                 <div class="ai-item" style="grid-column: span 2;">
                     <span class="ai-item-label" style="color: #7e22ce; margin-bottom:4px;">🔮 Poltar 4D (As, Kop, Kep, Ek)</span>
-                    <span class="ai-item-val" id="livePoltar" style="font-size:13.5px; letter-spacing:2px; word-break: break-all;">-</span>
+                    <span class="ai-item-val" id="livePoltar" style="font-size:14px; letter-spacing:1px; word-break: break-all;">-</span>
                 </div>
 
                 <div class="ai-item highlight">
@@ -193,10 +190,6 @@
                     <span class="ai-item-label">Pola 2</span>
                     <span class="ai-item-val" id="livePola2">-</span>
                 </div>
-            </div>
-            
-            <div style="display:none;">
-                <div id="predAs"></div><div id="predKop"></div><div id="predKep"></div><div id="predEk"></div>
             </div>
         </div>
 
@@ -531,10 +524,10 @@
         }
 
         function copyPrediksiTeks(btn) {
-            let cb = document.getElementById("liveCB").innerText;
-            let cm = document.getElementById("liveCM").innerText;
-            let bbfs = document.getElementById("liveBBFS").innerText;
-            let poltar = document.getElementById("livePoltar").innerText;
+            let cb = document.getElementById("liveCB").getAttribute('data-copy') || "-";
+            let cm = document.getElementById("liveCM").getAttribute('data-copy') || "-";
+            let bbfs = document.getElementById("liveBBFS").getAttribute('data-copy') || "-";
+            let poltar = document.getElementById("livePoltar").getAttribute('data-copy') || "-";
 
             let useH1 = document.getElementById('useH1').checked;
             let useH7 = document.getElementById('useH7').checked;
@@ -704,17 +697,9 @@
         }
 
         function generatePoltar(seed) {
+            if(seed === undefined || isNaN(seed)) return [];
             let arr = [seed, mapIndex[seed], mapMistikLama[seed], mapMistikBaru[seed], (seed+1)%10, (seed+2)%10];
             return Array.from(new Set(arr)).slice(0, 6).sort((a,b)=>a-b);
-        }
-
-        function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
-        function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
-
-        function cbPred(v1, v2, type) {
-            let s1 = type==='gj' ? getGJ(v1) : getBK(v1); 
-            let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
-            return (s1===s2) ? `<span style="color:#dc2626; font-weight:800">${s1}</span>` : `<span style="color:var(--text-sub); font-weight:normal;">Tardal</span>`;
         }
 
         function process4D(inputStr, pasaranToggle) {
@@ -946,15 +931,142 @@
                             ...arrMatiKepalaManual, ...arrMatiEkorManual
                         ]);
 
-                        let cbSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2]);
-                        document.getElementById('liveCB').innerHTML = Array.from(cbSet).slice(0, 3).map(x => colorizeDigits([x], strongSet, weakSet)).join(' / ');
+                        let cbSet = Array.from(new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2])).slice(0, 3);
+                        let cmSet = Array.from(new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2])).slice(0, 2);
                         
-                        let cmSet = new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2]);
-                        document.getElementById('liveCM').innerHTML = Array.from(cmSet).slice(0, 2).map(x => colorizeDigits(x, strongSet, weakSet)).join(' / ');
-
                         let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
                         let gabBBFS = Array.from(bbfsSet).slice(0, 7).sort((a,b)=>a-b);
-                        document.getElementById('liveBBFS').innerHTML = colorizeDigits(gabBBFS, strongSet, weakSet);
 
-                        let polAs = Array.from(new Set([...generatePoltar(mD.pAs), ...generatePoltar(aD.pAs)])).slice(0,7).sort((a,b)=>a-b);
-                        let polKop = Array.from(new Set([...I'm having a hard time fulfilling your request. Can I help you with something else instead?
+                        let polAs = Array.from(new Set([...generatePoltar(mD.pAs), ...generatePoltar(aD.pAs)])).slice(0,6).sort((a,b)=>a-b);
+                        let polKop = Array.from(new Set([...generatePoltar(mD.pKop), ...generatePoltar(aD.pKop)])).slice(0,6).sort((a,b)=>a-b);
+                        let polKep = Array.from(new Set([...generatePoltar(mD.pKep), ...generatePoltar(aD.pKep)])).slice(0,6).sort((a,b)=>a-b);
+                        let polEk = Array.from(new Set([...generatePoltar(mD.pEk), ...generatePoltar(aD.pEk)])).slice(0,6).sort((a,b)=>a-b);
+
+                        // Populate UI with Colors
+                        document.getElementById('liveCB').innerHTML = colorizeDigits(cbSet, strongSet, weakSet, ' / ');
+                        document.getElementById('liveCM').innerHTML = colorizeDigits(cmSet, strongSet, weakSet, ' / ');
+                        document.getElementById('liveBBFS').innerHTML = colorizeDigits(gabBBFS, strongSet, weakSet, '');
+                        document.getElementById('livePoltar').innerHTML = `${colorizeDigits(polAs, strongSet, weakSet, '')},${colorizeDigits(polKop, strongSet, weakSet, '')},${colorizeDigits(polKep, strongSet, weakSet, '')},${colorizeDigits(polEk, strongSet, weakSet, '')}`;
+
+                        // Store Raw Format for Copypaste
+                        document.getElementById('liveCB').setAttribute('data-copy', cbSet.join(' / '));
+                        document.getElementById('liveCM').setAttribute('data-copy', cmSet.join(' / '));
+                        document.getElementById('liveBBFS').setAttribute('data-copy', gabBBFS.join(''));
+                        document.getElementById('livePoltar').setAttribute('data-copy', `${polAs.join('')},${polKop.join('')},${polKep.join('')},${polEk.join('')}`);
+
+                        let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
+                        document.getElementById('liveAIEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeAIEkor, strongSet, weakSet, '');
+
+                        let mergeKMT = Array.from(new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt]));
+                        document.getElementById('liveKMTEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeKMT, strongSet, weakSet, '');
+
+                        let mergePola1 = Array.from(new Set([...mD.aiPola1, ...aD.aiPola1]));
+                        document.getElementById('livePola1').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergePola1, strongSet, weakSet, ' ');
+
+                        let mergePola2 = Array.from(new Set([...mD.aiPola2, ...aD.aiPola2]));
+                        document.getElementById('livePola2').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergePola2, strongSet, weakSet, ' ');
+
+                        document.getElementById('liveAITabel').innerHTML = `<span style="color:var(--text-main);">Gabungan Tabel (Di bawah)</span>`;
+                        document.getElementById('liveEkorMain').innerHTML = `<span style="color:var(--text-main);">Gabungan Pola (Di bawah)</span>`;
+
+                        let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
+                        let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
+                        let strGabShioON = gabShioON.map(s => `${s} (${shioNama[s]})`).join(', ');
+                        
+                        document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) &amp; ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
+                        document.getElementById('badgeLiveEkor').innerText = `GABUNGAN H1+H7`;
+
+                    } else {
+                        strongSet = new Set([mD.cb1, mD.cb2, ...mD.dataAI.ai1]);
+                        weakSet = new Set([
+                            parseInt(mD.matiKepala), parseInt(mD.matiEkor), mD.matiEkorTesson,
+                            ...arrMatiKepalaManual, ...arrMatiEkorManual
+                        ]);
+
+                        let cbSet = [mD.cb1, mD.cb2];
+                        let cmSet = [mD.cm1, mD.cm2];
+                        let bbfsArr = mD.bbfsArray;
+
+                        let polAs = generatePoltar(mD.pAs);
+                        let polKop = generatePoltar(mD.pKop);
+                        let polKep = generatePoltar(mD.pKep);
+                        let polEk = generatePoltar(mD.pEk);
+
+                        // Populate UI with Colors
+                        document.getElementById('liveCB').innerHTML = colorizeDigits(cbSet, strongSet, weakSet, ' <span style="color:var(--text-main);">/</span> ');
+                        document.getElementById('liveCM').innerHTML = colorizeDigits(cmSet, strongSet, weakSet, ' <span style="color:var(--text-main);">/</span> ');
+                        document.getElementById('liveBBFS').innerHTML = colorizeDigits(bbfsArr, strongSet, weakSet, '');
+                        document.getElementById('livePoltar').innerHTML = `${colorizeDigits(polAs, strongSet, weakSet, '')},${colorizeDigits(polKop, strongSet, weakSet, '')},${colorizeDigits(polKep, strongSet, weakSet, '')},${colorizeDigits(polEk, strongSet, weakSet, '')}`;
+                        
+                        // Store Raw Format for Copypaste
+                        document.getElementById('liveCB').setAttribute('data-copy', cbSet.join(' / '));
+                        document.getElementById('liveCM').setAttribute('data-copy', cmSet.join(' / '));
+                        document.getElementById('liveBBFS').setAttribute('data-copy', bbfsArr.join(''));
+                        document.getElementById('livePoltar').setAttribute('data-copy', `${polAs.join('')},${polKop.join('')},${polKep.join('')},${polEk.join('')}`);
+
+                        document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet, '')} <span style="color:var(--text-main);">-</span> ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet, '')}`;
+                        document.getElementById('liveKMTEkor').innerHTML = colorizeDigits(mD.dataAI.kmt, strongSet, weakSet, '');
+                        document.getElementById('livePola1').innerHTML = colorizeDigits(mD.aiPola1, strongSet, weakSet, ' ');
+                        document.getElementById('livePola2').innerHTML = colorizeDigits(mD.aiPola2, strongSet, weakSet, ' ');
+                        
+                        let strAiTabel = mD.aiTabelStr ? mD.aiTabelStr.split('') : [];
+                        document.getElementById('liveAITabel').innerHTML = mD.aiTabelStr ? colorizeDigits(strAiTabel, strongSet, weakSet, ' ') : '-';
+                        document.getElementById('liveEkorMain').innerHTML = mD.arrEkorMain.length > 0 ? colorizeDigits(mD.arrEkorMain, strongSet, weakSet, ' ') : '-';
+                        
+                        let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
+                        document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
+
+                        document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
+                    }
+                    document.getElementById('aiLiveCard').style.display = 'block';
+                }
+
+                let bAITabel = [], bEkorTop = [], bEkorCD = [], bEkorMain = [], p1 = [], p2 = [], bM = [];
+
+                if (d1) { bAITabel.push(...d1.aiTabel); bEkorTop.push(...d1.baseEkorTop); bEkorCD.push(...d1.baseEkorCD); bEkorMain.push(...d1.baseEkorMain); p1.push(...d1.aiPola1); p2.push(...d1.aiPola2); }
+                if (d2) { bAITabel.push(...d2.aiTabel); bEkorTop.push(...d2.baseEkorTop); bEkorCD.push(...d2.baseEkorCD); bEkorMain.push(...d2.baseEkorMain); p1.push(...d2.aiPola1); p2.push(...d2.aiPola2); }
+
+                if(isValid) {
+                    bAITabel = renderHasil(applyFilter(generate2DAI(bAITabel, posisiPilihan)), 'lineAITabel', 'hasilAITabel');
+                    bEkorTop = renderHasil(applyFilter(bEkorTop), 'lineEkorTop', 'hasilEkorTop');
+                    bEkorCD = renderHasil(applyFilter(bEkorCD), 'lineEkorCd', 'hasilEkorCd');
+                    bEkorMain = renderHasil(applyFilter(bEkorMain), 'lineEkorMain', 'hasilEkorMain');
+
+                    let polas = Array.from(new Set([...applyFilter(generate2DAI(p1, posisiPilihan)), ...applyFilter(generate2DAI(p2, posisiPilihan))]));
+                    p1 = renderHasil(polas, 'lineGabungan', 'hasilGabungan'); 
+                }
+
+                if (inputManual.length > 0) {
+                    let aiM = []; for(let i=0; i<inputManual.length; i++) aiM.push(Number(inputManual[i]));
+                    bM = renderHasil(applyFilter(generate2DAI(aiM, posisiPilihan)), 'lineManual', 'hasilManual');
+                    document.getElementById('segmenManual').style.display = 'block';
+                } else { 
+                    document.getElementById('segmenManual').style.display = 'none'; 
+                }
+
+                let allGeneratedSets = [];
+                if (bAITabel.length > 0) allGeneratedSets.push(bAITabel);
+                if (bEkorTop.length > 0) allGeneratedSets.push(bEkorTop);
+                if (bEkorCD.length > 0) allGeneratedSets.push(bEkorCD);
+                if (bEkorMain.length > 0) allGeneratedSets.push(bEkorMain);
+                if (p1.length > 0) allGeneratedSets.push(p1);
+                if (bM.length > 0) allGeneratedSets.push(bM);
+
+                let crashCounts = {};
+                allGeneratedSets.forEach(set => {
+                    let uniqueItems = Array.from(new Set(set));
+                    uniqueItems.forEach(num => { crashCounts[num] = (crashCounts[num] || 0) + 1; });
+                });
+
+                let bomLines = Object.keys(crashCounts).filter(num => crashCounts[num] >= 2);
+                renderHasil(bomLines, 'lineBom', 'hasilBom');
+
+                document.getElementById('hasilGlobal').style.display = 'block';
+                saveSettings();
+            } catch(e) {
+                console.error("Terjadi kesalahan:", e);
+            }
+        }
+    </script>
+</body>
+</html>
