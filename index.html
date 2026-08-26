@@ -47,6 +47,9 @@
         .ai-item.kmt { background: #fef2f2; border-color: #fecaca; }
         .ai-item-label { display: block; font-size: 8.5px; color: var(--text-sub); font-weight: 700; margin-bottom: 2px; }
         .ai-item-val { display: block; font-size: 12px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
+        .gj-container { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; width: 100%; margin-top: 4px; }
+        .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 2px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; transition: background-color 0.3s; }
+        .gj-box span { display: block; color: var(--text-sub); font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
         .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-copy-prediksi:hover { background: #2563eb; }
         .btn-toggle-filter { width: 100%; padding: 10px; background-color: #f1f5f9; color: var(--primary-dark); border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 10px; margin-bottom: 4px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -190,6 +193,11 @@
                 <div class="ai-item">
                     <span class="ai-item-label">Pola 2</span>
                     <span class="ai-item-val" id="livePola2">-</span>
+                </div>
+
+                <!-- Kontainer Cadangan (Disembunyikan tapi fungsi tetap jalan) -->
+                <div style="display:none;">
+                    <div id="predAs"></div><div id="predKop"></div><div id="predKep"></div><div id="predEk"></div>
                 </div>
             </div>
         </div>
@@ -695,11 +703,20 @@
             } return res;
         }
 
-        // GENERATOR POLTAR KHUSUS BERDASARKAN SEED
+        // FUNGSI INI WAJIB ADA AGAR TIDAK ERROR
+        function cbPred(v1, v2, type) {
+            let s1 = type==='gj' ? getGJ(v1) : getBK(v1); 
+            let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
+            return (s1===s2) ? `<span style="color:#dc2626; font-weight:800">${s1}</span>` : `<span style="color:var(--text-sub); font-weight:normal;">Tardal</span>`;
+        }
+
         function generatePoltar(seed) {
             let arr = [seed, mapIndex[seed], mapMistikLama[seed], mapMistikBaru[seed], (seed+1)%10, (seed+2)%10];
             return Array.from(new Set(arr)).slice(0, 6).sort((a,b)=>a-b);
         }
+
+        function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
+        function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
 
         function process4D(inputStr, pasaranToggle) {
             let asB = parseInt(inputStr[0]), kopB = parseInt(inputStr[1]), kepB = parseInt(inputStr[2]), ekB = parseInt(inputStr[3]);
@@ -965,6 +982,11 @@
                     
                     document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) &amp; ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
 
+                    document.getElementById('predAs').innerHTML = `${cbPred(mD.pAs, aD.pAs, 'gj')}<br>${cbPred(mD.pAs, aD.pAs, 'bk')}`;
+                    document.getElementById('predKop').innerHTML = `${cbPred(mD.pKop, aD.pKop, 'gj')}<br>${cbPred(mD.pKop, aD.pKop, 'bk')}`;
+                    document.getElementById('predKep').innerHTML = `${cbPred(mD.pKep, aD.pKep, 'gj')}<br>${cbPred(mD.pKep, aD.pKep, 'bk')}`;
+                    document.getElementById('predEk').innerHTML = `${cbPred(mD.pEk, aD.pEk, 'gj')}<br>${cbPred(mD.pEk, aD.pEk, 'bk')}`;
+
                     document.getElementById('badgeLiveEkor').innerText = `GABUNGAN H1+H7`;
 
                 } else {
@@ -997,6 +1019,11 @@
                     
                     let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
+
+                    document.getElementById('predAs').innerHTML = `${getGJ(mD.pAs)}<br>${getBK(mD.pAs)}`;
+                    document.getElementById('predKop').innerHTML = `${getGJ(mD.pKop)}<br>${getBK(mD.pKop)}`;
+                    document.getElementById('predKep').innerHTML = `${getGJ(mD.pKep)}<br>${getBK(mD.pKep)}`;
+                    document.getElementById('predEk').innerHTML = `${getGJ(mD.pEk)}<br>${getBK(mD.pEk)}`;
 
                     document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
                 }
