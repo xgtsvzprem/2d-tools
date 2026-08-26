@@ -3,54 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>2D Tools & Formulas 🔥</title>
-    
     <meta name="description" content="Aplikasi Kalkulator AI, BBFS, & Pemangkas Line Otomatis. Minimalis, Cepat, dan Akurat.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="🔥 2D Tools & Formulas | AI, BBFS & Filter Line">
     <meta name="theme-color" content="#ffffff">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
-
+    
     <style>
-        :root {
-            --bg-main: #f8fafc;
-            --card-bg: #ffffff;
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --accent: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --border-color: #e2e8f0;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 16px 8px;
-            box-sizing: border-box;
-            flex-direction: column;
-            -webkit-user-select: none;
-            user-select: none;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        /* TEMA DARK MODE 🌙 */
-        body.dark-mode {
-            --bg-main: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --border-color: #334155;
-        }
+        :root { --bg-main: #f8fafc; --card-bg: #ffffff; --primary: #2563eb; --primary-dark: #1e40af; --accent: #10b981; --danger: #ef4444; --warning: #f59e0b; --border-color: #e2e8f0; --text-main: #0f172a; --text-sub: #64748b; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-main); color: var(--text-main); display: flex; justify-content: flex-start; align-items: center; min-height: 100vh; margin: 0; padding: 16px 8px; box-sizing: border-box; flex-direction: column; -webkit-user-select: none; user-select: none; transition: background-color 0.3s, color 0.3s; }
+        body.dark-mode { --bg-main: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-sub: #94a3b8; --border-color: #334155; }
         body.dark-mode input.input-box, body.dark-mode select.input-box { background-color: #0f172a; color: #f8fafc; border-color: #334155; }
         body.dark-mode .filter-section { background-color: #0f172a; border-color: #334155; }
         body.dark-mode .ai-live-card { background-color: #1e293b; border-color: #3b82f6; }
@@ -61,118 +24,21 @@
         body.dark-mode .gj-box { background-color: #0f172a; border-color: #6b21a8; }
         body.dark-mode .btn-toggle-filter { background-color: #0f172a; border-color: #334155; color: #60a5fa; }
         body.dark-mode .btn-toggle-filter:hover { background-color: #334155; }
-        
-        /* DARK MODE UNTUK CUSTOM SELECT */
-        body.dark-mode .custom-select-display { background-color: #0f172a; color: #f8fafc; border-color: #334155; }
-        body.dark-mode .custom-select-options { background-color: #1e293b; border-color: #334155; }
-        body.dark-mode .custom-select-search { background-color: #0f172a; color: #f8fafc; border-color: #334155; }
-        body.dark-mode .custom-select-option { color: #f8fafc; border-bottom-color: #334155; }
-        body.dark-mode .custom-select-option:hover { background-color: #334155; }
-        body.dark-mode .custom-select-option.selected { background-color: #3b82f6; color: #fff; }
-        body.dark-mode .custom-select-group { color: #94a3b8; background-color: #0f172a; }
-
         input, textarea, select { user-select: text; }
-
-        .container {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 440px;
-            padding: 18px;
-            border-radius: 14px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-            margin-bottom: 12px;
-            box-sizing: border-box;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        
+        .container { background-color: var(--card-bg); width: 100%; max-width: 440px; padding: 18px; border-radius: 14px; border: 1px solid var(--border-color); box-shadow: 0 4px 16px rgba(0,0,0,0.03); margin-bottom: 12px; box-sizing: border-box; transition: background-color 0.3s, border-color 0.3s; }
         .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; transition: border-color 0.3s; }
         h2 { margin: 0; font-size: 16px; color: var(--text-main); font-weight: 800; }
-        
-        /* TOMBOL DARK MODE SWITCH TEKS */
-        .btn-dark { 
-            background: #e2e8f0; 
-            color: #475569; 
-            border: 1px solid #cbd5e1; 
-            font-size: 10px; 
-            font-weight: 800; 
-            padding: 5px 10px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            letter-spacing: 0.5px;
-        }
-        body.dark-mode .btn-dark { 
-            background: #334155; 
-            color: #38bdf8; 
-            border-color: #475569; 
-        }
-
+        .btn-dark { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; font-size: 10px; font-weight: 800; padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px; }
+        body.dark-mode .btn-dark { background: #334155; color: #38bdf8; border-color: #475569; }
         .input-group { margin-bottom: 10px; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-        
         .input-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
-        .clear-icon {
-            position: absolute;
-            right: 12px;
-            color: #94a3b8;
-            font-size: 18px;
-            cursor: pointer;
-            display: none;
-            transition: 0.15s;
-        }
+        .clear-icon { position: absolute; right: 12px; color: #94a3b8; font-size: 18px; cursor: pointer; display: none; transition: 0.15s; }
         .clear-icon:hover { color: var(--danger); transform: scale(1.2); }
-
-        input.input-box, select.input-box {
-            width: 100%;
-            padding: 11px;
-            font-size: 16px;
-            text-align: center;
-            letter-spacing: 2px;
-            border: 1.5px solid var(--border-color);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-weight: 700;
-            color: var(--text-main);
-            background: #fff;
-            transition: border-color 0.2s, background-color 0.3s;
-        }
+        input.input-box, select.input-box { width: 100%; padding: 11px; font-size: 16px; text-align: center; letter-spacing: 2px; border: 1.5px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-weight: 700; color: var(--text-main); background: #fff; transition: border-color 0.2s, background-color 0.3s; }
         input.input-box::placeholder { font-size: 12px; letter-spacing: normal; color: #94a3b8; font-weight: 500; }
         select.input-box { letter-spacing: normal; cursor: pointer; }
         input.input-box:focus, select.input-box:focus, textarea:focus { outline: none; border-color: var(--primary); }
-
-        /* CUSTOM SELECT DENGAN SEARCH */
-        .custom-select-wrapper { position: relative; width: 100%; }
-        .custom-select-display {
-            width: 100%; padding: 9px; font-size: 12px; font-weight: 700; text-align: left;
-            border: 1.5px solid var(--border-color); border-radius: 8px; background: #fff;
-            color: var(--text-main); cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-            box-sizing: border-box;
-        }
-        .custom-select-display::after { content: '▼'; font-size: 10px; color: var(--text-sub); }
-        .custom-select-options {
-            position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
-            background: #fff; border: 1px solid var(--border-color); border-radius: 8px;
-            margin-top: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-height: 250px; overflow-y: auto; display: none;
-        }
-        .custom-select-search {
-            width: 100%; padding: 10px; font-size: 13px; border: none; border-bottom: 1px solid var(--border-color);
-            box-sizing: border-box; outline: none; position: sticky; top: 0; z-index: 101; background: #fff;
-        }
-        .custom-select-group {
-            font-size: 10px; font-weight: 800; color: #64748b; background: #f8fafc;
-            padding: 4px 10px; text-transform: uppercase;
-        }
-        .custom-select-option {
-            padding: 10px; font-size: 13px; font-weight: 600; color: var(--text-main); cursor: pointer;
-            border-bottom: 1px solid #f1f5f9; text-align: left;
-        }
-        .custom-select-option:last-child { border-bottom: none; }
-        .custom-select-option:hover { background-color: #f1f5f9; }
-        .custom-select-option.selected { background-color: var(--primary); color: #fff; }
-
-        /* LIVE PREVIEW ANGKA IKUT (DASBOR MINI) */
         .ai-live-card { display: none; background: #fff; border: 1px solid var(--primary); border-radius: 8px; padding: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08); position: relative; transition: background-color 0.3s; }
         .ai-live-title { font-size: 10px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #bfdbfe; padding-bottom: 4px; }
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 8px; }
@@ -181,20 +47,13 @@
         .ai-item.kmt { background: #fef2f2; border-color: #fecaca; }
         .ai-item-label { display: block; font-size: 8.5px; color: var(--text-sub); font-weight: 700; margin-bottom: 2px; }
         .ai-item-val { display: block; font-size: 12px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
-        
         .gj-container { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; width: 100%; margin-top: 4px; }
         .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 2px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; transition: background-color 0.3s; }
         .gj-box span { display: block; color: var(--text-sub); font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
-        
-        /* TOMBOL COPY PREDIKSI */
         .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-copy-prediksi:hover { background: #2563eb; }
-
-        /* TOMBOL TOGGLE FILTER */
         .btn-toggle-filter { width: 100%; padding: 10px; background-color: #f1f5f9; color: var(--primary-dark); border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 10px; margin-bottom: 4px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-toggle-filter:hover { background-color: #e2e8f0; border-color: #94a3b8; }
-
-        /* SECTION FILTER */
         .filter-section { background-color: #f8fafc; border: 1px solid var(--border-color); padding: 12px 14px; border-radius: 10px; margin-top: 10px; margin-bottom: 10px; transition: background-color 0.3s; }
         .filter-title { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .filter-columns { display: flex; gap: 12px; width: 100%; }
@@ -203,19 +62,14 @@
         .filter-label { font-size: 12px; color: var(--text-main); display: flex; align-items: center; cursor: pointer; margin: 0; }
         .filter-label input[type="checkbox"] { margin-right: 6px; cursor: pointer; accent-color: var(--primary); }
         .badge { font-weight: 800; color: var(--danger); margin-left: 4px; font-size: 11px; }
-
         select.mini-select { margin-left: 4px; padding: 2px 4px; font-size: 11px; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--bg-main); cursor: pointer; outline: none; font-weight: 700; color: var(--text-main); width: 100%; max-width: 110px;}
         .info-icon { display: inline-flex; justify-content: center; align-items: center; background-color: #cbd5e1; color: #475569; border-radius: 50%; width: 15px; height: 15px; font-size: 10px; font-weight: bold; margin-left: 5px; cursor: pointer; transition: 0.15s; flex-shrink:0; }
         .info-icon:hover { background-color: var(--primary); color: #fff; transform: scale(1.1); }
-
-        /* FLOATING MODAL - UMUM */
         .modal-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.45); align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-box { background-color: #fff; padding: 18px; border-radius: 12px; width: 85%; max-width: 340px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); position: relative; border-top: 4px solid var(--primary); max-height: 80vh; overflow-y: auto; transition: background-color 0.3s; }
         .modal-close { position: absolute; right: 14px; top: 10px; font-size: 22px; color: #94a3b8; cursor: pointer; }
         .modal-close:hover { color: var(--danger); }
         .modal-title { margin: 0 0 12px 0; color: var(--text-main); font-size: 14px; font-weight: 800; padding-right: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;}
-        
-        /* RESULTS AREA */
         .result-block { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 8px; transition: background-color 0.3s;}
         .result-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
         .result-header span.badge-hit { color: var(--accent); background: #ecfdf5; padding: 2px 8px; border-radius: 6px; font-size: 11px; border: 1px solid #a7f3d0; }
@@ -223,16 +77,12 @@
         .btn-copy { padding: 5px 12px; background-color: #334155; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; margin-top: 6px; font-weight: 700; float: right; transition: 0.15s; }
         .btn-copy:hover { background-color: var(--primary); }
         .clear { clear: both; }
-
-        /* FOOTER & COUNTER */
         .app-footer { text-align: center; margin-top: 10px; margin-bottom: 20px; color: var(--text-sub); font-size: 11px; width: 100%; max-width: 440px; }
         .app-footer b { color: var(--primary); }
         .visitor-counter { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
     </style>
 </head>
-<body class="dark-mode">
-
-    <!-- MODAL INFO RUMUS -->
+<body>
     <div id="infoModal" class="modal-overlay" onclick="closeModal(event, 'infoModal')">
         <div class="modal-box">
             <span class="modal-close" onclick="closeModalForce('infoModal')">&times;</span>
@@ -241,60 +91,48 @@
         </div>
     </div>
 
-    <!-- KALKULATOR UTAMA -->
     <div class="container">
         <div class="header-container">
             <h2>2D Tools & Formulas 🔥</h2>
-            <!-- TOMBOL DARK MODE -->
-            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: ON</button>
+            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: OFF</button>
         </div>
 
-        <!-- PEMILIHAN MODE TARIKAN & PASARAN (CUSTOM) -->
         <div class="filter-columns" style="margin-bottom: 12px;">
             <div class="input-group" style="margin:0; flex:1;">
-                <label>Mode Tarikan:</label>
-                <select id="modeTarikan" class="input-box" onchange="toggleTarikanMode()" style="padding:9px; font-size:12px; font-weight:700;">
-                    <option value="h1">Harian (H-1)</option>
-                    <option value="h7">Mingguan (H-7)</option>
-                    <option value="gabung">Gabungan H1+H7</option>
-                </select>
-            </div>
-            
-            <div class="input-group" style="margin:0; flex:1;">
                 <label>Pilih Pasaran:</label>
-                <div class="custom-select-wrapper" id="pasaranWrapper">
-                    <div class="custom-select-display" id="pasaranDisplay" onclick="togglePasaranDropdown()">🌍 UMUM</div>
-                    <div class="custom-select-options" id="pasaranOptions">
-                        <input type="text" class="custom-select-search" id="pasaranSearch" placeholder="Cari pasaran..." onkeyup="filterPasaran()" autocomplete="off">
-                        <div id="pasaranList">
-                            <!-- List pasaran akan di-generate oleh JS -->
-                        </div>
-                    </div>
-                </div>
-                <!-- Hidden input untuk menyimpan value asli -->
-                <input type="hidden" id="jenisPasaran" value="umum">
+                <select id="jenisPasaran" class="input-box" onchange="hitungSemua()" style="padding:9px; font-size:12px; font-weight:700;">
+                    <option value="umum">🌍 UMUM</option>
+                    <option value="hk">🇭🇰 HK POOLS</option>
+                    <option value="sgp">🇸🇬 SGP POOLS</option>
+                    <option value="sdy">🇦🇺 SDY POOLS</option>
+                </select>
             </div>
         </div>
 
-        <!-- INPUT 4D (H-1 & H-7) -->
-        <div class="filter-columns" style="margin-bottom: 12px;" id="boxInputs">
+        <div class="filter-columns" style="margin-bottom: 6px;" id="boxInputs">
             <div class="input-group" style="margin:0; flex:1;" id="colH1">
-                <label id="lblH1">Result Terakhir (H-1):</label>
+                <label style="display: flex; align-items: center; cursor: pointer; padding-bottom: 2px;">
+                    <input type="checkbox" id="useH1" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
+                    Result Harian (H-1):
+                </label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputH1" class="input-box" placeholder="Keluaran sebelumnya" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
+                    <input type="text" inputmode="numeric" id="inputH1" class="input-box" placeholder="Harian" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px; transition: opacity 0.3s;" />
                     <span class="clear-icon" onclick="clearInput('inputH1')" style="right:8px;">&times;</span>
                 </div>
             </div>
-            <div class="input-group" style="margin:0; flex:1; display:none;" id="colH7">
-                <label>Result Mg Lalu (H-7):</label>
+            <div class="input-group" style="margin:0; flex:1;" id="colH7">
+                <label style="display: flex; align-items: center; cursor: pointer; padding-bottom: 2px;">
+                    <input type="checkbox" id="useH7" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
+                    Result Mg Lalu (H-7):
+                </label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputH7" class="input-box" placeholder="Keluaran minggu lalu" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px;" />
+                    <input type="text" inputmode="numeric" id="inputH7" class="input-box" placeholder="Mingguan" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px; transition: opacity 0.3s;" />
                     <span class="clear-icon" onclick="clearInput('inputH7')" style="right:8px;">&times;</span>
                 </div>
             </div>
         </div>
+        <div style="font-size:10px; color:var(--text-sub); text-align:center; margin-bottom:12px;">*Centang box untuk beralih mode. Centang keduanya untuk AI Gabungan.</div>
 
-        <!-- LIVE PREVIEW ANGKA IKUT (DASBOR MINI) -->
         <div id="aiLiveCard" class="ai-live-card">
             <div class="ai-live-title">
                 <span>⚡ Live Analitik AI</span>
@@ -305,7 +143,6 @@
             </div>
             
             <div class="ai-grid">
-                <!-- COLOK BEBAS & COLOK MACAU (2D) -->
                 <div class="ai-item highlight">
                     <span class="ai-item-label" style="color:#1d4ed8;">🎯 Colok Bebas</span>
                     <span class="ai-item-val" id="liveCB" style="font-size:13px;">-</span>
@@ -315,19 +152,16 @@
                     <span class="ai-item-val" id="liveCM" style="font-size:13px;">-</span>
                 </div>
                 
-                <!-- BBFS 6-7 DIGIT DENGAN WARNA LAMPU LALU LINTAS -->
                 <div class="ai-item highlight" style="grid-column: span 2;">
-                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 4D (6-7 Digit) [🟢 Kuat | 🔴 Lemah]</span>
-                    <span class="ai-item-val" id="liveBBFS" style="font-size:14px; letter-spacing:2px; font-weight:900;">-</span>
+                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 6-7D (<span style="color:#10b981;">Kuat</span> | <span style="color:#ef4444;">Lemah</span>)</span>
+                    <span class="ai-item-val" id="liveBBFS" style="font-size:14px; letter-spacing:2px; font-weight:800;">-</span>
                 </div>
 
-                <!-- FITUR SHIO & JALUR -->
                 <div class="ai-item" style="grid-column: span 2; text-align: left;">
                     <span class="ai-item-label" style="color: #be123c; margin-bottom:4px; text-align: center;">🐉 Prediksi Shio & Jalur</span>
                     <div style="font-size: 11px; font-weight: 700; color: #881337; line-height: 1.5; padding-left: 8px;" id="liveShio">-</div>
                 </div>
                 
-                <!-- GANJIL GENAP & BESAR KECIL -->
                 <div class="ai-item" style="grid-column: span 2;">
                     <span class="ai-item-label" style="color: #7e22ce; margin-bottom:2px;">🔮 Prediksi Posisi Angka</span>
                     <div class="gj-container">
@@ -367,7 +201,6 @@
             </div>
         </div>
 
-        <!-- POSISI AI & AI PRIBADI -->
         <div class="filter-columns">
             <div class="input-group" style="margin:0; flex:1;">
                 <label>Posisi AI:</label>
@@ -386,14 +219,27 @@
             </div>
         </div>
 
-        <!-- TOMBOL SWITCH ON/OFF FILTER LANJUTAN -->
+        <div class="filter-section" style="padding: 10px; margin-bottom: 12px; border-color: #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 11px; font-weight: 800; color: var(--text-main);">💾 MANAJEMEN PROFIL:</span>
+            </div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+                <select id="selectProfile" class="input-box" style="padding: 6px; font-size: 11px; flex: 2; height: 32px; letter-spacing: normal;" onchange="loadProfile()">
+                    <option value="">-- Pilih Profil Disimpan --</option>
+                </select>
+                <button onclick="hapusProfile()" style="background: var(--danger); color: white; border: none; border-radius: 6px; padding: 0 10px; height: 32px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;">Hapus</button>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 6px; align-items: center;">
+                <input type="text" id="inputProfileName" class="input-box" placeholder="Ketik nama profil baru..." style="padding: 6px 10px; font-size: 12px; flex: 2; height: 32px; letter-spacing: normal; text-align: left;">
+                <button onclick="saveProfile()" style="background: var(--primary); color: white; border: none; border-radius: 6px; padding: 0 10px; height: 32px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;">Simpan</button>
+            </div>
+        </div>
+
         <button id="btnToggleFilter" class="btn-toggle-filter" onclick="toggleFilters()">
             ⚙️ Buka Master Filter & Pangkasan ▼
         </button>
 
-        <!-- WRAPPER FILTER LANJUTAN (DEFAULT DISEMBUNYIKAN) -->
         <div id="advancedFilters" style="display: none; width: 100%;">
-            <!-- FILTER SECTION -->
             <div class="filter-section">
                 <div class="filter-title">
                     <span>⚙️ Master Filter</span>
@@ -432,7 +278,6 @@
                 </div>
             </div>
 
-            <!-- SIFAT & MANUAL -->
             <div class="filter-section">
                 <div class="filter-title">
                     <span>✂️ Pangkas Sifat & Manual</span>
@@ -477,14 +322,12 @@
                     </div>
                 </div>
             </div>
-        </div> <!-- End of advancedFilters -->
+        </div>
     </div>
 
-    <!-- HASIL GENERATE -->
     <div id="hasilGlobal" class="container" style="display:none; border-top: 4px solid var(--accent);">
         <h2 style="font-size: 15px; color:var(--accent); margin-bottom: 12px; text-align: left;">🎯 Hasil Line Siap Bet</h2>
-
-        <!-- BLOK EKSKLUSIF: TOP BOM (IRISAN) -->
+        
         <div class="result-block" style="border-color: #f59e0b; background: #fffbeb;">
             <div class="result-header">
                 <div style="display:flex; flex-direction:column;">
@@ -559,7 +402,6 @@
         </div>
     </div>
 
-    <!-- FOOTER & COUNTER -->
     <div class="app-footer">
         Created by <b>Koh Aping</b> 🔥
         <div class="visitor-counter">
@@ -568,117 +410,6 @@
     </div>
 
     <script>
-        // ================= DATABASE PASARAN (Top 3 + Abjad Besar) =================
-        const pasaranDB = [
-            { id: "hk", label: "🇭🇰 HK POOLS", type: "top" },
-            { id: "sgp", label: "🇸🇬 SGP POOLS", type: "top" },
-            { id: "sdy", label: "🇦🇺 SDY POOLS", type: "top" },
-            { id: "arizona", label: "Arizona", type: "other" },
-            { id: "bullseye", label: "Bullseye", type: "other" },
-            { id: "california", label: "California", type: "other" },
-            { id: "cambodia", label: "Cambodia", type: "other" },
-            { id: "carolina-day", label: "Carolina Day", type: "other" },
-            { id: "china", label: "China", type: "other" },
-            { id: "florida-eve", label: "Florida Eve", type: "other" },
-            { id: "florida-mid", label: "Florida Mid", type: "other" },
-            { id: "georgia-eve", label: "Georgia Evening", type: "other" },
-            { id: "georgia-mid", label: "Georgia Midday", type: "other" },
-            { id: "indiana-eve", label: "Indiana Evening", type: "other" },
-            { id: "indiana-mid", label: "Indiana Midday", type: "other" },
-            { id: "japan", label: "Japan", type: "other" },
-            { id: "kansas", label: "Kansas", type: "other" },
-            { id: "kentucky-eve", label: "Kentucky Eve", type: "other" },
-            { id: "kentucky-mid", label: "Kentucky Mid", type: "other" },
-            { id: "louisiana", label: "Louisiana", type: "other" },
-            { id: "macau", label: "Macau", type: "other" },
-            { id: "michigan-eve", label: "Michigan Evening", type: "other" },
-            { id: "michigan-mid", label: "Michigan Midday", type: "other" },
-            { id: "missouri-eve", label: "Missouri Evening", type: "other" },
-            { id: "missouri-mid", label: "Missouri Midday", type: "other" },
-            { id: "nevada", label: "Nevada", type: "other" },
-            { id: "new-york-eve", label: "New York Eve", type: "other" },
-            { id: "new-york-mid", label: "New York Mid", type: "other" },
-            { id: "ohio-eve", label: "Ohio Evening", type: "other" },
-            { id: "ohio-mid", label: "Ohio Midday", type: "other" },
-            { id: "oregon-03", label: "Oregon 03:00", type: "other" },
-            { id: "oregon-06", label: "Oregon 06:00", type: "other" },
-            { id: "oregon-09", label: "Oregon 09:00", type: "other" },
-            { id: "oregon-12", label: "Oregon 12:00", type: "other" },
-            { id: "pcso", label: "PCSO", type: "other" },
-            { id: "pennsylvania-day", label: "Pennsylvania Day", type: "other" },
-            { id: "pennsylvania-eve", label: "Pennsylvania Eve", type: "other" },
-            { id: "taiwan", label: "Taiwan", type: "other" },
-            { id: "tennessee-eve", label: "Tennessee Evening", type: "other" },
-            { id: "tennessee-mid", label: "Tennessee Midday", type: "other" },
-            { id: "tennessee-morn", label: "Tennessee Morning", type: "other" },
-            { id: "texas-day", label: "Texas Day", type: "other" },
-            { id: "texas-eve", label: "Texas Eve", type: "other" },
-            { id: "texas-morn", label: "Texas Morning", type: "other" },
-            { id: "texas-night", label: "Texas Night", type: "other" },
-            { id: "virginia-day", label: "Virginia Day", type: "other" },
-            { id: "virginia-night", label: "Virginia Night", type: "other" },
-            { id: "washington-dc-eve", label: "Washington DC Evening", type: "other" },
-            { id: "washington-dc-mid", label: "Washington DC Midday", type: "other" }
-        ];
-
-        // Init Dropdown
-        function initPasaranDropdown() {
-            const list = document.getElementById('pasaranList');
-            list.innerHTML = '';
-            
-            list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('umum', '🌍 UMUM')">🌍 UMUM</div>`;
-            list.innerHTML += `<div class="custom-select-group">🔥 Pasaran Utama</div>`;
-            pasaranDB.filter(p => p.type === 'top').forEach(p => {
-                list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('${p.id}', '${p.label}')">${p.label}</div>`;
-            });
-            
-            list.innerHTML += `<div class="custom-select-group">WLA & LOKAL (A-Z)</div>`;
-            pasaranDB.filter(p => p.type === 'other').forEach(p => {
-                list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('${p.id}', '${p.label}')">${p.label}</div>`;
-            });
-        }
-
-        function togglePasaranDropdown() {
-            const options = document.getElementById('pasaranOptions');
-            options.style.display = options.style.display === 'block' ? 'none' : 'block';
-            if(options.style.display === 'block') {
-                document.getElementById('pasaranSearch').focus();
-            }
-        }
-
-        function filterPasaran() {
-            const keyword = document.getElementById('pasaranSearch').value.toLowerCase();
-            const options = document.querySelectorAll('.custom-select-option');
-            options.forEach(opt => {
-                const text = opt.innerText.toLowerCase();
-                if(text.includes(keyword)) {
-                    opt.style.display = 'block';
-                } else {
-                    opt.style.display = 'none';
-                }
-            });
-        }
-
-        function selectPasaran(id, label) {
-            document.getElementById('jenisPasaran').value = id;
-            let cleanLabel = label.replace(/🇭🇰|🇸🇬|🇦🇺|🌍/g, '').trim().toUpperCase();
-            if(id !== 'umum') { cleanLabel += ' POOLS'; }
-            
-            document.getElementById('pasaranDisplay').innerHTML = label + " <span style='font-size:10px; color:#94a3b8;'>▼</span>";
-            document.getElementById('pasaranDisplay').setAttribute('data-clean', cleanLabel);
-            
-            document.getElementById('pasaranOptions').style.display = 'none';
-            hitungSemua();
-        }
-
-        document.addEventListener('click', function(e) {
-            const wrapper = document.getElementById('pasaranWrapper');
-            if (wrapper && !wrapper.contains(e.target)) {
-                document.getElementById('pasaranOptions').style.display = 'none';
-            }
-        });
-
-        // ================= DARK MODE TOGGLE =================
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             let isDark = document.body.classList.contains('dark-mode');
@@ -688,8 +419,8 @@
 
         let savedTheme = localStorage.getItem('2d_darkmode');
         if (savedTheme === null) {
-            savedTheme = 'true';
-            localStorage.setItem('2d_darkmode', 'true');
+            savedTheme = 'false';
+            localStorage.setItem('2d_darkmode', 'false');
         }
 
         if (savedTheme === 'true') {
@@ -700,16 +431,81 @@
             document.getElementById('btnDark').innerText = 'DARK MODE: OFF';
         }
 
-        // ================= AUTO SAVE & LOAD SETTINGS =================
+        function getProfiles() {
+            let p = localStorage.getItem('2d_profiles');
+            return p ? JSON.parse(p) : {};
+        }
+
+        function saveProfile() {
+            let name = document.getElementById('inputProfileName').value.trim();
+            if(!name) { alert("Ketik nama profil dulu di kotak sebelahnya!"); return; }
+            
+            const settings = {};
+            document.querySelectorAll('input[type="checkbox"]:not(#useH1):not(#useH7)').forEach(el => settings[el.id] = el.checked);
+            document.querySelectorAll('select:not(#selectProfile)').forEach(el => settings[el.id] = el.value);
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
+            
+            let profiles = getProfiles();
+            profiles[name] = settings;
+            localStorage.setItem('2d_profiles', JSON.stringify(profiles));
+            
+            document.getElementById('inputProfileName').value = '';
+            updateProfileDropdown(name);
+            alert("Profil '" + name + "' berhasil disimpan!");
+        }
+
+        function loadProfile() {
+            let name = document.getElementById('selectProfile').value;
+            if(!name) return;
+            
+            let profiles = getProfiles();
+            let settings = profiles[name];
+            if(settings) {
+                document.querySelectorAll('input[type="checkbox"]:not(#useH1):not(#useH7)').forEach(el => {
+                    if(settings[el.id] !== undefined) el.checked = settings[el.id];
+                });
+                document.querySelectorAll('select:not(#selectProfile)').forEach(el => {
+                    if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
+                });
+                ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
+                    if(settings[id] !== undefined) {
+                        let el = document.getElementById(id);
+                        el.value = settings[id];
+                        toggleClear(el);
+                    }
+                });
+                hitungSemua();
+            }
+        }
+
+        function hapusProfile() {
+            let name = document.getElementById('selectProfile').value;
+            if(!name) { alert("Pilih dulu profil yang mau dihapus dari dropdown!"); return; }
+            if(confirm("Yakin ingin menghapus profil '" + name + "'?")) {
+                let profiles = getProfiles();
+                delete profiles[name];
+                localStorage.setItem('2d_profiles', JSON.stringify(profiles));
+                updateProfileDropdown();
+            }
+        }
+
+        function updateProfileDropdown(selectedName = "") {
+            let select = document.getElementById('selectProfile');
+            select.innerHTML = '<option value="">-- Pilih Profil Disimpan --</option>';
+            let profiles = getProfiles();
+            for(let name in profiles) {
+                let opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                if(name === selectedName) opt.selected = true;
+                select.appendChild(opt);
+            }
+        }
+
         function saveSettings() {
             const settings = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
-            document.querySelectorAll('select.input-box').forEach(el => settings[el.id] = el.value);
-            
-            settings['jenisPasaran'] = document.getElementById('jenisPasaran').value;
-            settings['jenisPasaranDisplay'] = document.getElementById('pasaranDisplay').innerHTML;
-            settings['jenisPasaranClean'] = document.getElementById('pasaranDisplay').getAttribute('data-clean');
-
+            document.querySelectorAll('select:not(#selectProfile)').forEach(el => settings[el.id] = el.value);
             ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
             localStorage.setItem('2d_settings', JSON.stringify(settings));
         }
@@ -721,16 +517,9 @@
                 document.querySelectorAll('input[type="checkbox"]').forEach(el => {
                     if(settings[el.id] !== undefined) el.checked = settings[el.id];
                 });
-                document.querySelectorAll('select.input-box').forEach(el => {
+                document.querySelectorAll('select:not(#selectProfile)').forEach(el => {
                     if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
                 });
-                
-                if(settings['jenisPasaran']) {
-                    document.getElementById('jenisPasaran').value = settings['jenisPasaran'];
-                    if(settings['jenisPasaranDisplay']) document.getElementById('pasaranDisplay').innerHTML = settings['jenisPasaranDisplay'];
-                    if(settings['jenisPasaranClean']) document.getElementById('pasaranDisplay').setAttribute('data-clean', settings['jenisPasaranClean']);
-                }
-
                 ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
                     if(settings[id] !== undefined) {
                         let el = document.getElementById(id);
@@ -738,56 +527,29 @@
                         toggleClear(el);
                     }
                 });
-                toggleTarikanMode();
+                hitungSemua(); 
             }
         }
 
-        // ================= FITUR COPY PREDIKSI KE CLIPBOARD =================
         function copyPrediksiTeks(btn) {
             let cb = document.getElementById("liveCB").innerText;
             let cm = document.getElementById("liveCM").innerText;
-            
-            // Ambil BBFS murni tanpa tag HTML warna untuk hasil copy
-            let bbfsRawElem = document.getElementById("liveBBFS");
-            let bbfs = bbfsRawElem.innerText.replace(/[^0-9]/g, '').split('').join(' ');
-            
-            let shioHtml = document.getElementById("liveShio").innerHTML;
-            let shioText = shioHtml.replace(/<br\s*[\/]?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
+            // .innerText automatically strips the HTML <span> tags, leaving only the digits!
+            let bbfs = document.getElementById("liveBBFS").innerText;
 
-            const shioGantiEmoji = {
-                "(Naga)": "🐉", "(Kelinci)": "🐇", "(Harimau)": "🐅", "(Kerbau)": "🐃", 
-                "(Tikus)": "🐁", "(Babi)": "🐖", "(Anjing)": "🐕", "(Ayam)": "🐓", 
-                "(Monyet)": "🐒", "(Kambing)": "🐐", "(Kuda)": "🐎", "(Ular)": "🐍"
-            };
-            for (let nama in shioGantiEmoji) {
-                shioText = shioText.split(nama).join(shioGantiEmoji[nama]);
+            let useH1 = document.getElementById('useH1').checked;
+            let useH7 = document.getElementById('useH7').checked;
+
+            let judul = "Prediksi Analitik AI";
+            if (useH1 && useH7) {
+                judul = "Prediksi berdasarkan Gabungan keluaran (H-1 + H-7)";
+            } else if (useH7) {
+                judul = "Prediksi berdasarkan Keluaran minggu lalu (H-7)";
+            } else if (useH1) {
+                judul = "Prediksi berdasarkan Keluaran sebelumnya (H-1)";
             }
 
-            function formatPos(id) {
-                return document.getElementById(id).innerHTML.replace(/<br\s*[\/]?>/gi, ' - ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
-            }
-
-            let asText = formatPos("predAs");
-            let kopText = formatPos("predKop");
-            let kepText = formatPos("predKep");
-            let ekText = formatPos("predEk");
-
-            let namaPasaran = document.getElementById('pasaranDisplay').getAttribute('data-clean') || 'UMUM';
-
-            let format = `🎯 PREDIKSI ${namaPasaran}
-
-• CB: ${cb}
-• CM: ${cm}
-• BBFS: ${bbfs}
-
-🐉 SHIO & JALUR LEMAH
-${shioText}
-
-🔮 POSISI ANGKA
-As: ${asText}
-Kop: ${kopText}
-Kep: ${kepText}
-Ekr: ${ekText}`;
+            let format = `${judul}\n* CB: ${cb}\n* CM: ${cm}\n* BBFS: ${bbfs}`;
 
             navigator.clipboard.writeText(format).then(function() {
                 let textAwal = btn.innerText; 
@@ -798,11 +560,10 @@ Ekr: ${ekText}`;
                     btn.style.backgroundColor = ""; 
                 }, 1400);
             }).catch(function(err) { 
-                alert("Berhasil disalin!"); 
+                alert("Gagal menyalin!"); 
             });
         }
 
-        // ================= AUTO SET PASARAN JAWA (HARI INI WIB) =================
         function autoSetPasaranJawa() {
             let d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
             let utcDate = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
@@ -823,12 +584,11 @@ Ekr: ${ekText}`;
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            initPasaranDropdown();
             autoSetPasaranJawa();
-            loadSettings(); 
+            updateProfileDropdown();
+            loadSettings();
         });
 
-        // ================= SISTEM MODAL UMUM =================
         const infoData = {
             'jarak': { title: 'Pangkas Jarak Lemah', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Angka 2D terakhir ditambah 20 angka ke depan diprediksi menjadi angka lemah.' },
             'kepala': { title: 'Pangkas Mati Kepala', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Selisih As dikurangi Kop menjadi angka mati mutlak di posisi Kepala.' },
@@ -851,16 +611,6 @@ Ekr: ${ekText}`;
 
         function closeModal(event, id) { if (event.target.id === id) document.getElementById(id).style.display = 'none'; }
         function closeModalForce(id) { document.getElementById(id).style.display = 'none'; }
-
-        function toggleTarikanMode() {
-            let mode = document.getElementById('modeTarikan').value;
-            let colH1 = document.getElementById('colH1'); let colH7 = document.getElementById('colH7'); let lblH1 = document.getElementById('lblH1');
-            
-            if(mode === 'h1') { colH1.style.display = 'block'; colH7.style.display = 'none'; lblH1.innerText = 'Result Terakhir (H-1):'; } 
-            else if(mode === 'h7') { colH1.style.display = 'none'; colH7.style.display = 'block'; } 
-            else if(mode === 'gabung') { colH1.style.display = 'block'; colH7.style.display = 'block'; lblH1.innerText = 'Result Terakhir (H-1):'; }
-            hitungSemua();
-        }
 
         function toggleFilters() {
             let filterDiv = document.getElementById('advancedFilters'); let btn = document.getElementById('btnToggleFilter');
@@ -888,8 +638,17 @@ Ekr: ${ekText}`;
             ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
                 let el = document.getElementById(id); el.value = ''; toggleClear(el);
             });
+            document.getElementById('selectProfile').value = '';
             hitungSemua();
         }
+
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
+            if (e.ctrlKey && e.shiftKey && (['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key))) { e.preventDefault(); return false; }
+            if (e.ctrlKey && (['u', 'U', 's', 'S'].includes(e.key))) { e.preventDefault(); return false; }
+        });
+        document.addEventListener('dragstart', e => e.preventDefault());
 
         const mapMistikLama = [1, 0, 5, 8, 7, 2, 9, 4, 3, 6]; const mapMistikBaru = [8, 7, 6, 9, 5, 4, 2, 1, 0, 3]; const mapIndex = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4];
         const tabelTaysen = [
@@ -903,12 +662,10 @@ Ekr: ${ekText}`;
             3: {ai1: [5,7,9], ai2: [2,8,6], kmt: [0,1,3,4]}, 4: {ai1: [3,5,7], ai2: [0,2,6], kmt: [1,4,8,9]}, 5: {ai1: [1,7,9], ai2: [4,0,8], kmt: [2,3,5,6]},
             6: {ai1: [1,7,9], ai2: [2,0,8], kmt: [3,4,5,6]}, 7: {ai1: [3,1,9], ai2: [2,0,6], kmt: [4,5,7,8]}, 8: {ai1: [5,3,1], ai2: [0,2,4], kmt: [6,7,8,9]}, 9: {ai1: [3,5,7], ai2: [0,4,8], kmt: [1,2,6,9]}
         };
-
         const ekorMainMap = {
             0: [4,6,8,1,3,7], 1: [3,5,9,2,4,8], 2: [0,6,3,7,5,9], 3: [1,7,0,2,4,6], 4: [0,2,8,1,5,9],
             5: [1,3,7,0,2,6], 6: [0,4,8,1,7,9], 7: [1,3,5,0,4,8], 8: [0,6,4,1,5,9], 9: [1,5,7,0,2,6]
         };
-
         const aiTabel2DMap = {
             "01": "567", "51": "012", "02": "567", "52": "012", "03": "123", "53": "678", "04": "123", "54": "456", "05": "123", "55": "456",
             "06": "234", "56": "789", "07": "234", "57": "345", "08": "678", "58": "123", "09": "012", "59": "567", "10": "789", "60": "234",
@@ -935,13 +692,11 @@ Ekr: ${ekText}`;
             8: ["06","07","08","11","15","24","26","33","34","37","42","43","44","45","48","51","54","55","56","59","60","62","65","66","70","73","77","79","80","84","95","97"],
             9: ["06","08","17","18","19","22","26","35","37","44","45","48","53","54","55","56","59","60","62","65","66","67","71","73","76","77","80","81","84","88","91","95"]
         };
-
         const rumusShioMain = {
             1: [2,5,8,10,11], 2: [1,4,7,9,12], 3: [2,5,6,8,11], 4: [1,4,7,9,10],
             5: [2,3,6,8,11], 6: [1,4,5,7,12], 7: [2,6,8,10,11], 8: [1,4,7,9,12],
             9: [2,5,8,10,11], 10: [1,3,6,9,12], 11: [2,4,7,10,11], 12: [1,3,6,9,12]
         };
-
         const shioNama = {
             1: "Naga", 2: "Kelinci", 3: "Harimau", 4: "Kerbau", 5: "Tikus", 6: "Babi",
             7: "Anjing", 8: "Ayam", 9: "Monyet", 10: "Kambing", 11: "Kuda", 12: "Ular"
@@ -974,7 +729,6 @@ Ekr: ${ekText}`;
         function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
         function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
 
-        // Core processing logic
         function process4D(inputStr, pasaranToggle) {
             let asB = parseInt(inputStr[0]), kopB = parseInt(inputStr[1]), kepB = parseInt(inputStr[2]), ekB = parseInt(inputStr[3]);
             let str2D = `${kepB}${ekB}`; let num2D = parseInt(str2D);
@@ -993,47 +747,36 @@ Ekr: ${ekText}`;
             let keyEkor = ekB, key2D = str2D;
             let valPola1 = jadikanSatuDigit(asB + kopB), valPola2 = jadikanSatuDigit(kepB + ekB);
 
-            let pAs, pKop, pKep, pEk;
-            let cb1, cb2, cm1, cm2, bbfsArray = [];
+            let pAs, pKop, pKep, pEk, cb1, cb2, cm1, cm2, bbfsArray = [];
             let j1 = (asB + ekB) % 10, j2 = (kopB + kepB) % 10;
-            let unitTaysen = taysenVal % 10;
 
+            let bbfsBase = new Set([asB, kopB, kepB, ekB]);
             if (pasaranToggle === 'hk') {
                 keyEkor = mapMistikLama[ekB]; key2D = `${mapMistikLama[kepB]}${mapMistikLama[ekB]}`;
                 valPola1 = jadikanSatuDigit(asB + ekB); valPola2 = jadikanSatuDigit(kopB + kepB);
                 cb1 = mapIndex[ekB]; cb2 = mapMistikLama[asB]; if(cb1 === cb2) cb2 = mapMistikBaru[kepB];
-                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[ekB], j2]);
-                if(bbfsSet.size < 7) bbfsSet.add(mapMistikLama[asB]);
-                if(bbfsSet.size < 7) bbfsSet.add(mapMistikBaru[kepB]);
-                bbfsArray = Array.from(bbfsSet).slice(0, 7).sort((a,b) => a-b);
+                bbfsBase.add(mapIndex[ekB]); bbfsBase.add(j2); bbfsBase.add(mapMistikLama[asB]); bbfsBase.add(mapMistikBaru[kepB]); bbfsBase.add(mapIndex[kopB]);
                 pAs = (asB + kepB) % 10; pKop = Math.abs(kopB - ekB); pKep = (asB + kopB + kepB) % 10; pEk = (Math.abs(kepB - ekB) + asB) % 10;
             } else if (pasaranToggle === 'sgp') {
                 keyEkor = mapIndex[ekB]; key2D = `${mapIndex[kepB]}${mapIndex[ekB]}`;
                 valPola1 = mapIndex[jadikanSatuDigit(asB + kopB)]; valPola2 = mapMistikLama[jadikanSatuDigit(kepB + ekB)];
                 cb1 = mapMistikBaru[kopB]; cb2 = mapIndex[kepB]; if(cb1 === cb2) cb2 = mapMistikLama[ekB];
-                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapMistikBaru[kopB], j1]);
-                if(bbfsSet.size < 7) bbfsSet.add(mapIndex[kepB]);
-                if(bbfsSet.size < 7) bbfsSet.add(mapMistikLama[ekB]);
-                bbfsArray = Array.from(bbfsSet).slice(0, 7).sort((a,b) => a-b);
+                bbfsBase.add(mapMistikBaru[kopB]); bbfsBase.add(mapIndex[kepB]); bbfsBase.add(j1); bbfsBase.add(mapMistikLama[asB]); bbfsBase.add(j2);
                 pAs = Math.abs(asB - kopB); pKop = (kepB + ekB) % 10; pKep = (asB + ekB) % 10; pEk = (kopB + kepB) % 10;
             } else if (pasaranToggle === 'sdy') {
                 keyEkor = mapMistikBaru[ekB]; key2D = `${ekB}${kepB}`;
                 valPola1 = mapMistikBaru[jadikanSatuDigit(asB + kopB)]; valPola2 = mapIndex[jadikanSatuDigit(kepB + ekB)];
                 cb1 = j1; cb2 = mapMistikBaru[ekB]; if(cb1 === cb2) cb2 = mapIndex[kopB];
-                let bbfsSet = new Set([asB, kopB, kepB, ekB, j1, mapMistikLama[kepB]]);
-                if(bbfsSet.size < 7) bbfsSet.add(mapMistikBaru[ekB]);
-                if(bbfsSet.size < 7) bbfsSet.add(mapIndex[kopB]);
-                bbfsArray = Array.from(bbfsSet).slice(0, 7).sort((a,b) => a-b);
+                bbfsBase.add(j1); bbfsBase.add(mapMistikBaru[ekB]); bbfsBase.add(mapMistikLama[kepB]); bbfsBase.add(mapIndex[asB]); bbfsBase.add(j2);
                 pAs = (ekB + kepB) % 10; pKop = Math.abs(ekB - asB); pKep = (kopB + asB + ekB) % 10; pEk = (Math.abs(ekB - kopB) + asB) % 10;
             } else {
                 cb1 = mapMistikLama[j2]; cb2 = mapIndex[ekB];
                 if (cb1 === cb2) cb2 = mapMistikBaru[kepB]; if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
-                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[kepB], j1]);
-                if(bbfsSet.size < 7) bbfsSet.add(mapMistikBaru[kopB]);
-                if(bbfsSet.size < 7) bbfsSet.add(mapMistikLama[j2]);
-                bbfsArray = Array.from(bbfsSet).slice(0, 7).sort((a,b) => a-b);
-                pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kopB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
+                bbfsBase.add(mapIndex[kepB]); bbfsBase.add(mapMistikBaru[kopB]); bbfsBase.add(j1); bbfsBase.add(mapMistikLama[ekB]); bbfsBase.add(j2);
+                pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kepB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
             }
+
+            bbfsArray = Array.from(bbfsBase).slice(0, 7).sort((a,b) => a-b);
 
             cm1 = `${cb1}${cb2}`;
             cm2 = `${(cb1+2)%10}${(cb2+3)%10}`;
@@ -1058,16 +801,36 @@ Ekr: ${ekText}`;
             let shioAwal = num2D % 12; if(shioAwal === 0) shioAwal = 12;
             let shioON = rumusShioMain[shioAwal] || [];
             let shioLemah = (kepB + ekB) % 12; if(shioLemah === 0) shioLemah = 12;
-            
             let jalurLemah = (asB + kopB + kepB + ekB) % 3 + 1;
             let jalurMainArr = [1,2,3].filter(j => j !== jalurLemah);
 
             return {
                 asB, kopB, kepB, ekB, str2D, num2D, matiEkorTesson, arrWakSalarabo, jarakStart, jarakEnd, matiKepala, matiEkor,
                 aiPola1, aiPola2, aiTabel, aiTabelStr, dataAI, baseEkorTop, baseEkorCD, baseEkorMain, arrEkorMain,
-                cb1, cb2, cm1, cm2, bbfsArray, pAs, pKop, pKep, pEk, 
-                shioON, shioLemah, jalurLemah, jalurMainArr
+                cb1, cb2, cm1, cm2, bbfsArray, pAs, pKop, pKep, pEk, shioON, shioLemah, jalurLemah, jalurMainArr
             };
+        }
+
+        function renderHasil(arrayData, elHitId, elTxtId) {
+            if (!arrayData || arrayData.length === 0) {
+                document.getElementById(elHitId).innerText = "0 LN";
+                document.getElementById(elTxtId).value = "Data Tidak Ditemukan";
+                return [];
+            }
+            let sorted = arrayData.sort((a,b) => parseInt(a) - parseInt(b));
+            let str = sorted.join('*');
+            if(str) str += '#';
+            document.getElementById(elHitId).innerText = sorted.length + " LN";
+            document.getElementById(elTxtId).value = str;
+            return sorted;
+        }
+
+        function colorizeBBFS(arr, strongSet, weakSet) {
+            return arr.map(num => {
+                if (strongSet.has(num)) return `<span style="color:#10b981;">${num}</span>`;
+                if (weakSet.has(num)) return `<span style="color:#ef4444;">${num}</span>`;
+                return `<span style="color:var(--text-main);">${num}</span>`;
+            }).join('');
         }
 
         function hitungSemua() {
@@ -1075,41 +838,52 @@ Ekr: ${ekText}`;
             const allChecked = masterFilters.every(id => document.getElementById(id).checked);
             document.getElementById('chkAllMaster').checked = allChecked;
 
-            let modeTarikan = document.getElementById('modeTarikan').value;
             let inputH1 = document.getElementById('inputH1').value;
             let inputH7 = document.getElementById('inputH7').value;
             let inputManual = document.getElementById('inputAIManual').value;
+
+            let useH1 = document.getElementById('useH1').checked;
+            let useH7 = document.getElementById('useH7').checked;
+
+            document.getElementById('inputH1').style.opacity = useH1 ? '1' : '0.4';
+            document.getElementById('inputH7').style.opacity = useH7 ? '1' : '0.4';
+            
+            let modeTarikan = '';
+            if (useH1 && useH7 && inputH1.length === 4 && inputH7.length === 4) modeTarikan = 'gabung';
+            else if (useH1 && inputH1.length === 4) modeTarikan = 'h1';
+            else if (useH7 && inputH7.length === 4) modeTarikan = 'h7';
             
             let pasaranToggle = document.getElementById('jenisPasaran').value;
             let pasaranFilter = document.getElementById('pasaranJawa').value;
             let posisiPilihan = document.getElementById('pilihanPosisi').value; 
 
-            let d1 = null, d2 = null;
-            let isValid = false;
+            let d1 = null, d2 = null, isValid = false;
 
-            if (modeTarikan === 'h1' && inputH1.length === 4) { d1 = process4D(inputH1, pasaranToggle); isValid = true; }
-            else if (modeTarikan === 'h7' && inputH7.length === 4) { d2 = process4D(inputH7, pasaranToggle); isValid = true; }
-            else if (modeTarikan === 'gabung' && inputH1.length === 4 && inputH7.length === 4) { d1 = process4D(inputH1, pasaranToggle); d2 = process4D(inputH7, pasaranToggle); isValid = true; }
+            if (modeTarikan === 'h1') { d1 = process4D(inputH1, pasaranToggle); isValid = true; }
+            else if (modeTarikan === 'h7') { d2 = process4D(inputH7, pasaranToggle); isValid = true; }
+            else if (modeTarikan === 'gabung') { d1 = process4D(inputH1, pasaranToggle); d2 = process4D(inputH7, pasaranToggle); isValid = true; }
 
             let mD = (modeTarikan === 'h7') ? d2 : d1; 
             let aD = (modeTarikan === 'gabung') ? d2 : null; 
 
             let useJarak = document.getElementById('chkJarak').checked, useKepala = document.getElementById('chkKepala').checked, useEkor = document.getElementById('chkEkor').checked, useTesson = document.getElementById('chkTesson').checked, useWakSalarabo = document.getElementById('chkWakSalarabo').checked, useKelipatan = document.getElementById('chkKelipatan').checked, useBijiLemah = document.getElementById('chkBijiLemah').checked, useMatiGab = document.getElementById('chkMatiGab').checked, usePasaran = document.getElementById('chkPasaranJawa').checked, useKembar = document.getElementById('chkKembar').checked;
             
-            let inputMatiKepala = document.getElementById('inputMatiKepala').value; let arrMatiKepalaManual = []; if (inputMatiKepala.length > 0) { for(let i=0; i<inputMatiKepala.length; i++) arrMatiKepalaManual.push(parseInt(inputMatiKepala[i])); }
-            let inputMatiEkor = document.getElementById('inputMatiEkor').value; let arrMatiEkorManual = []; if (inputMatiEkor.length > 0) { for(let i=0; i<inputMatiEkor.length; i++) arrMatiEkorManual.push(parseInt(inputMatiEkor[i])); }
-            let inputBiji = document.getElementById('inputBiji').value; let arrBijiMati = []; if (inputBiji.length > 0) { for(let i=0; i<inputBiji.length; i++) arrBijiMati.push(parseInt(inputBiji[i])); }
+            let inputMatiKepala = document.getElementById('inputMatiKepala').value; let arrMatiKepalaManual = []; if (inputMatiKepala.length > 0) { for(let i=0; i<inputMatiKepala.length; i++) arrMatiKepalaManual.push(Number(inputMatiKepala[i])); }
+            let inputMatiEkor = document.getElementById('inputMatiEkor').value; let arrMatiEkorManual = []; if (inputMatiEkor.length > 0) { for(let i=0; i<inputMatiEkor.length; i++) arrMatiEkorManual.push(Number(inputMatiEkor[i])); }
+            let inputBiji = document.getElementById('inputBiji').value; let arrBijiMati = []; if (inputBiji.length > 0) { for(let i=0; i<inputBiji.length; i++) arrBijiMati.push(Number(inputBiji[i])); }
+            
             let kGanjil = document.getElementById('kGanjil').checked, kGenap = document.getElementById('kGenap').checked, kBesar = document.getElementById('kBesar').checked, kKecil = document.getElementById('kKecil').checked, eGanjil = document.getElementById('eGanjil').checked, eGenap = document.getElementById('eGenap').checked, eBesar = document.getElementById('eBesar').checked, eKecil = document.getElementById('eKecil').checked;
 
             function applyFilter(lines) {
                 return lines.filter(n => {
-                    let v = parseInt(n), k = parseInt(n[0]), e = parseInt(n[1]);
+                    let k = +n[0], e = +n[1], v = +n;
                     
                     if (kGanjil && k % 2 !== 0) return false; if (kGenap && k % 2 === 0) return false;
                     if (kBesar && k >= 5) return false; if (kKecil && k <= 4) return false;
                     if (eGanjil && e % 2 !== 0) return false; if (eGenap && e % 2 === 0) return false;
                     if (eBesar && e >= 5) return false; if (eKecil && e <= 4) return false;
-                    if (useKembar && k == e) return false;
+                    if (useKembar && k === e) return false;
+                    
                     if (arrBijiMati.length > 0 && arrBijiMati.includes(jadikanSatuDigit(k + e))) return false;
                     if (arrMatiKepalaManual.length > 0 && arrMatiKepalaManual.includes(k)) return false;
                     if (arrMatiEkorManual.length > 0 && arrMatiEkorManual.includes(e)) return false;
@@ -1125,7 +899,7 @@ Ekr: ${ekText}`;
                     if (d1) {
                         if (useTesson && e == d1.matiEkorTesson) return false;
                         if (useWakSalarabo && d1.arrWakSalarabo.includes(n)) return false;
-                        if (useKelipatan && Math.abs(v - d1.num2D) % 12 == 0) return false;
+                        if (useKelipatan && Math.abs(v - d1.num2D) % 12 === 0) return false;
                         if (useBijiLemah && bijiLemahMap[(d1.kepB + d1.ekB) % 10].includes(n)) return false;
                         if (useMatiGab) { let mgStr = matiGabungMap[Math.abs(d1.kopB - d1.kepB)]; if (mgStr.includes(k.toString()) && mgStr.includes(e.toString())) return false; }
                         if (useJarak) { if (d1.jarakStart <= d1.jarakEnd) { if (v >= d1.jarakStart && v <= d1.jarakEnd) return false; } else { if (v >= d1.jarakStart || v <= d1.jarakEnd) return false; } }
@@ -1135,7 +909,7 @@ Ekr: ${ekText}`;
                     if (d2) {
                         if (useTesson && e == d2.matiEkorTesson) return false;
                         if (useWakSalarabo && d2.arrWakSalarabo.includes(n)) return false;
-                        if (useKelipatan && Math.abs(v - d2.num2D) % 12 == 0) return false;
+                        if (useKelipatan && Math.abs(v - d2.num2D) % 12 === 0) return false;
                         if (useBijiLemah && bijiLemahMap[(d2.kepB + d2.ekB) % 10].includes(n)) return false;
                         if (useMatiGab) { let mgStr = matiGabungMap[Math.abs(d2.kopB - d2.kepB)]; if (mgStr.includes(k.toString()) && mgStr.includes(e.toString())) return false; }
                         if (useJarak) { if (d2.jarakStart <= d2.jarakEnd) { if (v >= d2.jarakStart && v <= d2.jarakEnd) return false; } else { if (v >= d2.jarakStart || v <= d2.jarakEnd) return false; } }
@@ -1149,59 +923,44 @@ Ekr: ${ekText}`;
                 document.getElementById('aiLiveCard').style.display = 'none'; document.getElementById('hasilGlobal').style.display = 'none'; 
                 document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
-                
-                saveSettings();
-                return; 
+                saveSettings(); return; 
             }
 
             if (isValid) {
+                let docTesson = document.getElementById('infoTesson'), docJarak = document.getElementById('infoJarak'), docKep = document.getElementById('infoKepala'), docEk = document.getElementById('infoEkor');
+                
                 if (aD) {
-                    document.getElementById('infoTesson').innerText = `[${mD.matiEkorTesson} & ${aD.matiEkorTesson}]`;
-                    document.getElementById('infoJarak').innerText = `[${mD.jarakStart<10?"0"+mD.jarakStart:mD.jarakStart}-${mD.jarakEnd<10?"0"+mD.jarakEnd:mD.jarakEnd}] & [${aD.jarakStart<10?"0"+aD.jarakStart:aD.jarakStart}-${aD.jarakEnd<10?"0"+aD.jarakEnd:aD.jarakEnd}]`;
-                    document.getElementById('infoKepala').innerText = `[${mD.matiKepala} & ${aD.matiKepala}]`;
-                    document.getElementById('infoEkor').innerText = `[${mD.matiEkor} & ${aD.matiEkor}]`;
+                    docTesson.innerText = `[${mD.matiEkorTesson} & ${aD.matiEkorTesson}]`;
+                    docJarak.innerText = `[${mD.jarakStart.toString().padStart(2,'0')}-${mD.jarakEnd.toString().padStart(2,'0')}] & [${aD.jarakStart.toString().padStart(2,'0')}-${aD.jarakEnd.toString().padStart(2,'0')}]`;
+                    docKep.innerText = `[${mD.matiKepala} & ${aD.matiKepala}]`; docEk.innerText = `[${mD.matiEkor} & ${aD.matiEkor}]`;
                 } else {
-                    document.getElementById('infoTesson').innerText = `[${mD.matiEkorTesson}]`;
-                    document.getElementById('infoJarak').innerText = `[${mD.jarakStart<10?"0"+mD.jarakStart:mD.jarakStart}-${mD.jarakEnd<10?"0"+mD.jarakEnd:mD.jarakEnd}]`;
-                    document.getElementById('infoKepala').innerText = `[${mD.matiKepala}]`;
-                    document.getElementById('infoEkor').innerText = `[${mD.matiEkor}]`;
+                    docTesson.innerText = `[${mD.matiEkorTesson}]`;
+                    docJarak.innerText = `[${mD.jarakStart.toString().padStart(2,'0')}-${mD.jarakEnd.toString().padStart(2,'0')}]`;
+                    docKep.innerText = `[${mD.matiKepala}]`; docEk.innerText = `[${mD.matiEkor}]`;
                 }
 
                 if (modeTarikan === 'gabung') {
                     let cbSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2]);
                     document.getElementById('liveCB').innerText = Array.from(cbSet).slice(0, 3).join(' / ');
-                    
                     let cmSet = new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2]);
                     document.getElementById('liveCM').innerText = Array.from(cmSet).slice(0, 2).join(' / ');
 
-                    // MERGE BBFS 6-7 DIGIT DENGAN WARNA LAMPU LALU LINTAS
-                    let rawBbfs = Array.from(new Set([...mD.bbfsArray, ...aD.bbfsArray])).slice(0, 7).sort((a,b)=>a-b);
-                    let strongDigits = new Set([...mD.dataAI.ai1, ...aD.dataAI.ai1]);
-                    let weakDigits = new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt]);
-
-                    let coloredBbfsHtml = rawBbfs.map(digit => {
-                        if (strongDigits.has(digit)) {
-                            return `<span style="color: #10b981; font-weight: 900;" title="Kuat">${digit}</span>`; // Hijau
-                        } else if (weakDigits.has(digit)) {
-                            return `<span style="color: #ef4444; font-weight: 700;" title="Lemah">${digit}</span>`; // Merah
-                        } else {
-                            return `<span style="color: var(--text-main); font-weight: 600;" title="Netral">${digit}</span>`; // Netral
-                        }
-                    }).join(' ');
-
-                    document.getElementById('liveBBFS').innerHTML = coloredBbfsHtml;
+                    let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
+                    let gabBBFS = Array.from(bbfsSet).slice(0, 7).sort((a,b)=>a-b);
+                    
+                    let strongSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2, ...mD.dataAI.ai1, ...aD.dataAI.ai1]);
+                    let weakSet = new Set([parseInt(mD.matiKepala), parseInt(mD.matiEkor), mD.matiEkorTesson, parseInt(aD.matiKepala), parseInt(aD.matiEkor), aD.matiEkorTesson]);
+                    document.getElementById('liveBBFS').innerHTML = colorizeBBFS(gabBBFS, strongSet, weakSet);
 
                     let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
                     let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
-                    
                     let strGabShioON = gabShioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     
                     document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) &amp; ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
 
                     function cbPred(v1, v2, type) {
                         let s1 = type==='gj' ? getGJ(v1) : getBK(v1); let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
-                        if(s1===s2) return `<span style="color:#dc2626; font-weight:800">${s1}</span>`;
-                        return `<span style="color:var(--text-sub); font-weight:normal;">Tardal</span>`;
+                        return (s1===s2) ? `<span style="color:#dc2626; font-weight:800">${s1}</span>` : `<span style="color:var(--text-sub); font-weight:normal;">Tardal</span>`;
                     }
 
                     document.getElementById('predAs').innerHTML = `${cbPred(mD.pAs, aD.pAs, 'gj')}<br>${cbPred(mD.pAs, aD.pAs, 'bk')}`;
@@ -1220,25 +979,11 @@ Ekr: ${ekText}`;
                     document.getElementById('liveCB').innerText = `${mD.cb1} / ${mD.cb2}`;
                     document.getElementById('liveCM').innerText = `${mD.cm1} / ${mD.cm2}`;
                     
-                    // RUMUS BBFS 6-7 DIGIT TUNGGAL DENGAN WARNA LAMPU LALU LINTAS
-                    let rawBbfs = mD.bbfsArray;
-                    let strongDigits = new Set(mD.dataAI.ai1);
-                    let weakDigits = new Set(mD.dataAI.kmt);
-
-                    let coloredBbfsHtml = rawBbfs.map(digit => {
-                        if (strongDigits.has(digit)) {
-                            return `<span style="color: #10b981; font-weight: 900;" title="Kuat">${digit}</span>`; // Hijau
-                        } else if (weakDigits.has(digit)) {
-                            return `<span style="color: #ef4444; font-weight: 700;" title="Lemah">${digit}</span>`; // Merah
-                        } else {
-                            return `<span style="color: var(--text-main); font-weight: 600;" title="Netral">${digit}</span>`; // Netral
-                        }
-                    }).join(' ');
-
-                    document.getElementById('liveBBFS').innerHTML = coloredBbfsHtml;
+                    let strongSet = new Set([mD.cb1, mD.cb2, ...mD.dataAI.ai1]);
+                    let weakSet = new Set([parseInt(mD.matiKepala), parseInt(mD.matiEkor), mD.matiEkorTesson]);
+                    document.getElementById('liveBBFS').innerHTML = colorizeBBFS(mD.bbfsArray, strongSet, weakSet);
                     
                     let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
-                    
                     document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
 
                     document.getElementById('predAs').innerHTML = `${getGJ(mD.pAs)}<br>${getBK(mD.pAs)}`;
@@ -1263,39 +1008,18 @@ Ekr: ${ekText}`;
             if (d2) { bAITabel.push(...d2.aiTabel); bEkorTop.push(...d2.baseEkorTop); bEkorCD.push(...d2.baseEkorCD); bEkorMain.push(...d2.baseEkorMain); p1.push(...d2.aiPola1); p2.push(...d2.aiPola2); }
 
             if(isValid) {
-                if(bAITabel.length > 0) {
-                    let finalTabel = applyFilter(generate2DAI(bAITabel, posisiPilihan)).sort((a,b) => parseInt(a)-parseInt(b));
-                    let strAITabel = finalTabel.join('*'); if(strAITabel) strAITabel += '#';
-                    document.getElementById('lineAITabel').innerText = finalTabel.length + " LN";
-                    document.getElementById('hasilAITabel').value = strAITabel;
-                    bAITabel = finalTabel; 
-                } else {
-                    document.getElementById('lineAITabel').innerText = "0 LN"; document.getElementById('hasilAITabel').value = "Data Tidak Ditemukan";
-                }
+                bAITabel = renderHasil(applyFilter(generate2DAI(bAITabel, posisiPilihan)), 'lineAITabel', 'hasilAITabel');
+                bEkorTop = renderHasil(applyFilter(bEkorTop), 'lineEkorTop', 'hasilEkorTop');
+                bEkorCD = renderHasil(applyFilter(bEkorCD), 'lineEkorCd', 'hasilEkorCd');
+                bEkorMain = renderHasil(applyFilter(bEkorMain), 'lineEkorMain', 'hasilEkorMain');
 
-                bEkorTop = applyFilter(bEkorTop).sort((a,b) => parseInt(a)-parseInt(b));
-                let strTop = bEkorTop.join('*'); if(strTop) strTop += '#';
-                document.getElementById('lineEkorTop').innerText = bEkorTop.length + " LN"; document.getElementById('hasilEkorTop').value = strTop;
-
-                bEkorCD = applyFilter(bEkorCD).sort((a,b) => parseInt(a)-parseInt(b));
-                let strCD = bEkorCD.join('*'); if(strCD) strCD += '#';
-                document.getElementById('lineEkorCd').innerText = bEkorCD.length + " LN"; document.getElementById('hasilEkorCd').value = strCD;
-
-                bEkorMain = applyFilter(bEkorMain).sort((a,b) => parseInt(b)-parseInt(b));
-                let strEkorMain = bEkorMain.join('*'); if(strEkorMain) strEkorMain += '#';
-                document.getElementById('lineEkorMain').innerText = bEkorMain.length + " LN"; document.getElementById('hasilEkorMain').value = strEkorMain;
-
-                let polas = Array.from(new Set([...applyFilter(generate2DAI(p1, posisiPilihan)), ...applyFilter(generate2DAI(p2, posisiPilihan))])).sort((a, b) => parseInt(a) - parseInt(b));
-                let strGab = polas.join('*'); if(strGab) strGab += '#';
-                document.getElementById('lineGabungan').innerText = polas.length + " LN"; document.getElementById('hasilGabungan').value = strGab;
-                p1 = polas; 
+                let polas = Array.from(new Set([...applyFilter(generate2DAI(p1, posisiPilihan)), ...applyFilter(generate2DAI(p2, posisiPilihan))]));
+                p1 = renderHasil(polas, 'lineGabungan', 'hasilGabungan'); 
             }
 
             if (inputManual.length > 0) {
-                let aiM = []; for(let i=0; i<inputManual.length; i++) aiM.push(parseInt(inputManual[i]));
-                bM = applyFilter(generate2DAI(aiM, posisiPilihan)).sort((a,b) => parseInt(a)-parseInt(b)); 
-                let fM = bM.join('*'); if(fM) fM += '#';
-                document.getElementById('lineManual').innerText = bM.length + " LN"; document.getElementById('hasilManual').value = fM;
+                let aiM = []; for(let i=0; i<inputManual.length; i++) aiM.push(Number(inputManual[i]));
+                bM = renderHasil(applyFilter(generate2DAI(aiM, posisiPilihan)), 'lineManual', 'hasilManual');
                 document.getElementById('segmenManual').style.display = 'block';
             } else { 
                 document.getElementById('segmenManual').style.display = 'none'; 
@@ -1315,14 +1039,10 @@ Ekr: ${ekText}`;
                 uniqueItems.forEach(num => { crashCounts[num] = (crashCounts[num] || 0) + 1; });
             });
 
-            let bomLines = Object.keys(crashCounts).filter(num => crashCounts[num] >= 2).sort((a,b) => parseInt(a) - parseInt(b));
-            let strBom = bomLines.join('*'); if(strBom) strBom += '#';
-
-            document.getElementById('lineBom').innerText = bomLines.length + " LN";
-            document.getElementById('hasilBom').value = strBom;
+            let bomLines = Object.keys(crashCounts).filter(num => crashCounts[num] >= 2);
+            renderHasil(bomLines, 'lineBom', 'hasilBom');
 
             document.getElementById('hasilGlobal').style.display = 'block';
-
             saveSettings();
         }
     </script>
