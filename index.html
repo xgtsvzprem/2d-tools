@@ -153,7 +153,7 @@
                 </div>
                 
                 <div class="ai-item highlight" style="grid-column: span 2;">
-                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 4-5D (<span style="color:#10b981;">Kuat</span> | <span style="color:#ef4444;">Mati</span>)</span>
+                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 4-7D (<span style="color:#10b981;">Kuat</span> | <span style="color:#ef4444;">Mati</span>)</span>
                     <span class="ai-item-val" id="liveBBFS" style="font-size:14px; letter-spacing:2px; font-weight:800;">-</span>
                 </div>
 
@@ -544,13 +544,14 @@
         }
 
         function copyPrediksiTeks(btn) {
-            let cb = document.getElementById("liveCB").innerText;
-            let cm = document.getElementById("liveCM").innerText;
-            let bbfs = document.getElementById("liveBBFS").innerText;
+            // Karena sekarang pakai pewarnaan, ambil text murninya langsung dengan menghilangkan jeda enter
+            let cb = document.getElementById("liveCB").innerText.replace(/[\n\r]+/g, '').trim();
+            let cm = document.getElementById("liveCM").innerText.replace(/[\n\r]+/g, '').trim();
+            let bbfs = document.getElementById("liveBBFS").innerText.replace(/[\n\r]+/g, '').trim();
             
-            // Mengambil text murni dari elemen rahasia jika Poltar ada
+            // Mengambil text murni dari elemen rahasia
             let poltarEl = document.getElementById("rawPoltarSifat");
-            let poltar = poltarEl ? poltarEl.innerText : "-";
+            let poltar = poltarEl ? poltarEl.innerText.replace(/[\n\r]+/g, '').trim() : "-";
 
             let useH1 = document.getElementById('useH1').checked;
             let useH7 = document.getElementById('useH7').checked;
@@ -565,7 +566,7 @@
             }
 
             let format = `${judul}\n* CB: ${cb}\n* CM: ${cm}\n* BBFS: ${bbfs}`;
-            if (poltar !== "-") {
+            if (poltar !== "-" && poltar !== "") {
                 format += `\n* POLTAR: ${poltar}`;
             }
 
@@ -582,7 +583,7 @@
             });
         }
 
-        // ================= INJEKSI JS FUNGSI BARU (POLTAR & WARNA) =================
+        // ================= INJEKSI JS FUNGSI BARU (POLTAR SIFAT & WARNA) =================
         function copyPoltarSifat(btn) {
             let textToCopy = document.getElementById("rawPoltarSifat").innerText;
             navigator.clipboard.writeText(textToCopy).then(function() {
@@ -606,17 +607,19 @@
             return [];
         }
 
-        function formatColored(arr, strong, weak) {
-            if (!arr || arr.length === 0) return '-';
-            return arr.map(num => {
-                let n = parseInt(num);
-                if (isNaN(n)) return num; // Jaga-jaga jika ada spasi / simbol
-                if (weak.has(n)) return `<span style="color:#ef4444;">${num}</span>`;
-                if (strong.has(n)) return `<span style="color:#10b981;">${num}</span>`;
-                return `<span style="color:var(--text-main);">${num}</span>`;
-            }).join('');
+        function formatColored(val, strongSet, weakSet, separator = '') {
+            if (!val || val.length === 0) return '-';
+            let arr = Array.isArray(val) ? val : String(val).split('');
+            return arr.map(char => {
+                if (char === ' ' || char === '-' || char === '/' || char === ',') return `<span style="color:var(--text-main);">${char}</span>`;
+                let n = parseInt(char);
+                if (isNaN(n)) return char;
+                if (weakSet.has(n)) return `<span style="color:#ef4444;">${char}</span>`;
+                if (strongSet.has(n)) return `<span style="color:#10b981;">${char}</span>`;
+                return `<span style="color:var(--text-main);">${char}</span>`;
+            }).join(separator);
         }
-        // ===========================================================================
+        // ==================================================================================
 
         function autoSetPasaranJawa() {
             let d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
@@ -733,25 +736,6 @@
             "46": "456", "96": "123", "47": "567", "97": "012", "48": "234", "98": "345", "49": "345", "99": "890", "50": "345", "00": "234"
         };
 
-        function jadikanSatuDigit(angka) { while (angka > 9) { let jumlah = 0; let str = angka.toString(); for (let i=0; i<str.length; i++) jumlah += parseInt(str[i]); angka = jumlah; } return angka; }
-        function buatUrutan4(angkaAwal) { let u = []; for (let i=0; i<4; i++) u.push((angkaAwal + i) % 10); return u; }
-        
-        function generate2DAI(arrayAngka, posisiPilihan) {
-            let uniqueAI = Array.from(new Set(arrayAngka)), res = [];
-            for (let i = 0; i <= 9; i++) { 
-                for (let j = 0; j <= 9; j++) { 
-                    let isMatch = false;
-                    if (posisiPilihan === 'bebas') isMatch = uniqueAI.includes(i) || uniqueAI.includes(j);
-                    else if (posisiPilihan === 'kepala') isMatch = uniqueAI.includes(i);
-                    else if (posisiPilihan === 'ekor') isMatch = uniqueAI.includes(j);
-                    if (isMatch) res.push(i.toString() + j.toString());
-                }
-            } return res;
-        }
-
-        function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
-        function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
-
         function process4D(inputStr, pasaranToggle) {
             let asB = parseInt(inputStr[0]), kopB = parseInt(inputStr[1]), kepB = parseInt(inputStr[2]), ekB = parseInt(inputStr[3]);
             let str2D = `${kepB}${ekB}`; let num2D = parseInt(str2D);
@@ -774,6 +758,7 @@
             let j1 = (asB + ekB) % 10, j2 = (kopB + kepB) % 10;
 
             let bbfsBase = new Set([asB, kopB, kepB, ekB]);
+            // INJEKSI RUMUS BBFS BERDASARKAN PASARAN (AMAN)
             if (pasaranToggle === 'hk') {
                 keyEkor = mapMistikLama[ekB]; key2D = `${mapMistikLama[kepB]}${mapMistikLama[ekB]}`;
                 valPola1 = jadikanSatuDigit(asB + ekB); valPola2 = jadikanSatuDigit(kopB + kepB);
@@ -954,7 +939,7 @@
                     docKep.innerText = `[${mD.matiKepala}]`; docEk.innerText = `[${mD.matiEkor}]`;
                 }
 
-                // ========================== INJEKSI BLOK UI & WARNA ==========================
+                // SETUP WARNA 
                 let strongSet = new Set();
                 let weakSet = new Set();
 
@@ -966,29 +951,30 @@
                         ...arrMatiKepalaManual, ...arrMatiEkorManual
                     ]);
 
-                    let cbArr = Array.from(new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2])).slice(0, 3);
-                    document.getElementById('liveCB').innerHTML = cbArr.map(n => formatColored([n], strongSet, weakSet)).join(' <span style="color:var(--text-main);">/</span> ');
+                    let cbSet = Array.from(new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2])).slice(0, 3);
+                    document.getElementById('liveCB').innerHTML = formatColored(cbSet, strongSet, weakSet, ' <span style="color:var(--text-main);">/</span> ');
                     
-                    let cmArr = Array.from(new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2])).slice(0, 2);
-                    document.getElementById('liveCM').innerHTML = cmArr.map(s => formatColored(s.toString().split(''), strongSet, weakSet)).join(' <span style="color:var(--text-main);">/</span> ');
+                    let cmSet = Array.from(new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2])).slice(0, 2);
+                    document.getElementById('liveCM').innerHTML = formatColored(cmSet, strongSet, weakSet, ' <span style="color:var(--text-main);">/</span> ');
 
-                    let bbfsArr = Array.from(new Set([...mD.bbfsArray, ...aD.bbfsArray])).slice(0, 7).sort((a,b)=>a-b);
-                    document.getElementById('liveBBFS').innerHTML = formatColored(bbfsArr, strongSet, weakSet);
+                    let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
+                    let gabBBFS = Array.from(bbfsSet).slice(0, 7).sort((a,b)=>a-b);
+                    document.getElementById('liveBBFS').innerHTML = formatColored(gabBBFS, strongSet, weakSet, '');
 
                     let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
-                    document.getElementById('liveAIEkor').innerHTML = `<span style="color:var(--text-main);">Merge: </span>` + formatColored(mergeAIEkor, strongSet, weakSet);
+                    document.getElementById('liveAIEkor').innerHTML = `<span style="color:var(--text-main);">Merge: </span>` + formatColored(mergeAIEkor, strongSet, weakSet, '');
 
                     let mergeKMT = Array.from(new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt]));
-                    document.getElementById('liveKMTEkor').innerHTML = `<span style="color:var(--text-main);">Merge: </span>` + formatColored(mergeKMT, strongSet, weakSet);
+                    document.getElementById('liveKMTEkor').innerHTML = `<span style="color:var(--text-main);">Merge: </span>` + formatColored(mergeKMT, strongSet, weakSet, '');
 
                     let mergePola1 = Array.from(new Set([...mD.aiPola1, ...aD.aiPola1]));
-                    document.getElementById('livePola1').innerText = `Merge: ` + mergePola1.join('');
+                    document.getElementById('livePola1').innerHTML = `<span style="color:var(--text-main);">Merge: </span>` + formatColored(mergePola1, strongSet, weakSet, ' ');
 
                     let mergePola2 = Array.from(new Set([...mD.aiPola2, ...aD.aiPola2]));
-                    document.getElementById('livePola2').innerText = `Merge: ` + mergePola2.join('');
+                    document.getElementById('livePola2').innerHTML = `<span style="color:var(--text-main);">Merge: </span>` + formatColored(mergePola2, strongSet, weakSet, ' ');
 
-                    document.getElementById('liveAITabel').innerText = `Gabungan Tabel (Di bawah)`;
-                    document.getElementById('liveEkorMain').innerText = `Gabungan Pola (Di bawah)`;
+                    document.getElementById('liveAITabel').innerHTML = `<span style="color:var(--text-main);">Gabungan Tabel (Di bawah)</span>`;
+                    document.getElementById('liveEkorMain').innerHTML = `<span style="color:var(--text-main);">Gabungan Pola (Di bawah)</span>`;
 
                     let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
                     let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
@@ -1008,14 +994,15 @@
 
                     document.getElementById('badgeLiveEkor').innerText = `GABUNGAN H1+H7`;
 
-                    // PENGISIAN POLTAR GABUNGAN
+                    // ================= INJEKSI POLTAR (GABUNGAN) =================
                     let arrAs = Array.from(new Set([...getAngkaDariSifat(getGJ(mD.pAs), getBK(mD.pAs)), ...getAngkaDariSifat(getGJ(aD.pAs), getBK(aD.pAs))])).sort((a,b)=>a-b);
                     let arrKop = Array.from(new Set([...getAngkaDariSifat(getGJ(mD.pKop), getBK(mD.pKop)), ...getAngkaDariSifat(getGJ(aD.pKop), getBK(aD.pKop))])).sort((a,b)=>a-b);
                     let arrKep = Array.from(new Set([...getAngkaDariSifat(getGJ(mD.pKep), getBK(mD.pKep)), ...getAngkaDariSifat(getGJ(aD.pKep), getBK(aD.pKep))])).sort((a,b)=>a-b);
                     let arrEk = Array.from(new Set([...getAngkaDariSifat(getGJ(mD.pEk), getBK(mD.pEk)), ...getAngkaDariSifat(getGJ(aD.pEk), getBK(aD.pEk))])).sort((a,b)=>a-b);
 
-                    document.getElementById('livePoltarSifat').innerHTML = `${formatColored(arrAs, strongSet, weakSet)},${formatColored(arrKop, strongSet, weakSet)},${formatColored(arrKep, strongSet, weakSet)},${formatColored(arrEk, strongSet, weakSet)}`;
+                    document.getElementById('livePoltarSifat').innerHTML = `${formatColored(arrAs, strongSet, weakSet, '')},${formatColored(arrKop, strongSet, weakSet, '')},${formatColored(arrKep, strongSet, weakSet, '')},${formatColored(arrEk, strongSet, weakSet, '')}`;
                     document.getElementById('rawPoltarSifat').innerText = `${arrAs.join('')},${arrKop.join('')},${arrKep.join('')},${arrEk.join('')}`;
+                    // ==============================================================
 
                 } else {
                     strongSet = new Set([mD.cb1, mD.cb2, ...mD.dataAI.ai1]);
@@ -1024,17 +1011,18 @@
                         ...arrMatiKepalaManual, ...arrMatiEkorManual
                     ]);
 
-                    document.getElementById('liveCB').innerHTML = formatColored([mD.cb1], strongSet, weakSet) + ' <span style="color:var(--text-main);">/</span> ' + formatColored([mD.cb2], strongSet, weakSet);
-                    document.getElementById('liveCM').innerHTML = formatColored(mD.cm1.split(''), strongSet, weakSet) + ' <span style="color:var(--text-main);">/</span> ' + formatColored(mD.cm2.split(''), strongSet, weakSet);
-                    document.getElementById('liveBBFS').innerHTML = formatColored(mD.bbfsArray, strongSet, weakSet);
+                    document.getElementById('liveCB').innerHTML = formatColored([mD.cb1], strongSet, weakSet, '') + ' <span style="color:var(--text-main);">/</span> ' + formatColored([mD.cb2], strongSet, weakSet, '');
+                    document.getElementById('liveCM').innerHTML = formatColored([mD.cm1], strongSet, weakSet, '') + ' <span style="color:var(--text-main);">/</span> ' + formatColored([mD.cm2], strongSet, weakSet, '');
+                    document.getElementById('liveBBFS').innerHTML = formatColored(mD.bbfsArray, strongSet, weakSet, '');
                     
-                    document.getElementById('liveAIEkor').innerHTML = formatColored(mD.dataAI.ai1, strongSet, weakSet) + ' <span style="color:var(--text-main);">-</span> ' + formatColored(mD.dataAI.ai2, strongSet, weakSet);
-                    document.getElementById('liveKMTEkor').innerHTML = formatColored(mD.dataAI.kmt, strongSet, weakSet);
+                    document.getElementById('liveAIEkor').innerHTML = formatColored(mD.dataAI.ai1, strongSet, weakSet, '') + ' <span style="color:var(--text-main);">-</span> ' + formatColored(mD.dataAI.ai2, strongSet, weakSet, '');
+                    document.getElementById('liveKMTEkor').innerHTML = formatColored(mD.dataAI.kmt, strongSet, weakSet, '');
+                    document.getElementById('livePola1').innerHTML = formatColored(mD.aiPola1, strongSet, weakSet, ' ');
+                    document.getElementById('livePola2').innerHTML = formatColored(mD.aiPola2, strongSet, weakSet, ' ');
                     
-                    document.getElementById('livePola1').innerText = mD.aiPola1.join(' ');
-                    document.getElementById('livePola2').innerText = mD.aiPola2.join(' ');
-                    document.getElementById('liveAITabel').innerText = mD.aiTabelStr ? mD.aiTabelStr.split('').join(' ') : '-';
-                    document.getElementById('liveEkorMain').innerText = mD.arrEkorMain.length > 0 ? mD.arrEkorMain.join(' ') : '-';
+                    let strAiTabel = mD.aiTabelStr ? mD.aiTabelStr.split('') : [];
+                    document.getElementById('liveAITabel').innerHTML = mD.aiTabelStr ? formatColored(strAiTabel, strongSet, weakSet, ' ') : '-';
+                    document.getElementById('liveEkorMain').innerHTML = mD.arrEkorMain.length > 0 ? formatColored(mD.arrEkorMain, strongSet, weakSet, ' ') : '-';
                     
                     let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
                     document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
@@ -1046,17 +1034,16 @@
 
                     document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
 
-                    // PENGISIAN POLTAR SINGLE
+                    // ================= INJEKSI POLTAR (SINGLE) =================
                     let arrAs = getAngkaDariSifat(getGJ(mD.pAs), getBK(mD.pAs));
                     let arrKop = getAngkaDariSifat(getGJ(mD.pKop), getBK(mD.pKop));
                     let arrKep = getAngkaDariSifat(getGJ(mD.pKep), getBK(mD.pKep));
                     let arrEk = getAngkaDariSifat(getGJ(mD.pEk), getBK(mD.pEk));
 
-                    document.getElementById('livePoltarSifat').innerHTML = `${formatColored(arrAs, strongSet, weakSet)},${formatColored(arrKop, strongSet, weakSet)},${formatColored(arrKep, strongSet, weakSet)},${formatColored(arrEk, strongSet, weakSet)}`;
+                    document.getElementById('livePoltarSifat').innerHTML = `${formatColored(arrAs, strongSet, weakSet, '')},${formatColored(arrKop, strongSet, weakSet, '')},${formatColored(arrKep, strongSet, weakSet, '')},${formatColored(arrEk, strongSet, weakSet, '')}`;
                     document.getElementById('rawPoltarSifat').innerText = `${arrAs.join('')},${arrKop.join('')},${arrKep.join('')},${arrEk.join('')}`;
+                    // ===========================================================
                 }
-                // =============================================================================
-
                 document.getElementById('aiLiveCard').style.display = 'block';
             }
 
