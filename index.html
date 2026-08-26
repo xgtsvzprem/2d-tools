@@ -21,6 +21,7 @@
         body.dark-mode .ai-item-val { color: #60a5fa !important; }
         body.dark-mode textarea { background-color: #0f172a; color: #f87171; border-color: #334155; }
         body.dark-mode .modal-box { background-color: #1e293b; border-top-color: #3b82f6; }
+        body.dark-mode .gj-box { background-color: #0f172a; border-color: #6b21a8; }
         body.dark-mode .btn-toggle-filter { background-color: #0f172a; border-color: #334155; color: #60a5fa; }
         body.dark-mode .btn-toggle-filter:hover { background-color: #334155; }
         input, textarea, select { user-select: text; }
@@ -46,6 +47,9 @@
         .ai-item.kmt { background: #fef2f2; border-color: #fecaca; }
         .ai-item-label { display: block; font-size: 8.5px; color: var(--text-sub); font-weight: 700; margin-bottom: 2px; }
         .ai-item-val { display: block; font-size: 12px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
+        .gj-container { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; width: 100%; margin-top: 4px; }
+        .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 2px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; transition: background-color 0.3s; }
+        .gj-box span { display: block; color: var(--text-sub); font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
         .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-copy-prediksi:hover { background: #2563eb; }
         .btn-toggle-filter { width: 100%; padding: 10px; background-color: #f1f5f9; color: var(--primary-dark); border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 10px; margin-bottom: 4px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -158,10 +162,14 @@
                     <div style="font-size: 11px; font-weight: 700; color: #881337; line-height: 1.5; padding-left: 8px;" id="liveShio">-</div>
                 </div>
                 
-                <!-- PENGGANTI GJ-CONTAINER: POLTAR 4D UTUH -->
                 <div class="ai-item" style="grid-column: span 2;">
-                    <span class="ai-item-label" style="color: #7e22ce; margin-bottom:4px;">🔮 Poltar 4D (As, Kop, Kep, Ek)</span>
-                    <span class="ai-item-val" id="livePoltar" style="font-size:14px; letter-spacing:1px; word-break: break-all;">-</span>
+                    <span class="ai-item-label" style="color: #7e22ce; margin-bottom:2px;">🔮 Prediksi Posisi Angka</span>
+                    <div class="gj-container">
+                        <div class="gj-box"><span>As</span><div id="predAs">-</div></div>
+                        <div class="gj-box"><span>Kop</span><div id="predKop">-</div></div>
+                        <div class="gj-box"><span>Kepala</span><div id="predKep">-</div></div>
+                        <div class="gj-box"><span>Ekor</span><div id="predEk">-</div></div>
+                    </div>
                 </div>
 
                 <div class="ai-item highlight">
@@ -524,10 +532,9 @@
         }
 
         function copyPrediksiTeks(btn) {
-            let cb = document.getElementById("liveCB").getAttribute('data-copy') || "-";
-            let cm = document.getElementById("liveCM").getAttribute('data-copy') || "-";
-            let bbfs = document.getElementById("liveBBFS").getAttribute('data-copy') || "-";
-            let poltar = document.getElementById("livePoltar").getAttribute('data-copy') || "-";
+            let cb = document.getElementById("liveCB").innerText;
+            let cm = document.getElementById("liveCM").innerText;
+            let bbfs = document.getElementById("liveBBFS").innerText;
 
             let useH1 = document.getElementById('useH1').checked;
             let useH7 = document.getElementById('useH7').checked;
@@ -541,7 +548,7 @@
                 judul = "Prediksi berdasarkan Keluaran sebelumnya (H-1)";
             }
 
-            let format = `${judul}\n* CB: ${cb}\n* CM: ${cm}\n* BBFS: ${bbfs}\n* POLTAR: ${poltar}`;
+            let format = `${judul}\n* CB: ${cb}\n* CM: ${cm}\n* BBFS: ${bbfs}`;
 
             navigator.clipboard.writeText(format).then(function() {
                 let textAwal = btn.innerText; 
@@ -671,6 +678,29 @@
             "46": "456", "96": "123", "47": "567", "97": "012", "48": "234", "98": "345", "49": "345", "99": "890", "50": "345", "00": "234"
         };
 
+        const matiGabungMap = { 0: "2380", 1: "3469", 2: "0452", 3: "1563", 4: "2674", 5: "3785", 6: "4896", 7: "0597", 8: "0168", 9: "1239" };
+        const bijiLemahMap = {
+            0: ["02","06","17","19","20","28","29","33","37","46","48","55","56","59","60","64","65","66","67","71","73","76","77","78","82","84","87","88","91","92","95","99"],
+            1: ["00","02","03","06","13","17","20","28","30","31","39","44","48","57","59","60","66","67","71","75","76","77","78","82","84","87","88","89","93","95","98","99"],
+            2: ["00","04","06","09","11","13","14","17","24","28","31","39","40","41","42","55","59","60","68","71","77","78","82","86","87","88","89","90","93","95","98","99"],
+            3: ["00","01","04","06","09","10","11","15","17","22","24","25","28","35","39","40","42","51","52","53","60","66","71","79","82","88","89","90","93","97","98","99"],
+            4: ["00","01","04","08","09","10","11","12","15","17","21","22","26","28","33","35","36","39","40","46","51","53","62","63","64","71","77","80","82","90","93","99"],
+            5: ["00","01","04","10","11","12","15","19","21","22","23","26","28","32","33","37","39","40","44","46","47","51","57","62","64","73","74","75","82","88","91","93"],
+            6: ["02","04","11","12","15","20","21","22","23","26","32","33","34","37","39","40","43","44","48","51","55","57","58","62","68","73","75","84","85","86","93","99"],
+            7: ["00","04","13","15","22","23","26","31","32","33","34","37","40","43","44","45","48","51","54","55","59","62","66","68","69","73","79","84","86","95","96","97"],
+            8: ["06","07","08","11","15","24","26","33","34","37","42","43","44","45","48","51","54","55","56","59","60","62","65","66","70","73","77","79","80","84","95","97"],
+            9: ["06","08","17","18","19","22","26","35","37","44","45","48","53","54","55","56","59","60","62","65","66","67","71","73","76","77","80","81","84","88","91","95"]
+        };
+        const rumusShioMain = {
+            1: [2,5,8,10,11], 2: [1,4,7,9,12], 3: [2,5,6,8,11], 4: [1,4,7,9,10],
+            5: [2,3,6,8,11], 6: [1,4,5,7,12], 7: [2,6,8,10,11], 8: [1,4,7,9,12],
+            9: [2,5,8,10,11], 10: [1,3,6,9,12], 11: [2,4,7,10,11], 12: [1,3,6,9,12]
+        };
+        const shioNama = {
+            1: "Naga", 2: "Kelinci", 3: "Harimau", 4: "Kerbau", 5: "Tikus", 6: "Babi",
+            7: "Anjing", 8: "Ayam", 9: "Monyet", 10: "Kambing", 11: "Kuda", 12: "Ular"
+        };
+
         function salinTeks(elementId, btn) {
             let elem = document.getElementById(elementId); elem.select(); elem.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(elem.value).then(function() {
@@ -680,9 +710,8 @@
         }
 
         function jadikanSatuDigit(angka) { while (angka > 9) { let jumlah = 0; let str = angka.toString(); for (let i=0; i<str.length; i++) jumlah += parseInt(str[i]); angka = jumlah; } return angka; }
-        
         function buatUrutan4(angkaAwal) { let u = []; for (let i=0; i<4; i++) u.push((angkaAwal + i) % 10); return u; }
-
+        
         function generate2DAI(arrayAngka, posisiPilihan) {
             let uniqueAI = Array.from(new Set(arrayAngka)), res = [];
             for (let i = 0; i <= 9; i++) { 
@@ -696,11 +725,8 @@
             } return res;
         }
 
-        function generatePoltar(seed) {
-            if(seed === undefined || isNaN(seed)) return [];
-            let arr = [seed, mapIndex[seed], mapMistikLama[seed], mapMistikBaru[seed], (seed+1)%10, (seed+2)%10];
-            return Array.from(new Set(arr)).slice(0, 6).sort((a,b)=>a-b);
-        }
+        function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
+        function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
 
         function process4D(inputStr, pasaranToggle) {
             let asB = parseInt(inputStr[0]), kopB = parseInt(inputStr[1]), kepB = parseInt(inputStr[2]), ekB = parseInt(inputStr[3]);
@@ -799,12 +825,11 @@
         }
 
         function colorizeDigits(strOrArr, strongSet, weakSet, separator = '') {
-            if (strOrArr === undefined || strOrArr === null || strOrArr === '') return '-';
+            if (!strOrArr) return '-';
             let arr = Array.isArray(strOrArr) ? strOrArr : strOrArr.toString().split('');
             return arr.map(num => {
-                if (num === ' ' || num === '-' || num === '') return num;
+                if (num === ' ' || num === '-') return num;
                 let n = parseInt(num);
-                if (isNaN(n)) return num;
                 if (weakSet.has(n)) return `<span style="color:#ef4444;">${num}</span>`;
                 if (strongSet.has(n)) return `<span style="color:#10b981;">${num}</span>`;
                 return `<span style="color:var(--text-main);">${num}</span>`;
@@ -812,260 +837,240 @@
         }
 
         function hitungSemua() {
-            try {
-                const masterFilters = ['chkJarak', 'chkKepala', 'chkEkor', 'chkTesson', 'chkKembar', 'chkWakSalarabo', 'chkKelipatan', 'chkBijiLemah', 'chkMatiGab', 'chkPasaranJawa'];
-                const allChecked = masterFilters.every(id => document.getElementById(id).checked);
-                document.getElementById('chkAllMaster').checked = allChecked;
+            const masterFilters = ['chkJarak', 'chkKepala', 'chkEkor', 'chkTesson', 'chkKembar', 'chkWakSalarabo', 'chkKelipatan', 'chkBijiLemah', 'chkMatiGab', 'chkPasaranJawa'];
+            const allChecked = masterFilters.every(id => document.getElementById(id).checked);
+            document.getElementById('chkAllMaster').checked = allChecked;
 
-                let inputH1 = document.getElementById('inputH1').value;
-                let inputH7 = document.getElementById('inputH7').value;
-                let inputManual = document.getElementById('inputAIManual').value;
+            let inputH1 = document.getElementById('inputH1').value;
+            let inputH7 = document.getElementById('inputH7').value;
+            let inputManual = document.getElementById('inputAIManual').value;
 
-                let useH1 = document.getElementById('useH1').checked;
-                let useH7 = document.getElementById('useH7').checked;
+            let useH1 = document.getElementById('useH1').checked;
+            let useH7 = document.getElementById('useH7').checked;
 
-                document.getElementById('inputH1').style.opacity = useH1 ? '1' : '0.4';
-                document.getElementById('inputH7').style.opacity = useH7 ? '1' : '0.4';
-                
-                let modeTarikan = '';
-                if (useH1 && useH7 && inputH1.length === 4 && inputH7.length === 4) modeTarikan = 'gabung';
-                else if (useH1 && inputH1.length === 4) modeTarikan = 'h1';
-                else if (useH7 && inputH7.length === 4) modeTarikan = 'h7';
-                
-                let pasaranToggle = document.getElementById('jenisPasaran').value;
-                let pasaranFilter = document.getElementById('pasaranJawa').value;
-                let posisiPilihan = document.getElementById('pilihanPosisi').value; 
+            document.getElementById('inputH1').style.opacity = useH1 ? '1' : '0.4';
+            document.getElementById('inputH7').style.opacity = useH7 ? '1' : '0.4';
+            
+            let modeTarikan = '';
+            if (useH1 && useH7 && inputH1.length === 4 && inputH7.length === 4) modeTarikan = 'gabung';
+            else if (useH1 && inputH1.length === 4) modeTarikan = 'h1';
+            else if (useH7 && inputH7.length === 4) modeTarikan = 'h7';
+            
+            let pasaranToggle = document.getElementById('jenisPasaran').value;
+            let pasaranFilter = document.getElementById('pasaranJawa').value;
+            let posisiPilihan = document.getElementById('pilihanPosisi').value; 
 
-                let d1 = null, d2 = null, isValid = false;
+            let d1 = null, d2 = null, isValid = false;
 
-                if (modeTarikan === 'h1') { d1 = process4D(inputH1, pasaranToggle); isValid = true; }
-                else if (modeTarikan === 'h7') { d2 = process4D(inputH7, pasaranToggle); isValid = true; }
-                else if (modeTarikan === 'gabung') { d1 = process4D(inputH1, pasaranToggle); d2 = process4D(inputH7, pasaranToggle); isValid = true; }
+            if (modeTarikan === 'h1') { d1 = process4D(inputH1, pasaranToggle); isValid = true; }
+            else if (modeTarikan === 'h7') { d2 = process4D(inputH7, pasaranToggle); isValid = true; }
+            else if (modeTarikan === 'gabung') { d1 = process4D(inputH1, pasaranToggle); d2 = process4D(inputH7, pasaranToggle); isValid = true; }
 
-                let mD = (modeTarikan === 'h7') ? d2 : d1; 
-                let aD = (modeTarikan === 'gabung') ? d2 : null; 
+            let mD = (modeTarikan === 'h7') ? d2 : d1; 
+            let aD = (modeTarikan === 'gabung') ? d2 : null; 
 
-                let useJarak = document.getElementById('chkJarak').checked, useKepala = document.getElementById('chkKepala').checked, useEkor = document.getElementById('chkEkor').checked, useTesson = document.getElementById('chkTesson').checked, useWakSalarabo = document.getElementById('chkWakSalarabo').checked, useKelipatan = document.getElementById('chkKelipatan').checked, useBijiLemah = document.getElementById('chkBijiLemah').checked, useMatiGab = document.getElementById('chkMatiGab').checked, usePasaran = document.getElementById('chkPasaranJawa').checked, useKembar = document.getElementById('chkKembar').checked;
-                
-                let inputMatiKepala = document.getElementById('inputMatiKepala').value; let arrMatiKepalaManual = []; if (inputMatiKepala.length > 0) { for(let i=0; i<inputMatiKepala.length; i++) arrMatiKepalaManual.push(Number(inputMatiKepala[i])); }
-                let inputMatiEkor = document.getElementById('inputMatiEkor').value; let arrMatiEkorManual = []; if (inputMatiEkor.length > 0) { for(let i=0; i<inputMatiEkor.length; i++) arrMatiEkorManual.push(Number(inputMatiEkor[i])); }
-                let inputBiji = document.getElementById('inputBiji').value; let arrBijiMati = []; if (inputBiji.length > 0) { for(let i=0; i<inputBiji.length; i++) arrBijiMati.push(Number(inputBiji[i])); }
-                
-                let kGanjil = document.getElementById('kGanjil').checked, kGenap = document.getElementById('kGenap').checked, kBesar = document.getElementById('kBesar').checked, kKecil = document.getElementById('kKecil').checked, eGanjil = document.getElementById('eGanjil').checked, eGenap = document.getElementById('eGenap').checked, eBesar = document.getElementById('eBesar').checked, eKecil = document.getElementById('eKecil').checked;
+            let useJarak = document.getElementById('chkJarak').checked, useKepala = document.getElementById('chkKepala').checked, useEkor = document.getElementById('chkEkor').checked, useTesson = document.getElementById('chkTesson').checked, useWakSalarabo = document.getElementById('chkWakSalarabo').checked, useKelipatan = document.getElementById('chkKelipatan').checked, useBijiLemah = document.getElementById('chkBijiLemah').checked, useMatiGab = document.getElementById('chkMatiGab').checked, usePasaran = document.getElementById('chkPasaranJawa').checked, useKembar = document.getElementById('chkKembar').checked;
+            
+            let inputMatiKepala = document.getElementById('inputMatiKepala').value; let arrMatiKepalaManual = []; if (inputMatiKepala.length > 0) { for(let i=0; i<inputMatiKepala.length; i++) arrMatiKepalaManual.push(Number(inputMatiKepala[i])); }
+            let inputMatiEkor = document.getElementById('inputMatiEkor').value; let arrMatiEkorManual = []; if (inputMatiEkor.length > 0) { for(let i=0; i<inputMatiEkor.length; i++) arrMatiEkorManual.push(Number(inputMatiEkor[i])); }
+            let inputBiji = document.getElementById('inputBiji').value; let arrBijiMati = []; if (inputBiji.length > 0) { for(let i=0; i<inputBiji.length; i++) arrBijiMati.push(Number(inputBiji[i])); }
+            
+            let kGanjil = document.getElementById('kGanjil').checked, kGenap = document.getElementById('kGenap').checked, kBesar = document.getElementById('kBesar').checked, kKecil = document.getElementById('kKecil').checked, eGanjil = document.getElementById('eGanjil').checked, eGenap = document.getElementById('eGenap').checked, eBesar = document.getElementById('eBesar').checked, eKecil = document.getElementById('eKecil').checked;
 
-                function applyFilter(lines) {
-                    return lines.filter(n => {
-                        if (!n || n.length < 2) return false;
-                        let k = parseInt(n[0]), e = parseInt(n[1]), v = parseInt(n);
-                        if (isNaN(k) || isNaN(e) || isNaN(v)) return false;
-                        
-                        if (kGanjil && k % 2 !== 0) return false; if (kGenap && k % 2 === 0) return false;
-                        if (kBesar && k >= 5) return false; if (kKecil && k <= 4) return false;
-                        if (eGanjil && e % 2 !== 0) return false; if (eGenap && e % 2 === 0) return false;
-                        if (eBesar && e >= 5) return false; if (eKecil && e <= 4) return false;
-                        if (useKembar && k === e) return false;
-                        
-                        if (arrBijiMati.length > 0 && arrBijiMati.includes(jadikanSatuDigit(k + e))) return false;
-                        if (arrMatiKepalaManual.length > 0 && arrMatiKepalaManual.includes(k)) return false;
-                        if (arrMatiEkorManual.length > 0 && arrMatiEkorManual.includes(e)) return false;
-                        
-                        if (usePasaran && pasaranFilter !== "") {
-                            if (pasaranFilter === "legi" && v >= 24 && v <= 44) return false;
-                            if (pasaranFilter === "pahing" && (v >= 80 || v === 0)) return false;
-                            if (pasaranFilter === "pon" && v >= 46 && v <= 69) return false;
-                            if (pasaranFilter === "wage" && v >= 16 && v <= 36) return false;
-                            if (pasaranFilter === "kliwon" && v >= 64 && v <= 84) return false;
-                        }
-
-                        if (d1) {
-                            if (useTesson && e == d1.matiEkorTesson) return false;
-                            if (useWakSalarabo && d1.arrWakSalarabo.includes(n)) return false;
-                            if (useKelipatan && Math.abs(v - d1.num2D) % 12 === 0) return false;
-                            if (useBijiLemah && bijiLemahMap[(d1.kepB + d1.ekB) % 10].includes(n)) return false;
-                            if (useMatiGab) { let mgStr = matiGabungMap[Math.abs(d1.kopB - d1.kepB)]; if (mgStr && mgStr.includes(k.toString()) && mgStr.includes(e.toString())) return false; }
-                            if (useJarak) { if (d1.jarakStart <= d1.jarakEnd) { if (v >= d1.jarakStart && v <= d1.jarakEnd) return false; } else { if (v >= d1.jarakStart || v <= d1.jarakEnd) return false; } }
-                            if (useKepala && k == parseInt(d1.matiKepala)) return false; if (useEkor && e == parseInt(d1.matiEkor)) return false;
-                        }
-
-                        if (d2) {
-                            if (useTesson && e == d2.matiEkorTesson) return false;
-                            if (useWakSalarabo && d2.arrWakSalarabo.includes(n)) return false;
-                            if (useKelipatan && Math.abs(v - d2.num2D) % 12 === 0) return false;
-                            if (useBijiLemah && bijiLemahMap[(d2.kepB + d2.ekB) % 10].includes(n)) return false;
-                            if (useMatiGab) { let mgStr = matiGabungMap[Math.abs(d2.kopB - d2.kepB)]; if (mgStr && mgStr.includes(k.toString()) && mgStr.includes(e.toString())) return false; }
-                            if (useJarak) { if (d2.jarakStart <= d2.jarakEnd) { if (v >= d2.jarakStart && v <= d2.jarakEnd) return false; } else { if (v >= d2.jarakStart || v <= d2.jarakEnd) return false; } }
-                            if (useKepala && k == parseInt(d2.matiKepala)) return false; if (useEkor && e == parseInt(d2.matiEkor)) return false;
-                        }
-                        return true;
-                    });
-                }
-
-                if (!isValid && inputManual.length === 0) { 
-                    document.getElementById('aiLiveCard').style.display = 'none'; document.getElementById('hasilGlobal').style.display = 'none'; 
-                    document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
-                    document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
-                    saveSettings(); return; 
-                }
-
-                if (isValid && mD !== null) {
-                    let docTesson = document.getElementById('infoTesson'), docJarak = document.getElementById('infoJarak'), docKep = document.getElementById('infoKepala'), docEk = document.getElementById('infoEkor');
+            function applyFilter(lines) {
+                return lines.filter(n => {
+                    let k = +n[0], e = +n[1], v = +n;
                     
-                    if (aD !== null) {
-                        docTesson.innerText = `[${mD.matiEkorTesson} & ${aD.matiEkorTesson}]`;
-                        docJarak.innerText = `[${mD.jarakStart.toString().padStart(2,'0')}-${mD.jarakEnd.toString().padStart(2,'0')}] & [${aD.jarakStart.toString().padStart(2,'0')}-${aD.jarakEnd.toString().padStart(2,'0')}]`;
-                        docKep.innerText = `[${mD.matiKepala} & ${aD.matiKepala}]`; docEk.innerText = `[${mD.matiEkor} & ${aD.matiEkor}]`;
-                    } else {
-                        docTesson.innerText = `[${mD.matiEkorTesson}]`;
-                        docJarak.innerText = `[${mD.jarakStart.toString().padStart(2,'0')}-${mD.jarakEnd.toString().padStart(2,'0')}]`;
-                        docKep.innerText = `[${mD.matiKepala}]`; docEk.innerText = `[${mD.matiEkor}]`;
+                    if (kGanjil && k % 2 !== 0) return false; if (kGenap && k % 2 === 0) return false;
+                    if (kBesar && k >= 5) return false; if (kKecil && k <= 4) return false;
+                    if (eGanjil && e % 2 !== 0) return false; if (eGenap && e % 2 === 0) return false;
+                    if (eBesar && e >= 5) return false; if (eKecil && e <= 4) return false;
+                    if (useKembar && k === e) return false;
+                    
+                    if (arrBijiMati.length > 0 && arrBijiMati.includes(jadikanSatuDigit(k + e))) return false;
+                    if (arrMatiKepalaManual.length > 0 && arrMatiKepalaManual.includes(k)) return false;
+                    if (arrMatiEkorManual.length > 0 && arrMatiEkorManual.includes(e)) return false;
+                    
+                    if (usePasaran && pasaranFilter !== "") {
+                        if (pasaranFilter === "legi" && v >= 24 && v <= 44) return false;
+                        if (pasaranFilter === "pahing" && (v >= 80 || v === 0)) return false;
+                        if (pasaranFilter === "pon" && v >= 46 && v <= 69) return false;
+                        if (pasaranFilter === "wage" && v >= 16 && v <= 36) return false;
+                        if (pasaranFilter === "kliwon" && v >= 64 && v <= 84) return false;
                     }
 
-                    let strongSet = new Set();
-                    let weakSet = new Set();
-
-                    if (modeTarikan === 'gabung' && aD !== null) {
-                        strongSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2, ...mD.dataAI.ai1, ...aD.dataAI.ai1]);
-                        weakSet = new Set([
-                            parseInt(mD.matiKepala), parseInt(mD.matiEkor), mD.matiEkorTesson,
-                            parseInt(aD.matiKepala), parseInt(aD.matiEkor), aD.matiEkorTesson,
-                            ...arrMatiKepalaManual, ...arrMatiEkorManual
-                        ]);
-
-                        let cbSet = Array.from(new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2])).slice(0, 3);
-                        let cmSet = Array.from(new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2])).slice(0, 2);
-                        
-                        let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
-                        let gabBBFS = Array.from(bbfsSet).slice(0, 7).sort((a,b)=>a-b);
-
-                        let polAs = Array.from(new Set([...generatePoltar(mD.pAs), ...generatePoltar(aD.pAs)])).slice(0,6).sort((a,b)=>a-b);
-                        let polKop = Array.from(new Set([...generatePoltar(mD.pKop), ...generatePoltar(aD.pKop)])).slice(0,6).sort((a,b)=>a-b);
-                        let polKep = Array.from(new Set([...generatePoltar(mD.pKep), ...generatePoltar(aD.pKep)])).slice(0,6).sort((a,b)=>a-b);
-                        let polEk = Array.from(new Set([...generatePoltar(mD.pEk), ...generatePoltar(aD.pEk)])).slice(0,6).sort((a,b)=>a-b);
-
-                        // Populate UI with Colors
-                        document.getElementById('liveCB').innerHTML = colorizeDigits(cbSet, strongSet, weakSet, ' / ');
-                        document.getElementById('liveCM').innerHTML = colorizeDigits(cmSet, strongSet, weakSet, ' / ');
-                        document.getElementById('liveBBFS').innerHTML = colorizeDigits(gabBBFS, strongSet, weakSet, '');
-                        document.getElementById('livePoltar').innerHTML = `${colorizeDigits(polAs, strongSet, weakSet, '')},${colorizeDigits(polKop, strongSet, weakSet, '')},${colorizeDigits(polKep, strongSet, weakSet, '')},${colorizeDigits(polEk, strongSet, weakSet, '')}`;
-
-                        // Store Raw Format for Copypaste
-                        document.getElementById('liveCB').setAttribute('data-copy', cbSet.join(' / '));
-                        document.getElementById('liveCM').setAttribute('data-copy', cmSet.join(' / '));
-                        document.getElementById('liveBBFS').setAttribute('data-copy', gabBBFS.join(''));
-                        document.getElementById('livePoltar').setAttribute('data-copy', `${polAs.join('')},${polKop.join('')},${polKep.join('')},${polEk.join('')}`);
-
-                        let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
-                        document.getElementById('liveAIEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeAIEkor, strongSet, weakSet, '');
-
-                        let mergeKMT = Array.from(new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt]));
-                        document.getElementById('liveKMTEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeKMT, strongSet, weakSet, '');
-
-                        let mergePola1 = Array.from(new Set([...mD.aiPola1, ...aD.aiPola1]));
-                        document.getElementById('livePola1').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergePola1, strongSet, weakSet, ' ');
-
-                        let mergePola2 = Array.from(new Set([...mD.aiPola2, ...aD.aiPola2]));
-                        document.getElementById('livePola2').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergePola2, strongSet, weakSet, ' ');
-
-                        document.getElementById('liveAITabel').innerHTML = `<span style="color:var(--text-main);">Gabungan Tabel (Di bawah)</span>`;
-                        document.getElementById('liveEkorMain').innerHTML = `<span style="color:var(--text-main);">Gabungan Pola (Di bawah)</span>`;
-
-                        let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
-                        let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
-                        let strGabShioON = gabShioON.map(s => `${s} (${shioNama[s]})`).join(', ');
-                        
-                        document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) &amp; ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
-                        document.getElementById('badgeLiveEkor').innerText = `GABUNGAN H1+H7`;
-
-                    } else {
-                        strongSet = new Set([mD.cb1, mD.cb2, ...mD.dataAI.ai1]);
-                        weakSet = new Set([
-                            parseInt(mD.matiKepala), parseInt(mD.matiEkor), mD.matiEkorTesson,
-                            ...arrMatiKepalaManual, ...arrMatiEkorManual
-                        ]);
-
-                        let cbSet = [mD.cb1, mD.cb2];
-                        let cmSet = [mD.cm1, mD.cm2];
-                        let bbfsArr = mD.bbfsArray;
-
-                        let polAs = generatePoltar(mD.pAs);
-                        let polKop = generatePoltar(mD.pKop);
-                        let polKep = generatePoltar(mD.pKep);
-                        let polEk = generatePoltar(mD.pEk);
-
-                        // Populate UI with Colors
-                        document.getElementById('liveCB').innerHTML = colorizeDigits(cbSet, strongSet, weakSet, ' <span style="color:var(--text-main);">/</span> ');
-                        document.getElementById('liveCM').innerHTML = colorizeDigits(cmSet, strongSet, weakSet, ' <span style="color:var(--text-main);">/</span> ');
-                        document.getElementById('liveBBFS').innerHTML = colorizeDigits(bbfsArr, strongSet, weakSet, '');
-                        document.getElementById('livePoltar').innerHTML = `${colorizeDigits(polAs, strongSet, weakSet, '')},${colorizeDigits(polKop, strongSet, weakSet, '')},${colorizeDigits(polKep, strongSet, weakSet, '')},${colorizeDigits(polEk, strongSet, weakSet, '')}`;
-                        
-                        // Store Raw Format for Copypaste
-                        document.getElementById('liveCB').setAttribute('data-copy', cbSet.join(' / '));
-                        document.getElementById('liveCM').setAttribute('data-copy', cmSet.join(' / '));
-                        document.getElementById('liveBBFS').setAttribute('data-copy', bbfsArr.join(''));
-                        document.getElementById('livePoltar').setAttribute('data-copy', `${polAs.join('')},${polKop.join('')},${polKep.join('')},${polEk.join('')}`);
-
-                        document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet, '')} <span style="color:var(--text-main);">-</span> ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet, '')}`;
-                        document.getElementById('liveKMTEkor').innerHTML = colorizeDigits(mD.dataAI.kmt, strongSet, weakSet, '');
-                        document.getElementById('livePola1').innerHTML = colorizeDigits(mD.aiPola1, strongSet, weakSet, ' ');
-                        document.getElementById('livePola2').innerHTML = colorizeDigits(mD.aiPola2, strongSet, weakSet, ' ');
-                        
-                        let strAiTabel = mD.aiTabelStr ? mD.aiTabelStr.split('') : [];
-                        document.getElementById('liveAITabel').innerHTML = mD.aiTabelStr ? colorizeDigits(strAiTabel, strongSet, weakSet, ' ') : '-';
-                        document.getElementById('liveEkorMain').innerHTML = mD.arrEkorMain.length > 0 ? colorizeDigits(mD.arrEkorMain, strongSet, weakSet, ' ') : '-';
-                        
-                        let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
-                        document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
-
-                        document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
+                    if (d1) {
+                        if (useTesson && e == d1.matiEkorTesson) return false;
+                        if (useWakSalarabo && d1.arrWakSalarabo.includes(n)) return false;
+                        if (useKelipatan && Math.abs(v - d1.num2D) % 12 === 0) return false;
+                        if (useBijiLemah && bijiLemahMap[(d1.kepB + d1.ekB) % 10].includes(n)) return false;
+                        if (useMatiGab) { let mgStr = matiGabungMap[Math.abs(d1.kopB - d1.kepB)]; if (mgStr.includes(k.toString()) && mgStr.includes(e.toString())) return false; }
+                        if (useJarak) { if (d1.jarakStart <= d1.jarakEnd) { if (v >= d1.jarakStart && v <= d1.jarakEnd) return false; } else { if (v >= d1.jarakStart || v <= d1.jarakEnd) return false; } }
+                        if (useKepala && k == d1.matiKepala) return false; if (useEkor && e == d1.matiEkor) return false;
                     }
-                    document.getElementById('aiLiveCard').style.display = 'block';
-                }
 
-                let bAITabel = [], bEkorTop = [], bEkorCD = [], bEkorMain = [], p1 = [], p2 = [], bM = [];
-
-                if (d1) { bAITabel.push(...d1.aiTabel); bEkorTop.push(...d1.baseEkorTop); bEkorCD.push(...d1.baseEkorCD); bEkorMain.push(...d1.baseEkorMain); p1.push(...d1.aiPola1); p2.push(...d1.aiPola2); }
-                if (d2) { bAITabel.push(...d2.aiTabel); bEkorTop.push(...d2.baseEkorTop); bEkorCD.push(...d2.baseEkorCD); bEkorMain.push(...d2.baseEkorMain); p1.push(...d2.aiPola1); p2.push(...d2.aiPola2); }
-
-                if(isValid) {
-                    bAITabel = renderHasil(applyFilter(generate2DAI(bAITabel, posisiPilihan)), 'lineAITabel', 'hasilAITabel');
-                    bEkorTop = renderHasil(applyFilter(bEkorTop), 'lineEkorTop', 'hasilEkorTop');
-                    bEkorCD = renderHasil(applyFilter(bEkorCD), 'lineEkorCd', 'hasilEkorCd');
-                    bEkorMain = renderHasil(applyFilter(bEkorMain), 'lineEkorMain', 'hasilEkorMain');
-
-                    let polas = Array.from(new Set([...applyFilter(generate2DAI(p1, posisiPilihan)), ...applyFilter(generate2DAI(p2, posisiPilihan))]));
-                    p1 = renderHasil(polas, 'lineGabungan', 'hasilGabungan'); 
-                }
-
-                if (inputManual.length > 0) {
-                    let aiM = []; for(let i=0; i<inputManual.length; i++) aiM.push(Number(inputManual[i]));
-                    bM = renderHasil(applyFilter(generate2DAI(aiM, posisiPilihan)), 'lineManual', 'hasilManual');
-                    document.getElementById('segmenManual').style.display = 'block';
-                } else { 
-                    document.getElementById('segmenManual').style.display = 'none'; 
-                }
-
-                let allGeneratedSets = [];
-                if (bAITabel.length > 0) allGeneratedSets.push(bAITabel);
-                if (bEkorTop.length > 0) allGeneratedSets.push(bEkorTop);
-                if (bEkorCD.length > 0) allGeneratedSets.push(bEkorCD);
-                if (bEkorMain.length > 0) allGeneratedSets.push(bEkorMain);
-                if (p1.length > 0) allGeneratedSets.push(p1);
-                if (bM.length > 0) allGeneratedSets.push(bM);
-
-                let crashCounts = {};
-                allGeneratedSets.forEach(set => {
-                    let uniqueItems = Array.from(new Set(set));
-                    uniqueItems.forEach(num => { crashCounts[num] = (crashCounts[num] || 0) + 1; });
+                    if (d2) {
+                        if (useTesson && e == d2.matiEkorTesson) return false;
+                        if (useWakSalarabo && d2.arrWakSalarabo.includes(n)) return false;
+                        if (useKelipatan && Math.abs(v - d2.num2D) % 12 === 0) return false;
+                        if (useBijiLemah && bijiLemahMap[(d2.kepB + d2.ekB) % 10].includes(n)) return false;
+                        if (useMatiGab) { let mgStr = matiGabungMap[Math.abs(d2.kopB - d2.kepB)]; if (mgStr.includes(k.toString()) && mgStr.includes(e.toString())) return false; }
+                        if (useJarak) { if (d2.jarakStart <= d2.jarakEnd) { if (v >= d2.jarakStart && v <= d2.jarakEnd) return false; } else { if (v >= d2.jarakStart || v <= d2.jarakEnd) return false; } }
+                        if (useKepala && k == d2.matiKepala) return false; if (useEkor && e == d2.matiEkor) return false;
+                    }
+                    return true;
                 });
-
-                let bomLines = Object.keys(crashCounts).filter(num => crashCounts[num] >= 2);
-                renderHasil(bomLines, 'lineBom', 'hasilBom');
-
-                document.getElementById('hasilGlobal').style.display = 'block';
-                saveSettings();
-            } catch(e) {
-                console.error("Terjadi kesalahan:", e);
             }
+
+            if (!isValid && inputManual.length === 0) { 
+                document.getElementById('aiLiveCard').style.display = 'none'; document.getElementById('hasilGlobal').style.display = 'none'; 
+                document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
+                document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
+                saveSettings(); return; 
+            }
+
+            if (isValid) {
+                let docTesson = document.getElementById('infoTesson'), docJarak = document.getElementById('infoJarak'), docKep = document.getElementById('infoKepala'), docEk = document.getElementById('infoEkor');
+                
+                if (aD) {
+                    docTesson.innerText = `[${mD.matiEkorTesson} & ${aD.matiEkorTesson}]`;
+                    docJarak.innerText = `[${mD.jarakStart.toString().padStart(2,'0')}-${mD.jarakEnd.toString().padStart(2,'0')}] & [${aD.jarakStart.toString().padStart(2,'0')}-${aD.jarakEnd.toString().padStart(2,'0')}]`;
+                    docKep.innerText = `[${mD.matiKepala} & ${aD.matiKepala}]`; docEk.innerText = `[${mD.matiEkor} & ${aD.matiEkor}]`;
+                } else {
+                    docTesson.innerText = `[${mD.matiEkorTesson}]`;
+                    docJarak.innerText = `[${mD.jarakStart.toString().padStart(2,'0')}-${mD.jarakEnd.toString().padStart(2,'0')}]`;
+                    docKep.innerText = `[${mD.matiKepala}]`; docEk.innerText = `[${mD.matiEkor}]`;
+                }
+
+                let strongSet = new Set();
+                let weakSet = new Set();
+
+                if (modeTarikan === 'gabung') {
+                    strongSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2, ...mD.dataAI.ai1, ...aD.dataAI.ai1]);
+                    weakSet = new Set([
+                        parseInt(mD.matiKepala), parseInt(mD.matiEkor), mD.matiEkorTesson,
+                        parseInt(aD.matiKepala), parseInt(aD.matiEkor), aD.matiEkorTesson,
+                        ...arrMatiKepalaManual, ...arrMatiEkorManual
+                    ]);
+
+                    let cbSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2]);
+                    document.getElementById('liveCB').innerHTML = Array.from(cbSet).slice(0, 3).map(x => colorizeDigits([x], strongSet, weakSet)).join(' / ');
+                    
+                    let cmSet = new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2]);
+                    document.getElementById('liveCM').innerHTML = Array.from(cmSet).slice(0, 2).map(x => colorizeDigits(x, strongSet, weakSet)).join(' / ');
+
+                    let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
+                    let gabBBFS = Array.from(bbfsSet).slice(0, 7).sort((a,b)=>a-b);
+                    document.getElementById('liveBBFS').innerHTML = colorizeDigits(gabBBFS, strongSet, weakSet);
+
+                    let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
+                    document.getElementById('liveAIEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeAIEkor, strongSet, weakSet);
+
+                    let mergeKMT = Array.from(new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt]));
+                    document.getElementById('liveKMTEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeKMT, strongSet, weakSet);
+
+                    let mergePola1 = Array.from(new Set([...mD.aiPola1, ...aD.aiPola1]));
+                    document.getElementById('livePola1').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergePola1, strongSet, weakSet, ' ');
+
+                    let mergePola2 = Array.from(new Set([...mD.aiPola2, ...aD.aiPola2]));
+                    document.getElementById('livePola2').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergePola2, strongSet, weakSet, ' ');
+
+                    document.getElementById('liveAITabel').innerHTML = `<span style="color:var(--text-main);">Gabungan Tabel (Di bawah)</span>`;
+                    document.getElementById('liveEkorMain').innerHTML = `<span style="color:var(--text-main);">Gabungan Pola (Di bawah)</span>`;
+
+                    let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
+                    let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
+                    let strGabShioON = gabShioON.map(s => `${s} (${shioNama[s]})`).join(', ');
+                    
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) &amp; ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
+
+                    function cbPred(v1, v2, type) {
+                        let s1 = type==='gj' ? getGJ(v1) : getBK(v1); let s2 = type==='gj' ? getGJ(v2) : getBK(v2);
+                        return (s1===s2) ? `<span style="color:#dc2626; font-weight:800">${s1}</span>` : `<span style="color:var(--text-sub); font-weight:normal;">Tardal</span>`;
+                    }
+
+                    document.getElementById('predAs').innerHTML = `${cbPred(mD.pAs, aD.pAs, 'gj')}<br>${cbPred(mD.pAs, aD.pAs, 'bk')}`;
+                    document.getElementById('predKop').innerHTML = `${cbPred(mD.pKop, aD.pKop, 'gj')}<br>${cbPred(mD.pKop, aD.pKop, 'bk')}`;
+                    document.getElementById('predKep').innerHTML = `${cbPred(mD.pKep, aD.pKep, 'gj')}<br>${cbPred(mD.pKep, aD.pKep, 'bk')}`;
+                    document.getElementById('predEk').innerHTML = `${cbPred(mD.pEk, aD.pEk, 'gj')}<br>${cbPred(mD.pEk, aD.pEk, 'bk')}`;
+
+                    document.getElementById('badgeLiveEkor').innerText = `GABUNGAN H1+H7`;
+
+                } else {
+                    strongSet = new Set([mD.cb1, mD.cb2, ...mD.dataAI.ai1]);
+                    weakSet = new Set([
+                        parseInt(mD.matiKepala), parseInt(mD.matiEkor), mD.matiEkorTesson,
+                        ...arrMatiKepalaManual, ...arrMatiEkorManual
+                    ]);
+
+                    document.getElementById('liveCB').innerHTML = `${colorizeDigits([mD.cb1], strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits([mD.cb2], strongSet, weakSet)}`;
+                    document.getElementById('liveCM').innerHTML = `${colorizeDigits(mD.cm1, strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits(mD.cm2, strongSet, weakSet)}`;
+                    document.getElementById('liveBBFS').innerHTML = colorizeDigits(mD.bbfsArray, strongSet, weakSet);
+                    
+                    document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet)} <span style="color:var(--text-main);">-</span> ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet)}`;
+                    document.getElementById('liveKMTEkor').innerHTML = colorizeDigits(mD.dataAI.kmt, strongSet, weakSet);
+                    document.getElementById('livePola1').innerHTML = colorizeDigits(mD.aiPola1, strongSet, weakSet, ' ');
+                    document.getElementById('livePola2').innerHTML = colorizeDigits(mD.aiPola2, strongSet, weakSet, ' ');
+                    
+                    let strAiTabel = mD.aiTabelStr ? mD.aiTabelStr.split('') : [];
+                    document.getElementById('liveAITabel').innerHTML = mD.aiTabelStr ? colorizeDigits(strAiTabel, strongSet, weakSet, ' ') : '-';
+                    document.getElementById('liveEkorMain').innerHTML = mD.arrEkorMain.length > 0 ? colorizeDigits(mD.arrEkorMain, strongSet, weakSet, ' ') : '-';
+                    
+                    let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
+                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
+
+                    document.getElementById('predAs').innerHTML = `${getGJ(mD.pAs)}<br>${getBK(mD.pAs)}`;
+                    document.getElementById('predKop').innerHTML = `${getGJ(mD.pKop)}<br>${getBK(mD.pKop)}`;
+                    document.getElementById('predKep').innerHTML = `${getGJ(mD.pKep)}<br>${getBK(mD.pKep)}`;
+                    document.getElementById('predEk').innerHTML = `${getGJ(mD.pEk)}<br>${getBK(mD.pEk)}`;
+
+                    document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
+                }
+                document.getElementById('aiLiveCard').style.display = 'block';
+            }
+
+            let bAITabel = [], bEkorTop = [], bEkorCD = [], bEkorMain = [], p1 = [], p2 = [], bM = [];
+
+            if (d1) { bAITabel.push(...d1.aiTabel); bEkorTop.push(...d1.baseEkorTop); bEkorCD.push(...d1.baseEkorCD); bEkorMain.push(...d1.baseEkorMain); p1.push(...d1.aiPola1); p2.push(...d1.aiPola2); }
+            if (d2) { bAITabel.push(...d2.aiTabel); bEkorTop.push(...d2.baseEkorTop); bEkorCD.push(...d2.baseEkorCD); bEkorMain.push(...d2.baseEkorMain); p1.push(...d2.aiPola1); p2.push(...d2.aiPola2); }
+
+            if(isValid) {
+                bAITabel = renderHasil(applyFilter(generate2DAI(bAITabel, posisiPilihan)), 'lineAITabel', 'hasilAITabel');
+                bEkorTop = renderHasil(applyFilter(bEkorTop), 'lineEkorTop', 'hasilEkorTop');
+                bEkorCD = renderHasil(applyFilter(bEkorCD), 'lineEkorCd', 'hasilEkorCd');
+                bEkorMain = renderHasil(applyFilter(bEkorMain), 'lineEkorMain', 'hasilEkorMain');
+
+                let polas = Array.from(new Set([...applyFilter(generate2DAI(p1, posisiPilihan)), ...applyFilter(generate2DAI(p2, posisiPilihan))]));
+                p1 = renderHasil(polas, 'lineGabungan', 'hasilGabungan'); 
+            }
+
+            if (inputManual.length > 0) {
+                let aiM = []; for(let i=0; i<inputManual.length; i++) aiM.push(Number(inputManual[i]));
+                bM = renderHasil(applyFilter(generate2DAI(aiM, posisiPilihan)), 'lineManual', 'hasilManual');
+                document.getElementById('segmenManual').style.display = 'block';
+            } else { 
+                document.getElementById('segmenManual').style.display = 'none'; 
+            }
+
+            let allGeneratedSets = [];
+            if (bAITabel.length > 0) allGeneratedSets.push(bAITabel);
+            if (bEkorTop.length > 0) allGeneratedSets.push(bEkorTop);
+            if (bEkorCD.length > 0) allGeneratedSets.push(bEkorCD);
+            if (bEkorMain.length > 0) allGeneratedSets.push(bEkorMain);
+            if (p1.length > 0) allGeneratedSets.push(p1);
+            if (bM.length > 0) allGeneratedSets.push(bM);
+
+            let crashCounts = {};
+            allGeneratedSets.forEach(set => {
+                let uniqueItems = Array.from(new Set(set));
+                uniqueItems.forEach(num => { crashCounts[num] = (crashCounts[num] || 0) + 1; });
+            });
+
+            let bomLines = Object.keys(crashCounts).filter(num => crashCounts[num] >= 2);
+            renderHasil(bomLines, 'lineBom', 'hasilBom');
+
+            document.getElementById('hasilGlobal').style.display = 'block';
+            saveSettings();
         }
     </script>
 </body>
