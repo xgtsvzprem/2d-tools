@@ -824,12 +824,11 @@
             return sorted;
         }
 
-        // Fungsi pewarnaan dinamis universal (Kuat, Lemah, Netral)
         function colorizeDigits(strOrArr, strongSet, weakSet, separator = '') {
             if (!strOrArr) return '-';
             let arr = Array.isArray(strOrArr) ? strOrArr : strOrArr.toString().split('');
             return arr.map(num => {
-                if (num === ' ' || num === '-') return num; // Cegah styling karakter kosong
+                if (num === ' ' || num === '-') return num;
                 let n = parseInt(num);
                 if (weakSet.has(n)) return `<span style="color:#ef4444;">${num}</span>`;
                 if (strongSet.has(n)) return `<span style="color:#10b981;">${num}</span>`;
@@ -965,16 +964,16 @@
                     document.getElementById('liveBBFS').innerHTML = colorizeDigits(gabBBFS, strongSet, weakSet);
 
                     let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
-                    document.getElementById('liveAIEkor').innerHTML = `Merge: ` + colorizeDigits(mergeAIEkor, strongSet, weakSet);
+                    document.getElementById('liveAIEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeAIEkor, strongSet, weakSet);
 
                     let mergeKMT = Array.from(new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt]));
-                    document.getElementById('liveKMTEkor').innerHTML = `Merge: ` + colorizeDigits(mergeKMT, strongSet, weakSet);
+                    document.getElementById('liveKMTEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeKMT, strongSet, weakSet);
 
                     let mergePola1 = Array.from(new Set([...mD.aiPola1, ...aD.aiPola1]));
-                    document.getElementById('livePola1').innerHTML = `Merge: ` + colorizeDigits(mergePola1, strongSet, weakSet, ' ');
+                    document.getElementById('livePola1').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergePola1, strongSet, weakSet, ' ');
 
                     let mergePola2 = Array.from(new Set([...mD.aiPola2, ...aD.aiPola2]));
-                    document.getElementById('livePola2').innerHTML = `Merge: ` + colorizeDigits(mergePola2, strongSet, weakSet, ' ');
+                    document.getElementById('livePola2').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergePola2, strongSet, weakSet, ' ');
 
                     document.getElementById('liveAITabel').innerHTML = `<span style="color:var(--text-main);">Gabungan Tabel (Di bawah)</span>`;
                     document.getElementById('liveEkorMain').innerHTML = `<span style="color:var(--text-main);">Gabungan Pola (Di bawah)</span>`;
@@ -1004,11 +1003,11 @@
                         ...arrMatiKepalaManual, ...arrMatiEkorManual
                     ]);
 
-                    document.getElementById('liveCB').innerHTML = `${colorizeDigits([mD.cb1], strongSet, weakSet)} / ${colorizeDigits([mD.cb2], strongSet, weakSet)}`;
-                    document.getElementById('liveCM').innerHTML = `${colorizeDigits(mD.cm1, strongSet, weakSet)} / ${colorizeDigits(mD.cm2, strongSet, weakSet)}`;
+                    document.getElementById('liveCB').innerHTML = `${colorizeDigits([mD.cb1], strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits([mD.cb2], strongSet, weakSet)}`;
+                    document.getElementById('liveCM').innerHTML = `${colorizeDigits(mD.cm1, strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits(mD.cm2, strongSet, weakSet)}`;
                     document.getElementById('liveBBFS').innerHTML = colorizeDigits(mD.bbfsArray, strongSet, weakSet);
                     
-                    document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet)} - ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet)}`;
+                    document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet)} <span style="color:var(--text-main);">-</span> ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet)}`;
                     document.getElementById('liveKMTEkor').innerHTML = colorizeDigits(mD.dataAI.kmt, strongSet, weakSet);
                     document.getElementById('livePola1').innerHTML = colorizeDigits(mD.aiPola1, strongSet, weakSet, ' ');
                     document.getElementById('livePola2').innerHTML = colorizeDigits(mD.aiPola2, strongSet, weakSet, ' ');
