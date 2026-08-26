@@ -43,7 +43,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
         
-        /* TEMA DARK MODE 🌙 (JADI DEFAULT) */
+        /* TEMA DARK MODE 🌙 */
         body.dark-mode {
             --bg-main: #0f172a;
             --card-bg: #1e293b;
@@ -315,9 +315,9 @@
                     <span class="ai-item-val" id="liveCM" style="font-size:13px;">-</span>
                 </div>
                 
-                <!-- BBFS 7 DIGIT DENGAN WARNA LAMPU LALU LINTAS -->
+                <!-- BBFS 6-7 DIGIT DENGAN WARNA LAMPU LALU LINTAS -->
                 <div class="ai-item highlight" style="grid-column: span 2;">
-                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 4D (7 Digit) [🟢 Kuat | 🔴 Lemah]</span>
+                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 4D (6-7 Digit) [🟢 Kuat | 🔴 Lemah]</span>
                     <span class="ai-item-val" id="liveBBFS" style="font-size:14px; letter-spacing:2px; font-weight:900;">-</span>
                 </div>
 
@@ -568,7 +568,7 @@
     </div>
 
     <script>
-        // ================= DATABASE PASARAN =================
+        // ================= DATABASE PASARAN (Top 3 + Abjad Besar) =================
         const pasaranDB = [
             { id: "hk", label: "🇭🇰 HK POOLS", type: "top" },
             { id: "sgp", label: "🇸🇬 SGP POOLS", type: "top" },
@@ -621,14 +621,17 @@
             { id: "washington-dc-mid", label: "Washington DC Midday", type: "other" }
         ];
 
+        // Init Dropdown
         function initPasaranDropdown() {
             const list = document.getElementById('pasaranList');
             list.innerHTML = '';
+            
             list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('umum', '🌍 UMUM')">🌍 UMUM</div>`;
             list.innerHTML += `<div class="custom-select-group">🔥 Pasaran Utama</div>`;
             pasaranDB.filter(p => p.type === 'top').forEach(p => {
                 list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('${p.id}', '${p.label}')">${p.label}</div>`;
             });
+            
             list.innerHTML += `<div class="custom-select-group">WLA & LOKAL (A-Z)</div>`;
             pasaranDB.filter(p => p.type === 'other').forEach(p => {
                 list.innerHTML += `<div class="custom-select-option" onclick="selectPasaran('${p.id}', '${p.label}')">${p.label}</div>`;
@@ -638,7 +641,9 @@
         function togglePasaranDropdown() {
             const options = document.getElementById('pasaranOptions');
             options.style.display = options.style.display === 'block' ? 'none' : 'block';
-            if(options.style.display === 'block') document.getElementById('pasaranSearch').focus();
+            if(options.style.display === 'block') {
+                document.getElementById('pasaranSearch').focus();
+            }
         }
 
         function filterPasaran() {
@@ -646,7 +651,11 @@
             const options = document.querySelectorAll('.custom-select-option');
             options.forEach(opt => {
                 const text = opt.innerText.toLowerCase();
-                opt.style.display = text.includes(keyword) ? 'block' : 'none';
+                if(text.includes(keyword)) {
+                    opt.style.display = 'block';
+                } else {
+                    opt.style.display = 'none';
+                }
             });
         }
 
@@ -654,15 +663,19 @@
             document.getElementById('jenisPasaran').value = id;
             let cleanLabel = label.replace(/🇭🇰|🇸🇬|🇦🇺|🌍/g, '').trim().toUpperCase();
             if(id !== 'umum') { cleanLabel += ' POOLS'; }
+            
             document.getElementById('pasaranDisplay').innerHTML = label + " <span style='font-size:10px; color:#94a3b8;'>▼</span>";
             document.getElementById('pasaranDisplay').setAttribute('data-clean', cleanLabel);
+            
             document.getElementById('pasaranOptions').style.display = 'none';
             hitungSemua();
         }
 
         document.addEventListener('click', function(e) {
             const wrapper = document.getElementById('pasaranWrapper');
-            if (wrapper && !wrapper.contains(e.target)) document.getElementById('pasaranOptions').style.display = 'none';
+            if (wrapper && !wrapper.contains(e.target)) {
+                document.getElementById('pasaranOptions').style.display = 'none';
+            }
         });
 
         // ================= DARK MODE TOGGLE =================
@@ -678,6 +691,7 @@
             savedTheme = 'true';
             localStorage.setItem('2d_darkmode', 'true');
         }
+
         if (savedTheme === 'true') {
             document.body.classList.add('dark-mode');
             document.getElementById('btnDark').innerText = 'DARK MODE: ON';
@@ -686,14 +700,16 @@
             document.getElementById('btnDark').innerText = 'DARK MODE: OFF';
         }
 
-        // ================= AUTO SAVE SETTINGS =================
+        // ================= AUTO SAVE & LOAD SETTINGS =================
         function saveSettings() {
             const settings = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
             document.querySelectorAll('select.input-box').forEach(el => settings[el.id] = el.value);
+            
             settings['jenisPasaran'] = document.getElementById('jenisPasaran').value;
             settings['jenisPasaranDisplay'] = document.getElementById('pasaranDisplay').innerHTML;
             settings['jenisPasaranClean'] = document.getElementById('pasaranDisplay').getAttribute('data-clean');
+
             ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
             localStorage.setItem('2d_settings', JSON.stringify(settings));
         }
@@ -708,11 +724,13 @@
                 document.querySelectorAll('select.input-box').forEach(el => {
                     if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
                 });
+                
                 if(settings['jenisPasaran']) {
                     document.getElementById('jenisPasaran').value = settings['jenisPasaran'];
                     if(settings['jenisPasaranDisplay']) document.getElementById('pasaranDisplay').innerHTML = settings['jenisPasaranDisplay'];
                     if(settings['jenisPasaranClean']) document.getElementById('pasaranDisplay').setAttribute('data-clean', settings['jenisPasaranClean']);
                 }
+
                 ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
                     if(settings[id] !== undefined) {
                         let el = document.getElementById(id);
@@ -784,11 +802,96 @@ Ekr: ${ekText}`;
             });
         }
 
-        // ================= KAMUS MATEMATIKA TOGEL =================
-        const mapMistikLama = [1, 0, 5, 8, 7, 2, 9, 4, 3, 6]; 
-        const mapMistikBaru = [8, 7, 6, 9, 5, 4, 2, 1, 0, 3]; 
-        const mapIndex = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4];
-        
+        // ================= AUTO SET PASARAN JAWA (HARI INI WIB) =================
+        function autoSetPasaranJawa() {
+            let d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            let utcDate = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+            let daysSinceEpoch = Math.floor(utcDate / 86400000);
+            
+            let idx = (daysSinceEpoch + 3) % 5;
+            const pasarans = ["legi", "pahing", "pon", "wage", "kliwon"];
+            let hariIni = pasarans[idx];
+            
+            let selectElement = document.getElementById("pasaranJawa");
+            selectElement.value = hariIni;
+            
+            for(let i=0; i<selectElement.options.length; i++){
+                if(selectElement.options[i].value === hariIni) {
+                    selectElement.options[i].text += " (Hari Ini)";
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            initPasaranDropdown();
+            autoSetPasaranJawa();
+            loadSettings(); 
+        });
+
+        // ================= SISTEM MODAL UMUM =================
+        const infoData = {
+            'jarak': { title: 'Pangkas Jarak Lemah', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Angka 2D terakhir ditambah 20 angka ke depan diprediksi menjadi angka lemah.' },
+            'kepala': { title: 'Pangkas Mati Kepala', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Selisih As dikurangi Kop menjadi angka mati mutlak di posisi Kepala.' },
+            'ekor': { title: 'Pangkas Mati Ekor', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Jumlah Kepala & Ekor, di-Mistik Lama. Hasilnya menjadi angka mati di posisi Ekor.' },
+            'tesson': { title: 'Pangkas Mati Tesson 2', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Menjumlahkan angka tabel Taysen dari 2D terakhir menjadi 1 digit untuk mematikan Ekor.' },
+            'kembar': { title: 'Pangkas Angka Kembar', desc: '<b>Fungsi:</b> Membuang kombinasi angka ganda (00, 11, 22 ... 99).' },
+            'salarabo': { title: 'Pangkas Mati 54 Line', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> 3D (Kop-Kep-Ek) dijabarkan +1 9x lalu disilang menghasilkan 54 Line Mati.' },
+            'kelipatan': { title: 'Pangkas Kelipatan 12', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Angka 2D terakhir ditambah/dikurangi kelipatan 12.' },
+            'jumlahlemah': { title: 'Pangkas Jumlah 2D Lemah', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Membuang kombinasi berdasarkan tabel jumlah Kepala+Ekor.' },
+            'matigab': { title: 'Pangkas Mati Gabung', desc: '<b>Syarat:</b> Butuh 4D Terakhir.<br><br><b>Rumus:</b> Membuang kombinasi dari 4 angka tabel selisih Kop & Kepala.' },
+            'pasaran': { title: 'Matot Pasaran Jawa', desc: '<b>Syarat:</b> Otomatis memilih hari pasaran saat ini.<br><br><b>Rumus:</b> Membuang rentang 20 line sesuai hari pasaran.' },
+            'pangkasmanual': { title: 'Pangkas Ketik Manual', desc: '<b>Cara Kerja:</b> Ketik angka berjejer (misal: <b>479</b>).<br><br><b>Kepala:</b> Buang awalan 4,7,9.<br><b>Ekor:</b> Buang akhiran 4,7,9.<br><b>Jumlah:</b> Buang yg jumlahnya 4,7,9.' }
+        };
+
+        function showInfo(key) {
+            document.getElementById('modalTitle').innerHTML = infoData[key].title;
+            document.getElementById('modalDesc').innerHTML = infoData[key].desc;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeModal(event, id) { if (event.target.id === id) document.getElementById(id).style.display = 'none'; }
+        function closeModalForce(id) { document.getElementById(id).style.display = 'none'; }
+
+        function toggleTarikanMode() {
+            let mode = document.getElementById('modeTarikan').value;
+            let colH1 = document.getElementById('colH1'); let colH7 = document.getElementById('colH7'); let lblH1 = document.getElementById('lblH1');
+            
+            if(mode === 'h1') { colH1.style.display = 'block'; colH7.style.display = 'none'; lblH1.innerText = 'Result Terakhir (H-1):'; } 
+            else if(mode === 'h7') { colH1.style.display = 'none'; colH7.style.display = 'block'; } 
+            else if(mode === 'gabung') { colH1.style.display = 'block'; colH7.style.display = 'block'; lblH1.innerText = 'Result Terakhir (H-1):'; }
+            hitungSemua();
+        }
+
+        function toggleFilters() {
+            let filterDiv = document.getElementById('advancedFilters'); let btn = document.getElementById('btnToggleFilter');
+            if (filterDiv.style.display === 'none') { filterDiv.style.display = 'block'; btn.innerHTML = '⚙️ Tutup Master Filter & Pangkasan ▲'; } 
+            else { filterDiv.style.display = 'none'; btn.innerHTML = '⚙️ Buka Master Filter & Pangkasan ▼'; }
+        }
+
+        function toggleMasterFilters(source) {
+            const filters = ['chkJarak', 'chkKepala', 'chkEkor', 'chkTesson', 'chkKembar', 'chkWakSalarabo', 'chkKelipatan', 'chkBijiLemah', 'chkMatiGab', 'chkPasaranJawa'];
+            filters.forEach(id => document.getElementById(id).checked = source.checked); hitungSemua();
+        }
+
+        function toggleClear(inputEl) {
+            let clearBtn = inputEl.nextElementSibling;
+            if (clearBtn && clearBtn.classList.contains('clear-icon')) { clearBtn.style.display = inputEl.value.length > 0 ? 'block' : 'none'; }
+        }
+
+        function clearInput(inputId) {
+            let inputEl = document.getElementById(inputId); inputEl.value = ''; toggleClear(inputEl); hitungSemua(); inputEl.focus();
+        }
+
+        function resetManual() {
+            const sifat = ['kGanjil', 'kGenap', 'kBesar', 'kKecil', 'eGanjil', 'eGenap', 'eBesar', 'eKecil'];
+            sifat.forEach(id => document.getElementById(id).checked = false);
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
+                let el = document.getElementById(id); el.value = ''; toggleClear(el);
+            });
+            hitungSemua();
+        }
+
+        const mapMistikLama = [1, 0, 5, 8, 7, 2, 9, 4, 3, 6]; const mapMistikBaru = [8, 7, 6, 9, 5, 4, 2, 1, 0, 3]; const mapIndex = [5, 6, 7, 8, 9, 0, 1, 2, 3, 4];
         const tabelTaysen = [
             97, 5, 16, 32, 12, 1, 20, 24, 17, 87, 18, 15, 4, 14, 13, 11, 2, 8, 10, 27, 6, 22, 21, 30, 7, 35, 31, 19, 29, 28, 23, 26, 3, 9, 36, 25, 34, 38, 37, 55,
             43, 49, 45, 40, 46, 42, 44, 50, 51, 41, 47, 48, 53, 52, 56, 39, 54, 58, 57, 59, 68, 65, 69, 64, 63, 61, 67, 66, 60, 62, 73, 72, 71, 70, 78, 85, 81, 86, 74, 93,
@@ -844,45 +947,34 @@ Ekr: ${ekText}`;
             7: "Anjing", 8: "Ayam", 9: "Monyet", 10: "Kambing", 11: "Kuda", 12: "Ular"
         };
 
-        // ================= FUNGSI HELPER BBFS =================
-        function jadikanSatuDigit(angka) { 
-            while (angka > 9) { 
-                let jumlah = 0; let str = angka.toString(); 
-                for (let i=0; i<str.length; i++) jumlah += parseInt(str[i]); 
-                angka = jumlah; 
-            } return angka; 
-        }
-        function buatUrutan4(angkaAwal) { let u = []; for (let i=0; i<4; i++) u.push((angkaAwal + i) % 10); return u; }
-        
-        // Fungsi pembangun BBFS 7 Digit (Anti-Crash)
-        function buildBbfs(baseArr, target1, target2, target3) {
-            let set = new Set(baseArr);
-            let targets = [target1, target2, target3];
-            
-            for (let t of targets) {
-                let curr = t;
-                let attempts = 0;
-                while(set.size < 7 && attempts < 10) {
-                    if(!set.has(curr)) {
-                        set.add(curr);
-                        break;
-                    }
-                    curr = (curr + 1) % 10; // Geser +1 jika kembar
-                    attempts++;
-                }
-            }
-            
-            // Fallback (jaga-jaga jika masih kurang dari 7)
-            let i = 0;
-            while(set.size < 7 && i < 10) {
-                set.add(i);
-                i++;
-            }
-            
-            return Array.from(set).slice(0, 7).sort((a,b) => a-b);
+        function salinTeks(elementId, btn) {
+            let elem = document.getElementById(elementId); elem.select(); elem.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(elem.value).then(function() {
+                let textAwal = btn.innerText; btn.innerText = "Tersalin ✔"; btn.style.backgroundColor = "#10b981"; 
+                setTimeout(() => { btn.innerText = textAwal; btn.style.backgroundColor = ""; }, 1400);
+            }).catch(function(err) { document.execCommand("copy"); alert("Berhasil disalin!"); });
         }
 
-        // ================= FUNGSI UTAMA AI =================
+        function jadikanSatuDigit(angka) { while (angka > 9) { let jumlah = 0; let str = angka.toString(); for (let i=0; i<str.length; i++) jumlah += parseInt(str[i]); angka = jumlah; } return angka; }
+        function buatUrutan4(angkaAwal) { let u = []; for (let i=0; i<4; i++) u.push((angkaAwal + i) % 10); return u; }
+        
+        function generate2DAI(arrayAngka, posisiPilihan) {
+            let uniqueAI = Array.from(new Set(arrayAngka)), res = [];
+            for (let i = 0; i <= 9; i++) { 
+                for (let j = 0; j <= 9; j++) { 
+                    let isMatch = false;
+                    if (posisiPilihan === 'bebas') isMatch = uniqueAI.includes(i) || uniqueAI.includes(j);
+                    else if (posisiPilihan === 'kepala') isMatch = uniqueAI.includes(i);
+                    else if (posisiPilihan === 'ekor') isMatch = uniqueAI.includes(j);
+                    if (isMatch) res.push(i.toString() + j.toString());
+                }
+            } return res;
+        }
+
+        function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
+        function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
+
+        // Core processing logic
         function process4D(inputStr, pasaranToggle) {
             let asB = parseInt(inputStr[0]), kopB = parseInt(inputStr[1]), kepB = parseInt(inputStr[2]), ekB = parseInt(inputStr[3]);
             let str2D = `${kepB}${ekB}`; let num2D = parseInt(str2D);
@@ -904,51 +996,43 @@ Ekr: ${ekText}`;
             let pAs, pKop, pKep, pEk;
             let cb1, cb2, cm1, cm2, bbfsArray = [];
             let j1 = (asB + ekB) % 10, j2 = (kopB + kepB) % 10;
+            let unitTaysen = taysenVal % 10;
 
-            // RUMUS BBFS GACOR (7 DIGIT) KHUSUS PASARAN
             if (pasaranToggle === 'hk') {
                 keyEkor = mapMistikLama[ekB]; key2D = `${mapMistikLama[kepB]}${mapMistikLama[ekB]}`;
                 valPola1 = jadikanSatuDigit(asB + ekB); valPola2 = jadikanSatuDigit(kopB + kepB);
                 cb1 = mapIndex[ekB]; cb2 = mapMistikLama[asB]; if(cb1 === cb2) cb2 = mapMistikBaru[kepB];
-                
-                let hkD1 = mapMistikLama[(kepB + ekB) % 10];
-                let hkD2 = mapIndex[ekB];
-                let hkD3 = mapMistikBaru[asB];
-                bbfsArray = buildBbfs([asB, kopB, kepB, ekB], hkD1, hkD2, hkD3);
-                
+                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[ekB], j2]);
+                if(bbfsSet.size < 7) bbfsSet.add(mapMistikLama[asB]);
+                if(bbfsSet.size < 7) bbfsSet.add(mapMistikBaru[kepB]);
+                bbfsArray = Array.from(bbfsSet).slice(0, 7).sort((a,b) => a-b);
                 pAs = (asB + kepB) % 10; pKop = Math.abs(kopB - ekB); pKep = (asB + kopB + kepB) % 10; pEk = (Math.abs(kepB - ekB) + asB) % 10;
             } else if (pasaranToggle === 'sgp') {
                 keyEkor = mapIndex[ekB]; key2D = `${mapIndex[kepB]}${mapIndex[ekB]}`;
                 valPola1 = mapIndex[jadikanSatuDigit(asB + kopB)]; valPola2 = mapMistikLama[jadikanSatuDigit(kepB + ekB)];
                 cb1 = mapMistikBaru[kopB]; cb2 = mapIndex[kepB]; if(cb1 === cb2) cb2 = mapMistikLama[ekB];
-                
-                let sgpD1 = mapIndex[(asB + kopB) % 10];
-                let sgpD2 = mapMistikBaru[kopB];
-                let sgpD3 = taysenVal % 10;
-                bbfsArray = buildBbfs([asB, kopB, kepB, ekB], sgpD1, sgpD2, sgpD3);
-
+                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapMistikBaru[kopB], j1]);
+                if(bbfsSet.size < 7) bbfsSet.add(mapIndex[kepB]);
+                if(bbfsSet.size < 7) bbfsSet.add(mapMistikLama[ekB]);
+                bbfsArray = Array.from(bbfsSet).slice(0, 7).sort((a,b) => a-b);
                 pAs = Math.abs(asB - kopB); pKop = (kepB + ekB) % 10; pKep = (asB + ekB) % 10; pEk = (kopB + kepB) % 10;
             } else if (pasaranToggle === 'sdy') {
                 keyEkor = mapMistikBaru[ekB]; key2D = `${ekB}${kepB}`;
                 valPola1 = mapMistikBaru[jadikanSatuDigit(asB + kopB)]; valPola2 = mapIndex[jadikanSatuDigit(kepB + ekB)];
                 cb1 = j1; cb2 = mapMistikBaru[ekB]; if(cb1 === cb2) cb2 = mapIndex[kopB];
-                
-                let sdyD1 = mapMistikBaru[ekB];
-                let sdyD2 = (asB + ekB) % 10;
-                let sdyD3 = mapIndex[kepB];
-                bbfsArray = buildBbfs([asB, kopB, kepB, ekB], sdyD1, sdyD2, sdyD3);
-
+                let bbfsSet = new Set([asB, kopB, kepB, ekB, j1, mapMistikLama[kepB]]);
+                if(bbfsSet.size < 7) bbfsSet.add(mapMistikBaru[ekB]);
+                if(bbfsSet.size < 7) bbfsSet.add(mapIndex[kopB]);
+                bbfsArray = Array.from(bbfsSet).slice(0, 7).sort((a,b) => a-b);
                 pAs = (ekB + kepB) % 10; pKop = Math.abs(ekB - asB); pKep = (kopB + asB + ekB) % 10; pEk = (Math.abs(ekB - kopB) + asB) % 10;
-            } else { // UMUM / WLA
+            } else {
                 cb1 = mapMistikLama[j2]; cb2 = mapIndex[ekB];
                 if (cb1 === cb2) cb2 = mapMistikBaru[kepB]; if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
-                
-                let umD1 = mapIndex[(kopB + kepB) % 10];
-                let umD2 = mapMistikLama[(asB + ekB) % 10];
-                let umD3 = (asB + kopB + kepB + ekB) % 10;
-                bbfsArray = buildBbfs([asB, kopB, kepB, ekB], umD1, umD2, umD3);
-
-                pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kepB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
+                let bbfsSet = new Set([asB, kopB, kepB, ekB, mapIndex[kepB], j1]);
+                if(bbfsSet.size < 7) bbfsSet.add(mapMistikBaru[kopB]);
+                if(bbfsSet.size < 7) bbfsSet.add(mapMistikLama[j2]);
+                bbfsArray = Array.from(bbfsSet).slice(0, 7).sort((a,b) => a-b);
+                pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kopB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
             }
 
             cm1 = `${cb1}${cb2}`;
@@ -986,7 +1070,6 @@ Ekr: ${ekText}`;
             };
         }
 
-        // FUNGSI GABUNG & RENDER
         function hitungSemua() {
             const masterFilters = ['chkJarak', 'chkKepala', 'chkEkor', 'chkTesson', 'chkKembar', 'chkWakSalarabo', 'chkKelipatan', 'chkBijiLemah', 'chkMatiGab', 'chkPasaranJawa'];
             const allChecked = masterFilters.every(id => document.getElementById(id).checked);
@@ -1011,8 +1094,6 @@ Ekr: ${ekText}`;
             let mD = (modeTarikan === 'h7') ? d2 : d1; 
             let aD = (modeTarikan === 'gabung') ? d2 : null; 
 
-            // ... (logika pangkas ditiadakan untuk kemudahan view)
-            
             let useJarak = document.getElementById('chkJarak').checked, useKepala = document.getElementById('chkKepala').checked, useEkor = document.getElementById('chkEkor').checked, useTesson = document.getElementById('chkTesson').checked, useWakSalarabo = document.getElementById('chkWakSalarabo').checked, useKelipatan = document.getElementById('chkKelipatan').checked, useBijiLemah = document.getElementById('chkBijiLemah').checked, useMatiGab = document.getElementById('chkMatiGab').checked, usePasaran = document.getElementById('chkPasaranJawa').checked, useKembar = document.getElementById('chkKembar').checked;
             
             let inputMatiKepala = document.getElementById('inputMatiKepala').value; let arrMatiKepalaManual = []; if (inputMatiKepala.length > 0) { for(let i=0; i<inputMatiKepala.length; i++) arrMatiKepalaManual.push(parseInt(inputMatiKepala[i])); }
@@ -1023,6 +1104,7 @@ Ekr: ${ekText}`;
             function applyFilter(lines) {
                 return lines.filter(n => {
                     let v = parseInt(n), k = parseInt(n[0]), e = parseInt(n[1]);
+                    
                     if (kGanjil && k % 2 !== 0) return false; if (kGenap && k % 2 === 0) return false;
                     if (kBesar && k >= 5) return false; if (kKecil && k <= 4) return false;
                     if (eGanjil && e % 2 !== 0) return false; if (eGenap && e % 2 === 0) return false;
@@ -1039,6 +1121,7 @@ Ekr: ${ekText}`;
                         if (pasaranFilter === "wage" && v >= 16 && v <= 36) return false;
                         if (pasaranFilter === "kliwon" && v >= 64 && v <= 84) return false;
                     }
+
                     if (d1) {
                         if (useTesson && e == d1.matiEkorTesson) return false;
                         if (useWakSalarabo && d1.arrWakSalarabo.includes(n)) return false;
@@ -1048,6 +1131,7 @@ Ekr: ${ekText}`;
                         if (useJarak) { if (d1.jarakStart <= d1.jarakEnd) { if (v >= d1.jarakStart && v <= d1.jarakEnd) return false; } else { if (v >= d1.jarakStart || v <= d1.jarakEnd) return false; } }
                         if (useKepala && k == d1.matiKepala) return false; if (useEkor && e == d1.matiEkor) return false;
                     }
+
                     if (d2) {
                         if (useTesson && e == d2.matiEkorTesson) return false;
                         if (useWakSalarabo && d2.arrWakSalarabo.includes(n)) return false;
@@ -1065,12 +1149,10 @@ Ekr: ${ekText}`;
                 document.getElementById('aiLiveCard').style.display = 'none'; document.getElementById('hasilGlobal').style.display = 'none'; 
                 document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
+                
                 saveSettings();
                 return; 
             }
-
-            function getGJ(num) { return num % 2 === 0 ? "Genap" : "Ganjil"; }
-            function getBK(num) { return num > 4 ? "Besar" : "Kecil"; }
 
             if (isValid) {
                 if (aD) {
@@ -1092,7 +1174,7 @@ Ekr: ${ekText}`;
                     let cmSet = new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2]);
                     document.getElementById('liveCM').innerText = Array.from(cmSet).slice(0, 2).join(' / ');
 
-                    // RENDER BBFS 7 DIGIT GABUNGAN DENGAN WARNA
+                    // MERGE BBFS 6-7 DIGIT DENGAN WARNA LAMPU LALU LINTAS
                     let rawBbfs = Array.from(new Set([...mD.bbfsArray, ...aD.bbfsArray])).slice(0, 7).sort((a,b)=>a-b);
                     let strongDigits = new Set([...mD.dataAI.ai1, ...aD.dataAI.ai1]);
                     let weakDigits = new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt]);
@@ -1138,7 +1220,7 @@ Ekr: ${ekText}`;
                     document.getElementById('liveCB').innerText = `${mD.cb1} / ${mD.cb2}`;
                     document.getElementById('liveCM').innerText = `${mD.cm1} / ${mD.cm2}`;
                     
-                    // RENDER BBFS 7 DIGIT TUNGGAL DENGAN WARNA
+                    // RUMUS BBFS 6-7 DIGIT TUNGGAL DENGAN WARNA LAMPU LALU LINTAS
                     let rawBbfs = mD.bbfsArray;
                     let strongDigits = new Set(mD.dataAI.ai1);
                     let weakDigits = new Set(mD.dataAI.kmt);
@@ -1199,7 +1281,7 @@ Ekr: ${ekText}`;
                 let strCD = bEkorCD.join('*'); if(strCD) strCD += '#';
                 document.getElementById('lineEkorCd').innerText = bEkorCD.length + " LN"; document.getElementById('hasilEkorCd').value = strCD;
 
-                bEkorMain = applyFilter(bEkorMain).sort((a,b) => parseInt(a)-parseInt(b));
+                bEkorMain = applyFilter(bEkorMain).sort((a,b) => parseInt(b)-parseInt(b));
                 let strEkorMain = bEkorMain.join('*'); if(strEkorMain) strEkorMain += '#';
                 document.getElementById('lineEkorMain').innerText = bEkorMain.length + " LN"; document.getElementById('hasilEkorMain').value = strEkorMain;
 
