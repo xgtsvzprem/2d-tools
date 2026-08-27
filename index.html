@@ -477,9 +477,14 @@
         }
 
         function copyPrediksiTeks(btn) {
-            let cb = document.getElementById("liveCB").innerText.trim();
-            let cm = document.getElementById("liveCM").innerText.trim();
-            let bbfs = document.getElementById("liveBBFS").innerText.trim();
+            let cbRaw = document.getElementById("liveCB").innerText.trim();
+            let cmRaw = document.getElementById("liveCM").innerText.trim();
+            
+            // Format CB dan CM menjadi dipisahkan dengan koma
+            let cb = cbRaw.replace(/\s*\/\s*/g, ',');
+            let cm = cmRaw.replace(/\s*\/\s*/g, ',');
+            
+            let bbfs = document.getElementById("liveBBFS").innerText.replace(/\s+/g, '');
             
             // Ambil text dan hilangkan semua spasi di dalamnya untuk format poltar
             let as = document.getElementById("predAs").innerText.replace(/\s+/g, '');
@@ -499,7 +504,7 @@
                 judul = "*🔥 Prediksi Harian (H-1) 🔥*";
             }
 
-            let format = `${judul}\n\ncb: ${cb}\ncb 2d: ${cm}\nbbfs: ${bbfs}\npoltar: ${as},${kop},${kep},${ek}`;
+            let format = `${judul}\n\n*CB:* ${cb}\n*CB 2D:* ${cm}\n*BBFS:* ${bbfs}\n*Poltar:* ${as},${kop},${kep},${ek}`;
 
             navigator.clipboard.writeText(format).then(function() {
                 let textAwal = btn.innerText; 
