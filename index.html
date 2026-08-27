@@ -477,23 +477,29 @@
         }
 
         function copyPrediksiTeks(btn) {
-            let cb = document.getElementById("liveCB").innerText;
-            let cm = document.getElementById("liveCM").innerText;
-            let bbfs = document.getElementById("liveBBFS").innerText;
+            let cb = document.getElementById("liveCB").innerText.trim();
+            let cm = document.getElementById("liveCM").innerText.trim();
+            let bbfs = document.getElementById("liveBBFS").innerText.trim();
+            
+            // Ambil text dan hilangkan semua spasi di dalamnya untuk format poltar
+            let as = document.getElementById("predAs").innerText.replace(/\s+/g, '');
+            let kop = document.getElementById("predKop").innerText.replace(/\s+/g, '');
+            let kep = document.getElementById("predKep").innerText.replace(/\s+/g, '');
+            let ek = document.getElementById("predEk").innerText.replace(/\s+/g, '');
 
             let useH1 = document.getElementById('useH1').checked;
             let useH7 = document.getElementById('useH7').checked;
 
-            let judul = "Prediksi Analitik AI";
+            let judul = "*🔥 Prediksi Analitik AI 🔥*";
             if (useH1 && useH7) {
-                judul = "Prediksi berdasarkan Gabungan keluaran (H-1 + H-7)";
+                judul = "*🔥 Prediksi Gabungan (H-1 + H-7) 🔥*";
             } else if (useH7) {
-                judul = "Prediksi berdasarkan Keluaran minggu lalu (H-7)";
+                judul = "*🔥 Prediksi Mingguan (H-7) 🔥*";
             } else if (useH1) {
-                judul = "Prediksi berdasarkan Keluaran sebelumnya (H-1)";
+                judul = "*🔥 Prediksi Harian (H-1) 🔥*";
             }
 
-            let format = `${judul}\n* CB: ${cb}\n* CM: ${cm}\n* BBFS: ${bbfs}`;
+            let format = `${judul}\n\ncb: ${cb}\ncb 2d: ${cm}\nbbfs: ${bbfs}\npoltar: ${as},${kop},${kep},${ek}`;
 
             navigator.clipboard.writeText(format).then(function() {
                 let textAwal = btn.innerText; 
