@@ -1033,6 +1033,10 @@
                     document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
                 }
                 document.getElementById('aiLiveCard').style.display = 'block';
+            } else {
+                document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
+                document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
+                document.getElementById('aiLiveCard').style.display = 'none';
             }
 
             let bAITabel = [], bEkorTop = [], bEkorCD = [], bEkorMain = [], p1 = [], p2 = [], bM = [];
@@ -1040,15 +1044,13 @@
             if (d1) { bAITabel.push(...d1.aiTabel); bEkorTop.push(...d1.baseEkorTop); bEkorCD.push(...d1.baseEkorCD); bEkorMain.push(...d1.baseEkorMain); p1.push(...d1.aiPola1); p2.push(...d1.aiPola2); }
             if (d2) { bAITabel.push(...d2.aiTabel); bEkorTop.push(...d2.baseEkorTop); bEkorCD.push(...d2.baseEkorCD); bEkorMain.push(...d2.baseEkorMain); p1.push(...d2.aiPola1); p2.push(...d2.aiPola2); }
 
-            if(isValid) {
-                bAITabel = renderHasil(applyFilter(generate2DAI(bAITabel, posisiPilihan)), 'lineAITabel', 'hasilAITabel');
-                bEkorTop = renderHasil(applyFilter(bEkorTop), 'lineEkorTop', 'hasilEkorTop');
-                bEkorCD = renderHasil(applyFilter(bEkorCD), 'lineEkorCd', 'hasilEkorCd');
-                bEkorMain = renderHasil(applyFilter(bEkorMain), 'lineEkorMain', 'hasilEkorMain');
+            bAITabel = renderHasil(applyFilter(generate2DAI(bAITabel, posisiPilihan)), 'lineAITabel', 'hasilAITabel');
+            bEkorTop = renderHasil(applyFilter(bEkorTop), 'lineEkorTop', 'hasilEkorTop');
+            bEkorCD = renderHasil(applyFilter(bEkorCD), 'lineEkorCd', 'hasilEkorCd');
+            bEkorMain = renderHasil(applyFilter(bEkorMain), 'lineEkorMain', 'hasilEkorMain');
 
-                let polas = Array.from(new Set([...applyFilter(generate2DAI(p1, posisiPilihan)), ...applyFilter(generate2DAI(p2, posisiPilihan))]));
-                p1 = renderHasil(polas, 'lineGabungan', 'hasilGabungan'); 
-            }
+            let polas = Array.from(new Set([...applyFilter(generate2DAI(p1, posisiPilihan)), ...applyFilter(generate2DAI(p2, posisiPilihan))]));
+            p1 = renderHasil(polas, 'lineGabungan', 'hasilGabungan'); 
 
             if (inputManual.length > 0) {
                 let aiM = []; for(let i=0; i<inputManual.length; i++) aiM.push(Number(inputManual[i]));
