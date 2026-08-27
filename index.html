@@ -28,8 +28,14 @@
         .container { background-color: var(--card-bg); width: 100%; max-width: 440px; padding: 18px; border-radius: 14px; border: 1px solid var(--border-color); box-shadow: 0 4px 16px rgba(0,0,0,0.03); margin-bottom: 12px; box-sizing: border-box; transition: background-color 0.3s, border-color 0.3s; }
         .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; transition: border-color 0.3s; }
         h2 { margin: 0; font-size: 16px; color: var(--text-main); font-weight: 800; }
+        
         .btn-dark { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; font-size: 10px; font-weight: 800; padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px; }
         body.dark-mode .btn-dark { background: #334155; color: #38bdf8; border-color: #475569; }
+        
+        .btn-reset { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; font-size: 10px; font-weight: 800; padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px; }
+        .btn-reset:hover { background: #fecaca; }
+        body.dark-mode .btn-reset { background: #7f1d1d; color: #fca5a5; border-color: #991b1b; }
+
         .input-group { margin-bottom: 10px; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .input-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
@@ -94,7 +100,10 @@
     <div class="container">
         <div class="header-container">
             <h2>2D Tools & Formulas 🔥</h2>
-            <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: OFF</button>
+            <div style="display: flex; gap: 6px;">
+                <button class="btn-reset" onclick="resetMaster()">🔄 RESET</button>
+                <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: OFF</button>
+            </div>
         </div>
 
         <div class="filter-columns" style="margin-bottom: 12px;">
@@ -216,22 +225,6 @@
                     <input type="text" inputmode="numeric" id="inputAIManual" class="input-box" placeholder="Cth: 159" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding:9px 28px; font-size:14px;" />
                     <span class="clear-icon" onclick="clearInput('inputAIManual')" style="right: 10px;">&times;</span>
                 </div>
-            </div>
-        </div>
-
-        <div class="filter-section" style="padding: 10px; margin-bottom: 12px; border-color: #cbd5e1;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 11px; font-weight: 800; color: var(--text-main);">💾 MANAJEMEN PROFIL:</span>
-            </div>
-            <div style="display: flex; gap: 6px; align-items: center;">
-                <select id="selectProfile" class="input-box" style="padding: 6px; font-size: 11px; flex: 2; height: 32px; letter-spacing: normal;" onchange="loadProfile()">
-                    <option value="">-- Pilih Profil Disimpan --</option>
-                </select>
-                <button onclick="hapusProfile()" style="background: var(--danger); color: white; border: none; border-radius: 6px; padding: 0 10px; height: 32px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;">Hapus</button>
-            </div>
-            <div style="display: flex; gap: 6px; margin-top: 6px; align-items: center;">
-                <input type="text" id="inputProfileName" class="input-box" placeholder="Ketik nama profil baru..." style="padding: 6px 10px; font-size: 12px; flex: 2; height: 32px; letter-spacing: normal; text-align: left;">
-                <button onclick="saveProfile()" style="background: var(--primary); color: white; border: none; border-radius: 6px; padding: 0 10px; height: 32px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s;">Simpan</button>
             </div>
         </div>
 
@@ -400,6 +393,58 @@
             <button class="btn-copy" style="background:#7e22ce;" onclick="salinTeks('hasilManual', this)">Copy</button>
             <div class="clear"></div>
         </div>
+        
+        <h2 style="font-size: 15px; color:var(--primary); margin-top: 24px; margin-bottom: 12px; text-align: left; padding-top: 12px; border-top: 1px dashed var(--border-color);">🔮 Hasil Prediksi Posisi Angka</h2>
+
+        <div class="result-block">
+            <div class="result-header">
+                <span>📌 4D Full (As-Kop-Kep-Ek)</span>
+                <span class="badge-hit" id="line4D">0 LN</span>
+            </div>
+            <textarea id="hasil4D" readonly></textarea>
+            <button class="btn-copy" onclick="salinTeks('hasil4D', this)">Copy</button>
+            <div class="clear"></div>
+        </div>
+
+        <div class="result-block">
+            <div class="result-header">
+                <span>📌 3D Belakang (Kop-Kep-Ek)</span>
+                <span class="badge-hit" id="line3D">0 LN</span>
+            </div>
+            <textarea id="hasil3D" readonly></textarea>
+            <button class="btn-copy" onclick="salinTeks('hasil3D', this)">Copy</button>
+            <div class="clear"></div>
+        </div>
+
+        <div class="result-block">
+            <div class="result-header">
+                <span>📌 2D Belakang (Kep-Ek)</span>
+                <span class="badge-hit" id="line2D">0 LN</span>
+            </div>
+            <textarea id="hasil2D" readonly></textarea>
+            <button class="btn-copy" onclick="salinTeks('hasil2D', this)">Copy</button>
+            <div class="clear"></div>
+        </div>
+
+        <div class="result-block">
+            <div class="result-header">
+                <span>📌 3D Depan (As-Kop-Kep)</span>
+                <span class="badge-hit" id="line3DDepan">0 LN</span>
+            </div>
+            <textarea id="hasil3DDepan" readonly></textarea>
+            <button class="btn-copy" onclick="salinTeks('hasil3DDepan', this)">Copy</button>
+            <div class="clear"></div>
+        </div>
+
+        <div class="result-block">
+            <div class="result-header">
+                <span>📌 2D Tengah (Kop-Kep)</span>
+                <span class="badge-hit" id="line2DTengah">0 LN</span>
+            </div>
+            <textarea id="hasil2DTengah" readonly></textarea>
+            <button class="btn-copy" onclick="salinTeks('hasil2DTengah', this)">Copy</button>
+            <div class="clear"></div>
+        </div>
     </div>
 
     <div class="app-footer">
@@ -429,106 +474,6 @@
         } else {
             document.body.classList.remove('dark-mode');
             document.getElementById('btnDark').innerText = 'DARK MODE: OFF';
-        }
-
-        function getProfiles() {
-            let p = localStorage.getItem('2d_profiles');
-            return p ? JSON.parse(p) : {};
-        }
-
-        function saveProfile() {
-            let name = document.getElementById('inputProfileName').value.trim();
-            if(!name) { alert("Ketik nama profil dulu di kotak sebelahnya!"); return; }
-            
-            const settings = {};
-            document.querySelectorAll('input[type="checkbox"]:not(#useH1):not(#useH7)').forEach(el => settings[el.id] = el.checked);
-            document.querySelectorAll('select:not(#selectProfile)').forEach(el => settings[el.id] = el.value);
-            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
-            
-            let profiles = getProfiles();
-            profiles[name] = settings;
-            localStorage.setItem('2d_profiles', JSON.stringify(profiles));
-            
-            document.getElementById('inputProfileName').value = '';
-            updateProfileDropdown(name);
-            alert("Profil '" + name + "' berhasil disimpan!");
-        }
-
-        function loadProfile() {
-            let name = document.getElementById('selectProfile').value;
-            if(!name) return;
-            
-            let profiles = getProfiles();
-            let settings = profiles[name];
-            if(settings) {
-                document.querySelectorAll('input[type="checkbox"]:not(#useH1):not(#useH7)').forEach(el => {
-                    if(settings[el.id] !== undefined) el.checked = settings[el.id];
-                });
-                document.querySelectorAll('select:not(#selectProfile)').forEach(el => {
-                    if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
-                });
-                ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
-                    if(settings[id] !== undefined) {
-                        let el = document.getElementById(id);
-                        el.value = settings[id];
-                        toggleClear(el);
-                    }
-                });
-                hitungSemua();
-            }
-        }
-
-        function hapusProfile() {
-            let name = document.getElementById('selectProfile').value;
-            if(!name) { alert("Pilih dulu profil yang mau dihapus dari dropdown!"); return; }
-            if(confirm("Yakin ingin menghapus profil '" + name + "'?")) {
-                let profiles = getProfiles();
-                delete profiles[name];
-                localStorage.setItem('2d_profiles', JSON.stringify(profiles));
-                updateProfileDropdown();
-            }
-        }
-
-        function updateProfileDropdown(selectedName = "") {
-            let select = document.getElementById('selectProfile');
-            select.innerHTML = '<option value="">-- Pilih Profil Disimpan --</option>';
-            let profiles = getProfiles();
-            for(let name in profiles) {
-                let opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                if(name === selectedName) opt.selected = true;
-                select.appendChild(opt);
-            }
-        }
-
-        function saveSettings() {
-            const settings = {};
-            document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
-            document.querySelectorAll('select:not(#selectProfile)').forEach(el => settings[el.id] = el.value);
-            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
-            localStorage.setItem('2d_settings', JSON.stringify(settings));
-        }
-
-        function loadSettings() {
-            const saved = localStorage.getItem('2d_settings');
-            if (saved) {
-                const settings = JSON.parse(saved);
-                document.querySelectorAll('input[type="checkbox"]').forEach(el => {
-                    if(settings[el.id] !== undefined) el.checked = settings[el.id];
-                });
-                document.querySelectorAll('select:not(#selectProfile)').forEach(el => {
-                    if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
-                });
-                ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
-                    if(settings[id] !== undefined) {
-                        let el = document.getElementById(id);
-                        el.value = settings[id];
-                        toggleClear(el);
-                    }
-                });
-                hitungSemua(); 
-            }
         }
 
         function copyPrediksiTeks(btn) {
@@ -584,8 +529,6 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             autoSetPasaranJawa();
-            updateProfileDropdown();
-            loadSettings();
         });
 
         const infoData = {
@@ -637,8 +580,47 @@
             ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
                 let el = document.getElementById(id); el.value = ''; toggleClear(el);
             });
-            document.getElementById('selectProfile').value = '';
             hitungSemua();
+        }
+        
+        function resetMaster() {
+            // 1. Kosongkan Input Utama
+            ['inputH1', 'inputH7', 'inputAIManual'].forEach(id => {
+                let el = document.getElementById(id);
+                el.value = '';
+                toggleClear(el);
+            });
+            
+            // 2. Reset Checkbox Mode H1/H7 ke kondisi default (dicentang)
+            document.getElementById('useH1').checked = true;
+            document.getElementById('useH7').checked = true;
+
+            // 3. Reset Dropdown Pilihan
+            document.getElementById('jenisPasaran').value = 'umum';
+            document.getElementById('pilihanPosisi').value = 'bebas';
+            autoSetPasaranJawa(); // Kembalikan ke pasaran hari ini
+
+            // 4. Reset Semua Master Filter
+            document.getElementById('chkAllMaster').checked = false;
+            const masterFilters = ['chkJarak', 'chkKepala', 'chkEkor', 'chkTesson', 'chkKembar', 'chkWakSalarabo', 'chkKelipatan', 'chkBijiLemah', 'chkMatiGab', 'chkPasaranJawa'];
+            masterFilters.forEach(id => document.getElementById(id).checked = false);
+            
+            // 5. Reset Filter Pangkas Sifat
+            const sifat = ['kGanjil', 'kGenap', 'kBesar', 'kKecil', 'eGanjil', 'eGenap', 'eBesar', 'eKecil'];
+            sifat.forEach(id => document.getElementById(id).checked = false);
+            
+            // 6. Reset Pangkas Manual
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
+                let el = document.getElementById(id); 
+                el.value = ''; 
+                toggleClear(el);
+            });
+            
+            // 7. Sembunyikan Area Hasil dan jalankan ulang untuk menyimpan state kosong
+            document.getElementById('aiLiveCard').style.display = 'none'; 
+            document.getElementById('hasilGlobal').style.display = 'none'; 
+            
+            hitungSemua(); 
         }
 
         document.addEventListener('contextmenu', e => e.preventDefault());
@@ -926,7 +908,7 @@
                 document.getElementById('aiLiveCard').style.display = 'none'; document.getElementById('hasilGlobal').style.display = 'none'; 
                 document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
-                saveSettings(); return; 
+                return; 
             }
 
             if (isValid) {
@@ -1052,6 +1034,70 @@
                 document.getElementById('segmenManual').style.display = 'none'; 
             }
 
+            // --- GENERATE PREDIKSI POSISI ANGKA ---
+            function getExpand(num) {
+                if (num % 2 === 0 && num > 4) return [6, 8];
+                if (num % 2 === 0 && num <= 4) return [0, 2, 4];
+                if (num % 2 !== 0 && num > 4) return [5, 7, 9];
+                return [1, 3];
+            }
+
+            let arrAs = [], arrKop = [], arrKep = [], arrEk = [];
+            if (d1) { 
+                arrAs.push(...getExpand(d1.pAs)); 
+                arrKop.push(...getExpand(d1.pKop)); 
+                arrKep.push(...getExpand(d1.pKep)); 
+                arrEk.push(...getExpand(d1.pEk)); 
+            }
+            if (d2) { 
+                arrAs.push(...getExpand(d2.pAs)); 
+                arrKop.push(...getExpand(d2.pKop)); 
+                arrKep.push(...getExpand(d2.pKep)); 
+                arrEk.push(...getExpand(d2.pEk)); 
+            }
+            
+            arrAs = Array.from(new Set(arrAs)).sort((a,b)=>a-b);
+            arrKop = Array.from(new Set(arrKop)).sort((a,b)=>a-b);
+            arrKep = Array.from(new Set(arrKep)).sort((a,b)=>a-b);
+            arrEk = Array.from(new Set(arrEk)).sort((a,b)=>a-b);
+
+            let res4D = [], res3DB = [], res2DB = [], res3DD = [], res2DT = [];
+            if (arrAs.length > 0) {
+                for(let a of arrAs) {
+                    for(let k of arrKop) {
+                        for(let p of arrKep) {
+                            res3DD.push(`${a}${k}${p}`);
+                            res2DT.push(`${k}${p}`);
+                            for(let e of arrEk) {
+                                res4D.push(`${a}${k}${p}${e}`);
+                                res3DB.push(`${k}${p}${e}`);
+                                res2DB.push(`${p}${e}`);
+                            }
+                        }
+                    }
+                }
+            }
+
+            res4D = Array.from(new Set(res4D));
+            res3DB = Array.from(new Set(res3DB));
+            res2DB = Array.from(new Set(res2DB));
+            res3DD = Array.from(new Set(res3DD));
+            res2DT = Array.from(new Set(res2DT));
+
+            // Apply Master Filters ONLY to 2D Belakang
+            res2DB = applyFilter(res2DB);
+            
+            // Adjust 4D and 3D Belakang to match filtered 2D Belakang lines
+            let v2DSet = new Set(res2DB);
+            res4D = res4D.filter(n => v2DSet.has(n.substring(2)));
+            res3DB = res3DB.filter(n => v2DSet.has(n.substring(1)));
+
+            renderHasil(res4D, 'line4D', 'hasil4D');
+            renderHasil(res3DB, 'line3D', 'hasil3D');
+            renderHasil(res2DB, 'line2D', 'hasil2D');
+            renderHasil(res3DD, 'line3DDepan', 'hasil3DDepan');
+            renderHasil(res2DT, 'line2DTengah', 'hasil2DTengah');
+
             let allGeneratedSets = [];
             if (bAITabel.length > 0) allGeneratedSets.push(bAITabel);
             if (bEkorTop.length > 0) allGeneratedSets.push(bEkorTop);
@@ -1059,6 +1105,9 @@
             if (bEkorMain.length > 0) allGeneratedSets.push(bEkorMain);
             if (p1.length > 0) allGeneratedSets.push(p1);
             if (bM.length > 0) allGeneratedSets.push(bM);
+            
+            // Masukkan prediksi posisi 2D Belakang agar BOM semakin jitu!
+            if (res2DB.length > 0) allGeneratedSets.push(res2DB);
 
             let crashCounts = {};
             allGeneratedSets.forEach(set => {
@@ -1070,7 +1119,6 @@
             renderHasil(bomLines, 'lineBom', 'hasilBom');
 
             document.getElementById('hasilGlobal').style.display = 'block';
-            saveSettings();
         }
     </script>
 </body>
