@@ -162,7 +162,7 @@
                 </div>
                 
                 <div class="ai-item highlight" style="grid-column: span 2;">
-                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 6-7D (<span style="color:#10b981;">Kuat</span> | <span style="color:#ef4444;">Mati</span>)</span>
+                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 4D (<span style="color:#10b981;">Kuat</span> | <span style="color:#ef4444;">Mati</span>)</span>
                     <span class="ai-item-val" id="liveBBFS" style="font-size:14px; letter-spacing:2px; font-weight:800;">-</span>
                 </div>
 
@@ -946,6 +946,34 @@
 
                 let strongSet = new Set();
                 let weakSet = new Set();
+                
+                // --- KODE BARU: ANALISIS FREKUENSI UNTUK 4 DIGIT TERKUAT ---
+                function getTop4BBFS(bbfsArr, dataObjects) {
+                    let digitFreq = {};
+                    dataObjects.forEach(d => {
+                        if (!d) return;
+                        let sources = [
+                            d.asB, d.kopB, d.kepB, d.ekB,
+                            ...(d.aiPola1 || []), ...(d.aiPola2 || []),
+                            ...(d.aiTabel || []),
+                            ...(d.dataAI ? d.dataAI.ai1 : []), ...(d.dataAI ? d.dataAI.ai2 : []),
+                            ...(d.arrEkorMain || [])
+                        ];
+                        sources.forEach(num => {
+                            if(num !== undefined && num !== null && !isNaN(num)) {
+                                digitFreq[num] = (digitFreq[num] || 0) + 1;
+                            }
+                        });
+                    });
+                    
+                    return bbfsArr.slice().sort((a, b) => {
+                        let freqA = digitFreq[a] || 0;
+                        let freqB = digitFreq[b] || 0;
+                        if (freqB !== freqA) return freqB - freqA;
+                        return a - b;
+                    }).slice(0, 4).sort((a,b) => a-b);
+                }
+                // ------------------------------------------------------------
 
                 if (modeTarikan === 'gabung') {
                     strongSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2, ...mD.dataAI.ai1, ...aD.dataAI.ai1]);
@@ -961,8 +989,9 @@
                     let cmSet = new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2]);
                     document.getElementById('liveCM').innerHTML = Array.from(cmSet).slice(0, 2).map(x => colorizeDigits(x, strongSet, weakSet)).join(' / ');
 
+                    // PENERAPAN PANGKAS 4 DIGIT (GABUNGAN)
                     let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
-                    let gabBBFS = Array.from(bbfsSet).slice(0, 7).sort((a,b)=>a-b);
+                    let gabBBFS = getTop4BBFS(Array.from(bbfsSet), [mD, aD]);
                     document.getElementById('liveBBFS').innerHTML = colorizeDigits(gabBBFS, strongSet, weakSet);
 
                     let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
@@ -1013,7 +1042,10 @@
 
                     document.getElementById('liveCB').innerHTML = `${colorizeDigits([mD.cb1], strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits([mD.cb2], strongSet, weakSet)}`;
                     document.getElementById('liveCM').innerHTML = `${colorizeDigits(mD.cm1, strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits(mD.cm2, strongSet, weakSet)}`;
-                    document.getElementById('liveBBFS').innerHTML = colorizeDigits(mD.bbfsArray, strongSet, weakSet);
+                    
+                    // PENERAPAN PANGKAS 4 DIGIT (TUNGGAL)
+                    let singleBBFS = getTop4BBFS(mD.bbfsArray, [mD]);
+                    document.getElementById('liveBBFS').innerHTML = colorizeDigits(singleBBFS, strongSet, weakSet);
                     
                     document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet)} <span style="color:var(--text-main);">-</span> ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet)}`;
                     document.getElementById('liveKMTEkor').innerHTML = colorizeDigits(mD.dataAI.kmt, strongSet, weakSet);
