@@ -494,17 +494,19 @@
 
             let useH1 = document.getElementById('useH1').checked;
             let useH7 = document.getElementById('useH7').checked;
+            let valH1 = document.getElementById('inputH1').value;
+            let valH7 = document.getElementById('inputH7').value;
 
-            let judul = "*🔥 Prediksi Analitik AI 🔥*";
-            if (useH1 && useH7) {
-                judul = "*🔥 Prediksi Gabungan (H-1 + H-7) 🔥*";
-            } else if (useH7) {
-                judul = "*🔥 Prediksi Mingguan (H-7) 🔥*";
-            } else if (useH1) {
-                judul = "*🔥 Prediksi Harian (H-1) 🔥*";
+            let judul = "🔥 Prediksi Analitik AI 🔥";
+            if (useH1 && useH7 && valH1 && valH7) {
+                judul = `🔥 Prediksi Berdasarkan Angka H-1 + H-7 🔥`;
+            } else if (useH7 && valH7) {
+                judul = `🔥 Angka H-7 (${valH7}) 🔥`;
+            } else if (useH1 && valH1) {
+                judul = `🔥 Angka H-1 (${valH1}) 🔥`;
             }
 
-            let format = `${judul}\n\n*CB:* ${cb}\n*CB 2D:* ${cm}\n*BBFS:* ${bbfs}\n*Poltar:* ${as},${kop},${kep},${ek}`;
+            let format = `*${judul}*\n\n*CB:* ${cb}\n*CB 2D:* ${cm}\n*BBFS:* ${bbfs}\n*Poltar:* ${as},${kop},${kep},${ek}`;
 
             navigator.clipboard.writeText(format).then(function() {
                 let textAwal = btn.innerText; 
