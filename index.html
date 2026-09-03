@@ -66,7 +66,7 @@
         .filter-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .filter-item { display: flex; align-items: center; justify-content: flex-start; }
         .filter-label { font-size: 12px; color: var(--text-main); display: flex; align-items: center; cursor: pointer; margin: 0; }
-        .filter-label input[type="checkbox"] { margin-right: 6px; cursor: pointer; accent-color: var(--primary); }
+        .filter-label input[type="checkbox"], .filter-label input[type="radio"] { margin-right: 6px; cursor: pointer; accent-color: var(--primary); }
         .badge { font-weight: 800; color: var(--danger); margin-left: 4px; font-size: 11px; }
         select.mini-select { margin-left: 4px; padding: 2px 4px; font-size: 11px; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--bg-main); cursor: pointer; outline: none; font-weight: 700; color: var(--text-main); width: 100%; max-width: 110px;}
         .info-icon { display: inline-flex; justify-content: center; align-items: center; background-color: #cbd5e1; color: #475569; border-radius: 50%; width: 15px; height: 15px; font-size: 10px; font-weight: bold; margin-left: 5px; cursor: pointer; transition: 0.15s; flex-shrink:0; }
@@ -162,13 +162,16 @@
                 </div>
                 
                 <div class="ai-item highlight" style="grid-column: span 2;">
-                    <span class="ai-item-label" style="color:#6b21a8;">🎲 BBFS 4D (<span style="color:#10b981;">Kuat</span> | <span style="color:#ef4444;">Mati</span>)</span>
+                    <span class="ai-item-label" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+                        <span style="color:#6b21a8;">🎲 BBFS (<span style="color:#10b981;">Kuat</span> | <span style="color:#ef4444;">Mati</span>)</span>
+                        <span style="display:flex; gap:6px; font-size:9px; color:var(--text-sub);">
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:2px; margin:0;"><input type="radio" name="bbfs_len" value="4" onchange="hitungSemua()" checked style="margin:0; width:10px; height:10px; accent-color:var(--primary);">4D</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:2px; margin:0;"><input type="radio" name="bbfs_len" value="5" onchange="hitungSemua()" style="margin:0; width:10px; height:10px; accent-color:var(--primary);">5D</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:2px; margin:0;"><input type="radio" name="bbfs_len" value="6" onchange="hitungSemua()" style="margin:0; width:10px; height:10px; accent-color:var(--primary);">6D</label>
+                            <label style="cursor:pointer; display:flex; align-items:center; gap:2px; margin:0;"><input type="radio" name="bbfs_len" value="7" onchange="hitungSemua()" style="margin:0; width:10px; height:10px; accent-color:var(--primary);">7D</label>
+                        </span>
+                    </span>
                     <span class="ai-item-val" id="liveBBFS" style="font-size:14px; letter-spacing:2px; font-weight:800;">-</span>
-                </div>
-
-                <div class="ai-item" style="grid-column: span 2; text-align: left;">
-                    <span class="ai-item-label" style="color: #be123c; margin-bottom:4px; text-align: center;">🐉 Prediksi Shio & Jalur</span>
-                    <div style="font-size: 11px; font-weight: 700; color: #881337; line-height: 1.5; padding-left: 8px;" id="liveShio">-</div>
                 </div>
                 
                 <div class="ai-item" style="grid-column: span 2;">
@@ -476,17 +479,54 @@
             document.getElementById('btnDark').innerText = 'DARK MODE: OFF';
         }
 
+        function saveSettings() {
+            const settings = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
+            document.querySelectorAll('select').forEach(el => settings[el.id] = el.value);
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
+            
+            let selectedBbfs = document.querySelector('input[name="bbfs_len"]:checked');
+            if(selectedBbfs) settings['bbfs_len'] = selectedBbfs.value;
+            
+            localStorage.setItem('2d_settings', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('2d_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+                    if(settings[el.id] !== undefined) el.checked = settings[el.id];
+                });
+                document.querySelectorAll('select').forEach(el => {
+                    if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
+                });
+                ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
+                    if(settings[id] !== undefined) {
+                        let el = document.getElementById(id);
+                        el.value = settings[id];
+                        toggleClear(el);
+                    }
+                });
+                
+                if(settings['bbfs_len']) {
+                    let el = document.querySelector('input[name="bbfs_len"][value="'+settings['bbfs_len']+'"]');
+                    if(el) el.checked = true;
+                }
+                
+                hitungSemua(); 
+            }
+        }
+
         function copyPrediksiTeks(btn) {
             let cbRaw = document.getElementById("liveCB").innerText.trim();
             let cmRaw = document.getElementById("liveCM").innerText.trim();
             
-            // Format CB dan CM menjadi dipisahkan dengan koma
             let cb = cbRaw.replace(/\s*\/\s*/g, ',');
             let cm = cmRaw.replace(/\s*\/\s*/g, ',');
             
             let bbfs = document.getElementById("liveBBFS").innerText.replace(/\s+/g, '');
             
-            // Ambil text dan hilangkan semua spasi di dalamnya untuk format poltar
             let as = document.getElementById("predAs").innerText.replace(/\s+/g, '');
             let kop = document.getElementById("predKop").innerText.replace(/\s+/g, '');
             let kep = document.getElementById("predKep").innerText.replace(/\s+/g, '');
@@ -542,6 +582,7 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             autoSetPasaranJawa();
+            loadSettings();
         });
 
         const infoData = {
@@ -597,39 +638,32 @@
         }
         
         function resetMaster() {
-            // 1. Kosongkan Input Utama
             ['inputH1', 'inputH7', 'inputAIManual'].forEach(id => {
                 let el = document.getElementById(id);
                 el.value = '';
                 toggleClear(el);
             });
             
-            // 2. Reset Checkbox Mode H1/H7 ke kondisi default (dicentang)
             document.getElementById('useH1').checked = true;
             document.getElementById('useH7').checked = true;
 
-            // 3. Reset Dropdown Pilihan
             document.getElementById('jenisPasaran').value = 'umum';
             document.getElementById('pilihanPosisi').value = 'bebas';
-            autoSetPasaranJawa(); // Kembalikan ke pasaran hari ini
+            autoSetPasaranJawa();
 
-            // 4. Reset Semua Master Filter
             document.getElementById('chkAllMaster').checked = false;
             const masterFilters = ['chkJarak', 'chkKepala', 'chkEkor', 'chkTesson', 'chkKembar', 'chkWakSalarabo', 'chkKelipatan', 'chkBijiLemah', 'chkMatiGab', 'chkPasaranJawa'];
             masterFilters.forEach(id => document.getElementById(id).checked = false);
             
-            // 5. Reset Filter Pangkas Sifat
             const sifat = ['kGanjil', 'kGenap', 'kBesar', 'kKecil', 'eGanjil', 'eGenap', 'eBesar', 'eKecil'];
             sifat.forEach(id => document.getElementById(id).checked = false);
             
-            // 6. Reset Pangkas Manual
             ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
                 let el = document.getElementById(id); 
                 el.value = ''; 
                 toggleClear(el);
             });
             
-            // 7. Sembunyikan Area Hasil dan jalankan ulang untuk menyimpan state kosong
             document.getElementById('aiLiveCard').style.display = 'none'; 
             document.getElementById('hasilGlobal').style.display = 'none'; 
             
@@ -685,15 +719,6 @@
             7: ["00","04","13","15","22","23","26","31","32","33","34","37","40","43","44","45","48","51","54","55","59","62","66","68","69","73","79","84","86","95","96","97"],
             8: ["06","07","08","11","15","24","26","33","34","37","42","43","44","45","48","51","54","55","56","59","60","62","65","66","70","73","77","79","80","84","95","97"],
             9: ["06","08","17","18","19","22","26","35","37","44","45","48","53","54","55","56","59","60","62","65","66","67","71","73","76","77","80","81","84","88","91","95"]
-        };
-        const rumusShioMain = {
-            1: [2,5,8,10,11], 2: [1,4,7,9,12], 3: [2,5,6,8,11], 4: [1,4,7,9,10],
-            5: [2,3,6,8,11], 6: [1,4,5,7,12], 7: [2,6,8,10,11], 8: [1,4,7,9,12],
-            9: [2,5,8,10,11], 10: [1,3,6,9,12], 11: [2,4,7,10,11], 12: [1,3,6,9,12]
-        };
-        const shioNama = {
-            1: "Naga", 2: "Kelinci", 3: "Harimau", 4: "Kerbau", 5: "Tikus", 6: "Babi",
-            7: "Anjing", 8: "Ayam", 9: "Monyet", 10: "Kambing", 11: "Kuda", 12: "Ular"
         };
 
         function salinTeks(elementId, btn) {
@@ -751,33 +776,34 @@
             let pAs, pKop, pKep, pEk, cb1, cb2, cm1, cm2, bbfsArray = [];
             let j1 = (asB + ekB) % 10, j2 = (kopB + kepB) % 10;
 
-            let bbfsBase = new Set([asB, kopB, kepB, ekB]);
+            let bbfsBase = [asB, kopB, kepB, ekB];
+            
             if (pasaranToggle === 'hk') {
                 keyEkor = mapMistikLama[ekB]; key2D = `${mapMistikLama[kepB]}${mapMistikLama[ekB]}`;
                 valPola1 = jadikanSatuDigit(asB + ekB); valPola2 = jadikanSatuDigit(kopB + kepB);
                 cb1 = mapIndex[ekB]; cb2 = mapMistikLama[asB]; if(cb1 === cb2) cb2 = mapMistikBaru[kepB];
-                bbfsBase.add(mapIndex[ekB]); bbfsBase.add(j2); bbfsBase.add(mapMistikLama[asB]); bbfsBase.add(mapMistikBaru[kepB]); bbfsBase.add(mapIndex[kopB]);
+                bbfsBase.push(mapIndex[ekB], j2, mapMistikLama[asB], mapMistikBaru[kepB], mapIndex[kopB]);
                 pAs = (asB + kepB) % 10; pKop = Math.abs(kopB - ekB); pKep = (asB + kopB + kepB) % 10; pEk = (Math.abs(kepB - ekB) + asB) % 10;
             } else if (pasaranToggle === 'sgp') {
                 keyEkor = mapIndex[ekB]; key2D = `${mapIndex[kepB]}${mapIndex[ekB]}`;
                 valPola1 = mapIndex[jadikanSatuDigit(asB + kopB)]; valPola2 = mapMistikLama[jadikanSatuDigit(kepB + ekB)];
                 cb1 = mapMistikBaru[kopB]; cb2 = mapIndex[kepB]; if(cb1 === cb2) cb2 = mapMistikLama[ekB];
-                bbfsBase.add(mapMistikBaru[kopB]); bbfsBase.add(mapIndex[kepB]); bbfsBase.add(j1); bbfsBase.add(mapMistikLama[asB]); bbfsBase.add(j2);
+                bbfsBase.push(mapMistikBaru[kopB], mapIndex[kepB], j1, mapMistikLama[asB], j2);
                 pAs = Math.abs(asB - kopB); pKop = (kepB + ekB) % 10; pKep = (asB + ekB) % 10; pEk = (kopB + kepB) % 10;
             } else if (pasaranToggle === 'sdy') {
                 keyEkor = mapMistikBaru[ekB]; key2D = `${ekB}${kepB}`;
                 valPola1 = mapMistikBaru[jadikanSatuDigit(asB + kopB)]; valPola2 = mapIndex[jadikanSatuDigit(kepB + ekB)];
                 cb1 = j1; cb2 = mapMistikBaru[ekB]; if(cb1 === cb2) cb2 = mapIndex[kopB];
-                bbfsBase.add(j1); bbfsBase.add(mapMistikBaru[ekB]); bbfsBase.add(mapMistikLama[kepB]); bbfsBase.add(mapIndex[asB]); bbfsBase.add(j2);
+                bbfsBase.push(j1, mapMistikBaru[ekB], mapMistikLama[kepB], mapIndex[asB], j2);
                 pAs = (ekB + kepB) % 10; pKop = Math.abs(ekB - asB); pKep = (kopB + asB + ekB) % 10; pEk = (Math.abs(ekB - kopB) + asB) % 10;
             } else {
                 cb1 = mapMistikLama[j2]; cb2 = mapIndex[ekB];
                 if (cb1 === cb2) cb2 = mapMistikBaru[kepB]; if (cb1 === cb2) cb2 = (cb1 + 3) % 10;
-                bbfsBase.add(mapIndex[kepB]); bbfsBase.add(mapMistikBaru[kopB]); bbfsBase.add(j1); bbfsBase.add(mapMistikLama[ekB]); bbfsBase.add(j2);
-                pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kepB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
+                bbfsBase.push(mapIndex[kepB], mapMistikBaru[kopB], j1, mapMistikLama[ekB], j2);
+                pAs = (kopB + ekB) % 10; pKop = Math.abs(asB - kepB); pKep = (kopB + kopB + ekB) % 10; pEk = (Math.abs(asB - ekB) + kepB) % 10;
             }
 
-            bbfsArray = Array.from(bbfsBase).slice(0, 7).sort((a,b) => a-b);
+            bbfsArray = bbfsBase;
 
             cm1 = `${cb1}${cb2}`;
             cm2 = `${(cb1+2)%10}${(cb2+3)%10}`;
@@ -798,17 +824,11 @@
             let arrEkorMain = ekorMainMap[keyEkor] || [];
             let baseEkorMain = [];
             for(let h=0; h<=9; h++) { for(let e of arrEkorMain) { baseEkorMain.push(`${h}${e}`); } }
-            
-            let shioAwal = num2D % 12; if(shioAwal === 0) shioAwal = 12;
-            let shioON = rumusShioMain[shioAwal] || [];
-            let shioLemah = (kepB + ekB) % 12; if(shioLemah === 0) shioLemah = 12;
-            let jalurLemah = (asB + kopB + kepB + ekB) % 3 + 1;
-            let jalurMainArr = [1,2,3].filter(j => j !== jalurLemah);
 
             return {
                 asB, kopB, kepB, ekB, str2D, num2D, matiEkorTesson, arrWakSalarabo, jarakStart, jarakEnd, matiKepala, matiEkor,
                 aiPola1, aiPola2, aiTabel, aiTabelStr, dataAI, baseEkorTop, baseEkorCD, baseEkorMain, arrEkorMain,
-                cb1, cb2, cm1, cm2, bbfsArray, pAs, pKop, pKep, pEk, shioON, shioLemah, jalurLemah, jalurMainArr
+                cb1, cb2, cm1, cm2, bbfsArray, pAs, pKop, pKep, pEk
             };
         }
 
@@ -947,8 +967,12 @@
                 let strongSet = new Set();
                 let weakSet = new Set();
                 
-                // --- KODE BARU: ANALISIS FREKUENSI UNTUK 4 DIGIT TERKUAT ---
-                function getTop4BBFS(bbfsArr, dataObjects) {
+                let bbfsLength = 4;
+                let bbfsRadio = document.querySelector('input[name="bbfs_len"]:checked');
+                if (bbfsRadio) bbfsLength = parseInt(bbfsRadio.value);
+
+                // Formula BBFS Paten: Seimbang (memasukkan proporsi angka kembar yang pas berdasarkan tingkat kekuatan)
+                function getOptimizedBBFS(bbfsArr, dataObjects, targetLen) {
                     let digitFreq = {};
                     dataObjects.forEach(d => {
                         if (!d) return;
@@ -965,15 +989,37 @@
                             }
                         });
                     });
-                    
-                    return bbfsArr.slice().sort((a, b) => {
+
+                    // Urutkan angka unik berdasarkan frekuensi/kekuatan terbanyak
+                    let uniquePool = Array.from(new Set(bbfsArr)).sort((a, b) => {
                         let freqA = digitFreq[a] || 0;
                         let freqB = digitFreq[b] || 0;
                         if (freqB !== freqA) return freqB - freqA;
                         return a - b;
-                    }).slice(0, 4).sort((a,b) => a-b);
+                    });
+
+                    let selected = [];
+                    // Masukkan seluruh angka unik terkuat terlebih dahulu sesuai target panjang
+                    for (let num of uniquePool) {
+                        if (selected.length >= targetLen) break;
+                        selected.push(num);
+                    }
+
+                    // Berikan kuota kembar yang seimbang (tidak terlalu banyak, tidak terlalu sedikit: max 1 untuk 4D/5D, max 2 untuk 6D/7D)
+                    let twinCount = 0;
+                    let maxTwins = targetLen >= 6 ? 2 : 1; 
+
+                    for (let i = 0; i < uniquePool.length && selected.length < targetLen; i++) {
+                        let topNum = uniquePool[i];
+                        let currentCount = selected.filter(x => x === topNum).length;
+                        if (currentCount === 1 && twinCount < maxTwins) {
+                            selected.push(topNum);
+                            twinCount++;
+                        }
+                    }
+
+                    return selected.sort((a, b) => a - b);
                 }
-                // ------------------------------------------------------------
 
                 if (modeTarikan === 'gabung') {
                     strongSet = new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2, ...mD.dataAI.ai1, ...aD.dataAI.ai1]);
@@ -989,9 +1035,8 @@
                     let cmSet = new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2]);
                     document.getElementById('liveCM').innerHTML = Array.from(cmSet).slice(0, 2).map(x => colorizeDigits(x, strongSet, weakSet)).join(' / ');
 
-                    // PENERAPAN PANGKAS 4 DIGIT (GABUNGAN)
-                    let bbfsSet = new Set([...mD.bbfsArray, ...aD.bbfsArray]);
-                    let gabBBFS = getTop4BBFS(Array.from(bbfsSet), [mD, aD]);
+                    let bbfsSet = [...mD.bbfsArray, ...aD.bbfsArray];
+                    let gabBBFS = getOptimizedBBFS(bbfsSet, [mD, aD], bbfsLength);
                     document.getElementById('liveBBFS').innerHTML = colorizeDigits(gabBBFS, strongSet, weakSet);
 
                     let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
@@ -1008,12 +1053,6 @@
 
                     document.getElementById('liveAITabel').innerHTML = `<span style="color:var(--text-main);">Gabungan Tabel (Di bawah)</span>`;
                     document.getElementById('liveEkorMain').innerHTML = `<span style="color:var(--text-main);">Gabungan Pola (Di bawah)</span>`;
-
-                    let gabShioON = Array.from(new Set([...mD.shioON, ...aD.shioON])).sort((a,b)=>a-b);
-                    let gabJalurMain = Array.from(new Set([...mD.jalurMainArr, ...aD.jalurMainArr])).sort();
-                    let strGabShioON = gabShioON.map(s => `${s} (${shioNama[s]})`).join(', ');
-                    
-                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strGabShioON}</b><br>Jalur Main: <b>${gabJalurMain.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]}) &amp; ${aD.shioLemah} (${shioNama[aD.shioLemah]})</b>`;
 
                     function mergedPred(v1, v2) {
                         let isCrash = (getGJ(v1) === getGJ(v2) && getBK(v1) === getBK(v2));
@@ -1043,8 +1082,7 @@
                     document.getElementById('liveCB').innerHTML = `${colorizeDigits([mD.cb1], strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits([mD.cb2], strongSet, weakSet)}`;
                     document.getElementById('liveCM').innerHTML = `${colorizeDigits(mD.cm1, strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits(mD.cm2, strongSet, weakSet)}`;
                     
-                    // PENERAPAN PANGKAS 4 DIGIT (TUNGGAL)
-                    let singleBBFS = getTop4BBFS(mD.bbfsArray, [mD]);
+                    let singleBBFS = getOptimizedBBFS(mD.bbfsArray, [mD], bbfsLength);
                     document.getElementById('liveBBFS').innerHTML = colorizeDigits(singleBBFS, strongSet, weakSet);
                     
                     document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet)} <span style="color:var(--text-main);">-</span> ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet)}`;
@@ -1056,9 +1094,6 @@
                     document.getElementById('liveAITabel').innerHTML = mD.aiTabelStr ? colorizeDigits(strAiTabel, strongSet, weakSet, ' ') : '-';
                     document.getElementById('liveEkorMain').innerHTML = mD.arrEkorMain.length > 0 ? colorizeDigits(mD.arrEkorMain, strongSet, weakSet, ' ') : '-';
                     
-                    let strShioON = mD.shioON.map(s => `${s} (${shioNama[s]})`).join(', ');
-                    document.getElementById('liveShio').innerHTML = `Shio ON: <b>${strShioON}</b><br>Jalur Main: <b>${mD.jalurMainArr.join(' &amp; ')}</b><br>Shio Lemah: <b>${mD.shioLemah} (${shioNama[mD.shioLemah]})</b>`;
-
                     function singlePred(v) {
                         let coloredHtml = colorizeDigits(getExpand(v), strongSet, weakSet, '');
                         return `<div style="font-size:12px; letter-spacing:1px; font-weight:800; line-height: 2; white-space: nowrap;">${coloredHtml}</div>`;
@@ -1141,10 +1176,8 @@
             res3DD = Array.from(new Set(res3DD));
             res2DT = Array.from(new Set(res2DT));
 
-            // Apply Master Filters ONLY to 2D Belakang
             res2DB = applyFilter(res2DB);
             
-            // Adjust 4D and 3D Belakang to match filtered 2D Belakang lines
             let v2DSet = new Set(res2DB);
             res4D = res4D.filter(n => v2DSet.has(n.substring(2)));
             res3DB = res3DB.filter(n => v2DSet.has(n.substring(1)));
@@ -1163,7 +1196,6 @@
             if (p1.length > 0) allGeneratedSets.push(p1);
             if (bM.length > 0) allGeneratedSets.push(bM);
             
-            // Masukkan prediksi posisi 2D Belakang agar BOM semakin jitu!
             if (res2DB.length > 0) allGeneratedSets.push(res2DB);
 
             let crashCounts = {};
@@ -1176,6 +1208,7 @@
             renderHasil(bomLines, 'lineBom', 'hasilBom');
 
             document.getElementById('hasilGlobal').style.display = 'block';
+            saveSettings();
         }
     </script>
 </body>
