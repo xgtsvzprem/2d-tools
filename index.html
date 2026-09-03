@@ -53,7 +53,7 @@
         select.input-box { letter-spacing: normal; cursor: pointer; }
         input.input-box:focus, select.input-box:focus, textarea:focus { outline: none; border-color: var(--primary); }
         
-        .history-indicator { font-size: 9px; color: var(--primary); font-weight: 700; float: right; margin-top: -2px; }
+        .history-indicator { font-size: 10px; color: #fff; background: var(--primary); padding: 1px 6px; border-radius: 4px; font-weight: 800; float: right; letter-spacing: 0.5px; }
 
         .ai-live-card { display: none; background: #fff; border: 1px solid var(--primary); border-radius: 8px; padding: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08); position: relative; transition: background-color 0.3s; }
         .ai-live-title { font-size: 10px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #bfdbfe; padding-bottom: 4px; }
@@ -130,15 +130,15 @@
 
         <div class="filter-columns" style="margin-bottom: 6px;" id="boxInputs">
             <div class="input-group" style="margin:0; flex:1;" id="colH1">
-                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding-bottom: 2px;">
-                    <span style="display:flex; align-items:center;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
                         <input type="checkbox" id="useH1" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
                         Result H-1:
-                    </span>
+                    </label>
                     <span id="indH1" class="history-indicator"></span>
-                </label>
+                </div>
                 <div class="input-wrapper">
-                    <input type="text" id="inputH1" class="input-box" placeholder="Cth: 4321 atau 4321, 8765" oninput="handleMultiInput('inputH1'); toggleClear(this); hitungSemua();" style="padding: 9px 56px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
+                    <input type="text" id="inputH1" class="input-box" placeholder="Cth: 4321 atau 4321 8765" oninput="handleMultiInput('inputH1'); toggleClear(this); hitungSemua();" onblur="formatInputDisplay('inputH1')" style="padding: 9px 56px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
                     <span class="clear-icon" onclick="clearInput('inputH1')" style="right:34px;">&times;</span>
                     <div class="nav-btn-container">
                         <button class="nav-btn" onclick="navigateHistory('inputH1', -1)" title="Sebelumnya">◀</button>
@@ -147,15 +147,15 @@
                 </div>
             </div>
             <div class="input-group" style="margin:0; flex:1;" id="colH7">
-                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding-bottom: 2px;">
-                    <span style="display:flex; align-items:center;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
                         <input type="checkbox" id="useH7" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
                         Result H-7:
-                    </span>
+                    </label>
                     <span id="indH7" class="history-indicator"></span>
-                </label>
+                </div>
                 <div class="input-wrapper">
-                    <input type="text" id="inputH7" class="input-box" placeholder="Cth: 1234 atau 1234, 5678" oninput="handleMultiInput('inputH7'); toggleClear(this); hitungSemua();" style="padding: 9px 56px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
+                    <input type="text" id="inputH7" class="input-box" placeholder="Cth: 1234 atau 1234 5678" oninput="handleMultiInput('inputH7'); toggleClear(this); hitungSemua();" onblur="formatInputDisplay('inputH7')" style="padding: 9px 56px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
                     <span class="clear-icon" onclick="clearInput('inputH7')" style="right:34px;">&times;</span>
                     <div class="nav-btn-container">
                         <button class="nav-btn" onclick="navigateHistory('inputH7', -1)" title="Sebelumnya">◀</button>
@@ -164,7 +164,7 @@
                 </div>
             </div>
         </div>
-        <div style="font-size:10px; color:var(--text-sub); text-align:center; margin-bottom:12px;">*Pisahkan beberapa result dengan spasi/koma. Gunakan tombol ◀ ▶ untuk navigasi riwayat.</div>
+        <div style="font-size:10px; color:var(--text-sub); text-align:center; margin-bottom:12px;">*Gunakan spasi untuk input ganda. Tanda <b>[ ]</b> menandakan angka yg sedang aktif.</div>
 
         <div id="aiLiveCard" class="ai-live-card">
             <div class="ai-live-title">
@@ -561,7 +561,8 @@
 
         function handleMultiInput(inputId) {
             let el = document.getElementById(inputId);
-            let raw = el.value.replace(/[^0-9,\s]/g, '');
+            // Izinkan tanda kurung [ dan ] agar format tidak terhapus saat user mengetik
+            let raw = el.value.replace(/[^0-9,\s\[\]]/g, '');
             if (el.value !== raw) el.value = raw;
             
             let list = parseMultiInput(el.value);
@@ -571,6 +572,18 @@
             updateHistoryIndicator(inputId);
         }
 
+        function formatInputDisplay(inputId) {
+            let el = document.getElementById(inputId);
+            let list = parseMultiInput(el.value);
+            if (list.length > 1) {
+                let idx = historyIndices[inputId] || 0;
+                if (idx >= list.length) idx = 0;
+                el.value = list.map((item, i) => i === idx ? `[${item}]` : item).join("  ");
+            } else if (list.length === 1) {
+                el.value = list[0]; 
+            }
+        }
+
         function updateHistoryIndicator(inputId) {
             let el = document.getElementById(inputId);
             let list = parseMultiInput(el.value);
@@ -578,7 +591,10 @@
             let indEl = document.getElementById(indId);
 
             if (list.length > 1) {
-                indEl.innerText = `[${historyIndices[inputId] + 1}/${list.length}]`;
+                let activeNum = list[historyIndices[inputId]] || "-";
+                indEl.innerText = `[${historyIndices[inputId] + 1}/${list.length}] Live: ${activeNum}`;
+            } else if (list.length === 1) {
+                indEl.innerText = `Live: ${list[0]}`;
             } else {
                 indEl.innerText = "";
             }
@@ -593,6 +609,7 @@
             if (historyIndices[inputId] < 0) historyIndices[inputId] = list.length - 1;
             if (historyIndices[inputId] >= list.length) historyIndices[inputId] = 0;
 
+            formatInputDisplay(inputId);
             updateHistoryIndicator(inputId);
             hitungSemua();
         }
@@ -985,7 +1002,6 @@
             let mD = (modeTarikan === 'h7') ? d2 : d1; 
             let aD = (modeTarikan === 'gabung') ? d2 : null; 
 
-            // Update Label Indikator Live di Judul Segmen dan Kartu AI
             let liveTitleText = "⚡ Live Analitik AI";
             let resLabel1 = "1. AI 2D Tabel (Otomatis)";
             let resLabel2 = "2. AI Ekor (TOP 95%)";
