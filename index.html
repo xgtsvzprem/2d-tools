@@ -561,7 +561,6 @@
 
         function handleMultiInput(inputId) {
             let el = document.getElementById(inputId);
-            // Izinkan tanda kurung [ dan ] agar format tidak terhapus saat user mengetik
             let raw = el.value.replace(/[^0-9,\s\[\]]/g, '');
             if (el.value !== raw) el.value = raw;
             
@@ -579,6 +578,14 @@
                 let idx = historyIndices[inputId] || 0;
                 if (idx >= list.length) idx = 0;
                 el.value = list.map((item, i) => i === idx ? `[${item}]` : item).join("  ");
+                
+                setTimeout(() => {
+                    let pos = el.value.indexOf('[');
+                    if (pos !== -1) {
+                        el.scrollLeft = Math.max(0, (pos * 10.5) - 20);
+                    }
+                }, 10);
+                
             } else if (list.length === 1) {
                 el.value = list[0]; 
             }
