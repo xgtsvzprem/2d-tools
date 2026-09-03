@@ -39,14 +39,16 @@
         .input-group { margin-bottom: 10px; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .input-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
-        .clear-icon { position: absolute; right: 36px; color: #94a3b8; font-size: 18px; cursor: pointer; display: none; transition: 0.15s; z-index: 2; }
+        .clear-icon { position: absolute; right: 12px; color: #94a3b8; font-size: 18px; cursor: pointer; display: none; transition: 0.15s; z-index: 2; }
         .clear-icon:hover { color: var(--danger); transform: scale(1.2); }
         
-        .nav-btn-container { display: flex; gap: 2px; position: absolute; right: 4px; z-index: 2; }
-        .nav-btn { background: #e2e8f0; border: none; font-size: 10px; font-weight: 800; color: #475569; width: 18px; height: 26px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.15s; }
-        .nav-btn:hover { background: var(--primary); color: #fff; }
-        body.dark-mode .nav-btn { background: #334155; color: #94a3b8; }
-        body.dark-mode .nav-btn:hover { background: var(--primary); color: #fff; }
+        /* Navigasi di bawah input */
+        .input-footer-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 12px; font-size: 10px; color: var(--text-sub); }
+        .nav-btn-group { display: flex; gap: 4px; }
+        .nav-btn-inline { background: #e2e8f0; border: none; font-size: 9px; font-weight: 800; color: #475569; padding: 3px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 3px; transition: 0.15s; }
+        .nav-btn-inline:hover { background: var(--primary); color: #fff; }
+        body.dark-mode .nav-btn-inline { background: #334155; color: #94a3b8; }
+        body.dark-mode .nav-btn-inline:hover { background: var(--primary); color: #fff; }
 
         input.input-box, select.input-box { width: 100%; padding: 11px; font-size: 16px; text-align: center; letter-spacing: 2px; border: 1.5px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-weight: 700; color: var(--text-main); background: #fff; transition: border-color 0.2s, background-color 0.3s; }
         input.input-box::placeholder { font-size: 11px; letter-spacing: normal; color: #94a3b8; font-weight: 500; }
@@ -138,14 +140,18 @@
                     <span id="indH1" class="history-indicator"></span>
                 </div>
                 <div class="input-wrapper">
-                    <input type="text" id="inputH1" class="input-box" placeholder="Cth: 4321 atau 4321 8765" oninput="handleMultiInput('inputH1'); toggleClear(this); hitungSemua();" onblur="formatInputDisplay('inputH1')" style="padding: 9px 56px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
-                    <span class="clear-icon" onclick="clearInput('inputH1')" style="right:34px;">&times;</span>
-                    <div class="nav-btn-container">
-                        <button class="nav-btn" onclick="navigateHistory('inputH1', -1)" title="Sebelumnya">◀</button>
-                        <button class="nav-btn" onclick="navigateHistory('inputH1', 1)" title="Berikutnya">▶</button>
+                    <input type="text" id="inputH1" class="input-box" placeholder="Cth: 4321 atau 4321 8765" oninput="handleMultiInput('inputH1'); toggleClear(this); hitungSemua();" onblur="formatInputDisplay('inputH1')" style="padding: 9px 36px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
+                    <span class="clear-icon" onclick="clearInput('inputH1')">&times;</span>
+                </div>
+                <div class="input-footer-nav">
+                    <span>Gunakan spasi/koma</span>
+                    <div class="nav-btn-group">
+                        <button class="nav-btn-inline" onclick="navigateHistory('inputH1', -1)">◀ Prev</button>
+                        <button class="nav-btn-inline" onclick="navigateHistory('inputH1', 1)">Next ▶</button>
                     </div>
                 </div>
             </div>
+
             <div class="input-group" style="margin:0; flex:1;" id="colH7">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
                     <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
@@ -155,16 +161,18 @@
                     <span id="indH7" class="history-indicator"></span>
                 </div>
                 <div class="input-wrapper">
-                    <input type="text" id="inputH7" class="input-box" placeholder="Cth: 1234 atau 1234 5678" oninput="handleMultiInput('inputH7'); toggleClear(this); hitungSemua();" onblur="formatInputDisplay('inputH7')" style="padding: 9px 56px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
-                    <span class="clear-icon" onclick="clearInput('inputH7')" style="right:34px;">&times;</span>
-                    <div class="nav-btn-container">
-                        <button class="nav-btn" onclick="navigateHistory('inputH7', -1)" title="Sebelumnya">◀</button>
-                        <button class="nav-btn" onclick="navigateHistory('inputH7', 1)" title="Berikutnya">▶</button>
+                    <input type="text" id="inputH7" class="input-box" placeholder="Cth: 1234 atau 1234 5678" oninput="handleMultiInput('inputH7'); toggleClear(this); hitungSemua();" onblur="formatInputDisplay('inputH7')" style="padding: 9px 36px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
+                    <span class="clear-icon" onclick="clearInput('inputH7')">&times;</span>
+                </div>
+                <div class="input-footer-nav">
+                    <span>Gunakan spasi/koma</span>
+                    <div class="nav-btn-group">
+                        <button class="nav-btn-inline" onclick="navigateHistory('inputH7', -1)">◀ Prev</button>
+                        <button class="nav-btn-inline" onclick="navigateHistory('inputH7', 1)">Next ▶</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div style="font-size:10px; color:var(--text-sub); text-align:center; margin-bottom:12px;">*Gunakan spasi untuk input ganda. Tanda <b>[ ]</b> menandakan angka yg sedang aktif.</div>
 
         <div id="aiLiveCard" class="ai-live-card">
             <div class="ai-live-title">
