@@ -39,12 +39,22 @@
         .input-group { margin-bottom: 10px; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .input-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
-        .clear-icon { position: absolute; right: 12px; color: #94a3b8; font-size: 18px; cursor: pointer; display: none; transition: 0.15s; }
+        .clear-icon { position: absolute; right: 36px; color: #94a3b8; font-size: 18px; cursor: pointer; display: none; transition: 0.15s; z-index: 2; }
         .clear-icon:hover { color: var(--danger); transform: scale(1.2); }
+        
+        .nav-btn-container { display: flex; gap: 2px; position: absolute; right: 4px; z-index: 2; }
+        .nav-btn { background: #e2e8f0; border: none; font-size: 10px; font-weight: 800; color: #475569; width: 18px; height: 26px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.15s; }
+        .nav-btn:hover { background: var(--primary); color: #fff; }
+        body.dark-mode .nav-btn { background: #334155; color: #94a3b8; }
+        body.dark-mode .nav-btn:hover { background: var(--primary); color: #fff; }
+
         input.input-box, select.input-box { width: 100%; padding: 11px; font-size: 16px; text-align: center; letter-spacing: 2px; border: 1.5px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-weight: 700; color: var(--text-main); background: #fff; transition: border-color 0.2s, background-color 0.3s; }
-        input.input-box::placeholder { font-size: 12px; letter-spacing: normal; color: #94a3b8; font-weight: 500; }
+        input.input-box::placeholder { font-size: 11px; letter-spacing: normal; color: #94a3b8; font-weight: 500; }
         select.input-box { letter-spacing: normal; cursor: pointer; }
         input.input-box:focus, select.input-box:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        
+        .history-indicator { font-size: 9px; color: var(--primary); font-weight: 700; float: right; margin-top: -2px; }
+
         .ai-live-card { display: none; background: #fff; border: 1px solid var(--primary); border-radius: 8px; padding: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08); position: relative; transition: background-color 0.3s; }
         .ai-live-title { font-size: 10px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #bfdbfe; padding-bottom: 4px; }
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 8px; }
@@ -120,31 +130,45 @@
 
         <div class="filter-columns" style="margin-bottom: 6px;" id="boxInputs">
             <div class="input-group" style="margin:0; flex:1;" id="colH1">
-                <label style="display: flex; align-items: center; cursor: pointer; padding-bottom: 2px;">
-                    <input type="checkbox" id="useH1" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
-                    Result Harian (H-1):
+                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding-bottom: 2px;">
+                    <span style="display:flex; align-items:center;">
+                        <input type="checkbox" id="useH1" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
+                        Result H-1:
+                    </span>
+                    <span id="indH1" class="history-indicator"></span>
                 </label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputH1" class="input-box" placeholder="Harian" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px; transition: opacity 0.3s;" />
-                    <span class="clear-icon" onclick="clearInput('inputH1')" style="right:8px;">&times;</span>
+                    <input type="text" id="inputH1" class="input-box" placeholder="Cth: 4321 atau 4321, 8765" oninput="handleMultiInput('inputH1'); toggleClear(this); hitungSemua();" style="padding: 9px 56px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
+                    <span class="clear-icon" onclick="clearInput('inputH1')" style="right:34px;">&times;</span>
+                    <div class="nav-btn-container">
+                        <button class="nav-btn" onclick="navigateHistory('inputH1', -1)" title="Sebelumnya">◀</button>
+                        <button class="nav-btn" onclick="navigateHistory('inputH1', 1)" title="Berikutnya">▶</button>
+                    </div>
                 </div>
             </div>
             <div class="input-group" style="margin:0; flex:1;" id="colH7">
-                <label style="display: flex; align-items: center; cursor: pointer; padding-bottom: 2px;">
-                    <input type="checkbox" id="useH7" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
-                    Result Mg Lalu (H-7):
+                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding-bottom: 2px;">
+                    <span style="display:flex; align-items:center;">
+                        <input type="checkbox" id="useH7" checked onchange="hitungSemua()" style="margin: 0 6px 0 0; width: 13px; height: 13px; accent-color: var(--primary); cursor: pointer;">
+                        Result H-7:
+                    </span>
+                    <span id="indH7" class="history-indicator"></span>
                 </label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputH7" class="input-box" placeholder="Mingguan" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 4) this.value = this.value.slice(0,4); toggleClear(this); hitungSemua();" style="padding: 9px 28px 9px 12px; font-size: 16px; transition: opacity 0.3s;" />
-                    <span class="clear-icon" onclick="clearInput('inputH7')" style="right:8px;">&times;</span>
+                    <input type="text" id="inputH7" class="input-box" placeholder="Cth: 1234 atau 1234, 5678" oninput="handleMultiInput('inputH7'); toggleClear(this); hitungSemua();" style="padding: 9px 56px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
+                    <span class="clear-icon" onclick="clearInput('inputH7')" style="right:34px;">&times;</span>
+                    <div class="nav-btn-container">
+                        <button class="nav-btn" onclick="navigateHistory('inputH7', -1)" title="Sebelumnya">◀</button>
+                        <button class="nav-btn" onclick="navigateHistory('inputH7', 1)" title="Berikutnya">▶</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div style="font-size:10px; color:var(--text-sub); text-align:center; margin-bottom:12px;">*Centang box untuk beralih mode. Centang keduanya untuk AI Gabungan.</div>
+        <div style="font-size:10px; color:var(--text-sub); text-align:center; margin-bottom:12px;">*Pisahkan beberapa result dengan spasi/koma. Gunakan tombol ◀ ▶ untuk navigasi riwayat.</div>
 
         <div id="aiLiveCard" class="ai-live-card">
             <div class="ai-live-title">
-                <span>⚡ Live Analitik AI</span>
+                <span id="liveCardTitle">⚡ Live Analitik AI</span>
                 <div style="display:flex; align-items:center; gap:6px;">
                     <span id="badgeLiveEkor" style="color:var(--primary); font-weight:800; background:#eff6ff; padding:2px 6px; border-radius:4px; font-size: 9px;">-</span>
                     <button class="btn-copy-prediksi" onclick="copyPrediksiTeks(this)">📋 COPY</button>
@@ -225,7 +249,7 @@
             <div class="input-group" style="margin:0; flex:1;">
                 <label>AI Pribadi:</label>
                 <div class="input-wrapper">
-                    <input type="text" inputmode="numeric" id="inputAIManual" class="input-box" placeholder="Cth: 159" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding:9px 28px; font-size:14px;" />
+                    <input type="text" inputmode="numeric" id="inputAIManual" class="input-box" placeholder="Cth: 159" oninput="this.value = this.value.replace(/[^0-9]/g, ''); toggleClear(this); hitungSemua();" style="padding:9px 36px 9px 12px; font-size:14px;" />
                     <span class="clear-icon" onclick="clearInput('inputAIManual')" style="right: 10px;">&times;</span>
                 </div>
             </div>
@@ -339,7 +363,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>1. AI 2D Tabel (Otomatis)</span>
+                <span id="titleRes1">1. AI 2D Tabel (Otomatis)</span>
                 <span class="badge-hit" id="lineAITabel">0 LN</span>
             </div>
             <textarea id="hasilAITabel" readonly></textarea>
@@ -349,7 +373,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>2. AI Ekor (TOP 95%)</span>
+                <span id="titleRes2">2. AI Ekor (TOP 95%)</span>
                 <span class="badge-hit" id="lineEkorTop">0 LN</span>
             </div>
             <textarea id="hasilEkorTop" readonly></textarea>
@@ -359,7 +383,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>3. AI Ekor (Cadangan)</span>
+                <span id="titleRes3">3. AI Ekor (Cadangan)</span>
                 <span class="badge-hit" id="lineEkorCd">0 LN</span>
             </div>
             <textarea id="hasilEkorCd" readonly></textarea>
@@ -369,7 +393,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>4. Pola Ekor Main Tabel</span>
+                <span id="titleRes4">4. Pola Ekor Main Tabel</span>
                 <span class="badge-hit" id="lineEkorMain">0 LN</span>
             </div>
             <textarea id="hasilEkorMain" readonly></textarea>
@@ -379,7 +403,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>5. Gabungan (As+Kop & Kep+Ek)</span>
+                <span id="titleRes5">5. Gabungan (As+Kop & Kep+Ek)</span>
                 <span class="badge-hit" id="lineGabungan">0 LN</span>
             </div>
             <textarea id="hasilGabungan" readonly></textarea>
@@ -401,7 +425,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>📌 4D Full (As-Kop-Kep-Ek)</span>
+                <span id="titleRes4D">📌 4D Full (As-Kop-Kep-Ek)</span>
                 <span class="badge-hit" id="line4D">0 LN</span>
             </div>
             <textarea id="hasil4D" readonly></textarea>
@@ -411,7 +435,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>📌 3D Belakang (Kop-Kep-Ek)</span>
+                <span id="titleRes3D">📌 3D Belakang (Kop-Kep-Ek)</span>
                 <span class="badge-hit" id="line3D">0 LN</span>
             </div>
             <textarea id="hasil3D" readonly></textarea>
@@ -421,7 +445,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>📌 2D Belakang (Kep-Ek)</span>
+                <span id="titleRes2D">📌 2D Belakang (Kep-Ek)</span>
                 <span class="badge-hit" id="line2D">0 LN</span>
             </div>
             <textarea id="hasil2D" readonly></textarea>
@@ -431,7 +455,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>📌 3D Depan (As-Kop-Kep)</span>
+                <span id="titleRes3DD">📌 3D Depan (As-Kop-Kep)</span>
                 <span class="badge-hit" id="line3DDepan">0 LN</span>
             </div>
             <textarea id="hasil3DDepan" readonly></textarea>
@@ -441,7 +465,7 @@
 
         <div class="result-block">
             <div class="result-header">
-                <span>📌 2D Tengah (Kop-Kep)</span>
+                <span id="titleRes2DT">📌 2D Tengah (Kop-Kep)</span>
                 <span class="badge-hit" id="line2DTengah">0 LN</span>
             </div>
             <textarea id="hasil2DTengah" readonly></textarea>
@@ -483,7 +507,7 @@
             const settings = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
             document.querySelectorAll('select').forEach(el => settings[el.id] = el.value);
-            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => settings[id] = document.getElementById(id).value);
+            ['inputMatiKepala', 'inputMatiEkor', 'inputBiji', 'inputH1', 'inputH7'].forEach(id => settings[id] = document.getElementById(id).value);
             
             let selectedBbfs = document.querySelector('input[name="bbfs_len"]:checked');
             if(selectedBbfs) settings['bbfs_len'] = selectedBbfs.value;
@@ -501,7 +525,7 @@
                 document.querySelectorAll('select').forEach(el => {
                     if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
                 });
-                ['inputMatiKepala', 'inputMatiEkor', 'inputBiji'].forEach(id => {
+                ['inputMatiKepala', 'inputMatiEkor', 'inputBiji', 'inputH1', 'inputH7'].forEach(id => {
                     if(settings[id] !== undefined) {
                         let el = document.getElementById(id);
                         el.value = settings[id];
@@ -514,8 +538,73 @@
                     if(el) el.checked = true;
                 }
                 
+                updateHistoryIndicator('inputH1');
+                updateHistoryIndicator('inputH7');
                 hitungSemua(); 
             }
+        }
+
+        let historyIndices = { 'inputH1': 0, 'inputH7': 0 };
+
+        function parseMultiInput(val) {
+            if (!val) return [];
+            let rawMatches = val.match(/\d+/g) || [];
+            let valid4D = [];
+            rawMatches.forEach(item => {
+                for (let i = 0; i <= item.length - 4; i++) {
+                    let sub = item.substr(i, 4);
+                    if (sub.length === 4) valid4D.push(sub);
+                }
+            });
+            return Array.from(new Set(valid4D));
+        }
+
+        function handleMultiInput(inputId) {
+            let el = document.getElementById(inputId);
+            let raw = el.value.replace(/[^0-9,\s]/g, '');
+            if (el.value !== raw) el.value = raw;
+            
+            let list = parseMultiInput(el.value);
+            if (historyIndices[inputId] >= list.length) {
+                historyIndices[inputId] = Math.max(0, list.length - 1);
+            }
+            updateHistoryIndicator(inputId);
+        }
+
+        function updateHistoryIndicator(inputId) {
+            let el = document.getElementById(inputId);
+            let list = parseMultiInput(el.value);
+            let indId = inputId === 'inputH1' ? 'indH1' : 'indH7';
+            let indEl = document.getElementById(indId);
+
+            if (list.length > 1) {
+                indEl.innerText = `[${historyIndices[inputId] + 1}/${list.length}]`;
+            } else {
+                indEl.innerText = "";
+            }
+        }
+
+        function navigateHistory(inputId, direction) {
+            let el = document.getElementById(inputId);
+            let list = parseMultiInput(el.value);
+            if (list.length <= 1) return;
+
+            historyIndices[inputId] += direction;
+            if (historyIndices[inputId] < 0) historyIndices[inputId] = list.length - 1;
+            if (historyIndices[inputId] >= list.length) historyIndices[inputId] = 0;
+
+            updateHistoryIndicator(inputId);
+            hitungSemua();
+        }
+
+        function getActive4D(inputId) {
+            let el = document.getElementById(inputId);
+            if (!el) return "";
+            let list = parseMultiInput(el.value);
+            if (list.length === 0) return "";
+            let idx = historyIndices[inputId] || 0;
+            if (idx >= list.length) idx = 0;
+            return list[idx];
         }
 
         function copyPrediksiTeks(btn) {
@@ -534,8 +623,8 @@
 
             let useH1 = document.getElementById('useH1').checked;
             let useH7 = document.getElementById('useH7').checked;
-            let valH1 = document.getElementById('inputH1').value;
-            let valH7 = document.getElementById('inputH7').value;
+            let valH1 = getActive4D('inputH1');
+            let valH7 = getActive4D('inputH7');
 
             let judul = "🔥 Prediksi Analitik AI 🔥";
             if (useH1 && useH7 && valH1 && valH7) {
@@ -625,7 +714,10 @@
         }
 
         function clearInput(inputId) {
-            let inputEl = document.getElementById(inputId); inputEl.value = ''; toggleClear(inputEl); hitungSemua(); inputEl.focus();
+            let inputEl = document.getElementById(inputId); inputEl.value = ''; 
+            historyIndices[inputId] = 0;
+            updateHistoryIndicator(inputId);
+            toggleClear(inputEl); hitungSemua(); inputEl.focus();
         }
 
         function resetManual() {
@@ -641,6 +733,8 @@
             ['inputH1', 'inputH7', 'inputAIManual'].forEach(id => {
                 let el = document.getElementById(id);
                 el.value = '';
+                historyIndices[id] = 0;
+                updateHistoryIndicator(id);
                 toggleClear(el);
             });
             
@@ -863,8 +957,8 @@
             const allChecked = masterFilters.every(id => document.getElementById(id).checked);
             document.getElementById('chkAllMaster').checked = allChecked;
 
-            let inputH1 = document.getElementById('inputH1').value;
-            let inputH7 = document.getElementById('inputH7').value;
+            let h1ValRaw = getActive4D('inputH1');
+            let h7ValRaw = getActive4D('inputH7');
             let inputManual = document.getElementById('inputAIManual').value;
 
             let useH1 = document.getElementById('useH1').checked;
@@ -874,9 +968,9 @@
             document.getElementById('inputH7').style.opacity = useH7 ? '1' : '0.4';
             
             let modeTarikan = '';
-            if (useH1 && useH7 && inputH1.length === 4 && inputH7.length === 4) modeTarikan = 'gabung';
-            else if (useH1 && inputH1.length === 4) modeTarikan = 'h1';
-            else if (useH7 && inputH7.length === 4) modeTarikan = 'h7';
+            if (useH1 && useH7 && h1ValRaw.length === 4 && h7ValRaw.length === 4) modeTarikan = 'gabung';
+            else if (useH1 && h1ValRaw.length === 4) modeTarikan = 'h1';
+            else if (useH7 && h7ValRaw.length === 4) modeTarikan = 'h7';
             
             let pasaranToggle = document.getElementById('jenisPasaran').value;
             let pasaranFilter = document.getElementById('pasaranJawa').value;
@@ -884,12 +978,75 @@
 
             let d1 = null, d2 = null, isValid = false;
 
-            if (modeTarikan === 'h1') { d1 = process4D(inputH1, pasaranToggle); isValid = true; }
-            else if (modeTarikan === 'h7') { d2 = process4D(inputH7, pasaranToggle); isValid = true; }
-            else if (modeTarikan === 'gabung') { d1 = process4D(inputH1, pasaranToggle); d2 = process4D(inputH7, pasaranToggle); isValid = true; }
+            if (modeTarikan === 'h1') { d1 = process4D(h1ValRaw, pasaranToggle); isValid = true; }
+            else if (modeTarikan === 'h7') { d2 = process4D(h7ValRaw, pasaranToggle); isValid = true; }
+            else if (modeTarikan === 'gabung') { d1 = process4D(h1ValRaw, pasaranToggle); d2 = process4D(h7ValRaw, pasaranToggle); isValid = true; }
 
             let mD = (modeTarikan === 'h7') ? d2 : d1; 
             let aD = (modeTarikan === 'gabung') ? d2 : null; 
+
+            // Update Label Indikator Live di Judul Segmen dan Kartu AI
+            let liveTitleText = "⚡ Live Analitik AI";
+            let resLabel1 = "1. AI 2D Tabel (Otomatis)";
+            let resLabel2 = "2. AI Ekor (TOP 95%)";
+            let resLabel3 = "3. AI Ekor (Cadangan)";
+            let resLabel4 = "4. Pola Ekor Main Tabel";
+            let resLabel5 = "5. Gabungan (As+Kop & Kep+Ek)";
+            let resLabel4D = "📌 4D Full (As-Kop-Kep-Ek)";
+            let resLabel3D = "📌 3D Belakang (Kop-Kep-Ek)";
+            let resLabel2D = "📌 2D Belakang (Kep-Ek)";
+            let resLabel3DD = "📌 3D Depan (As-Kop-Kep)";
+            let resLabel2DT = "📌 2D Tengah (Kop-Kep)";
+
+            if (modeTarikan === 'gabung') {
+                liveTitleText = `⚡ Live Analitik AI [H-1: ${h1ValRaw} + H-7: ${h7ValRaw}]`;
+                resLabel1 = `1. AI 2D Tabel [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel2 = `2. AI Ekor (TOP 95%) [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel3 = `3. AI Ekor (Cadangan) [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel4 = `4. Pola Ekor Main [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel5 = `5. Gabungan [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel4D = `📌 4D Full [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel3D = `📌 3D Belakang [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel2D = `📌 2D Belakang [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel3DD = `📌 3D Depan [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+                resLabel2DT = `📌 2D Tengah [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
+            } else if (modeTarikan === 'h1') {
+                liveTitleText = `⚡ Live Analitik AI [Live: ${h1ValRaw} (H-1)]`;
+                resLabel1 = `1. AI 2D Tabel [Live: ${h1ValRaw}]`;
+                resLabel2 = `2. AI Ekor (TOP 95%) [Live: ${h1ValRaw}]`;
+                resLabel3 = `3. AI Ekor (Cadangan) [Live: ${h1ValRaw}]`;
+                resLabel4 = `4. Pola Ekor Main [Live: ${h1ValRaw}]`;
+                resLabel5 = `5. Gabungan [Live: ${h1ValRaw}]`;
+                resLabel4D = `📌 4D Full [Live: ${h1ValRaw}]`;
+                resLabel3D = `📌 3D Belakang [Live: ${h1ValRaw}]`;
+                resLabel2D = `📌 2D Belakang [Live: ${h1ValRaw}]`;
+                resLabel3DD = `📌 3D Depan [Live: ${h1ValRaw}]`;
+                resLabel2DT = `📌 2D Tengah [Live: ${h1ValRaw}]`;
+            } else if (modeTarikan === 'h7') {
+                liveTitleText = `⚡ Live Analitik AI [Live: ${h7ValRaw} (H-7)]`;
+                resLabel1 = `1. AI 2D Tabel [Live: ${h7ValRaw}]`;
+                resLabel2 = `2. AI Ekor (TOP 95%) [Live: ${h7ValRaw}]`;
+                resLabel3 = `3. AI Ekor (Cadangan) [Live: ${h7ValRaw}]`;
+                resLabel4 = `4. Pola Ekor Main [Live: ${h7ValRaw}]`;
+                resLabel5 = `5. Gabungan [Live: ${h7ValRaw}]`;
+                resLabel4D = `📌 4D Full [Live: ${h7ValRaw}]`;
+                resLabel3D = `📌 3D Belakang [Live: ${h7ValRaw}]`;
+                resLabel2D = `📌 2D Belakang [Live: ${h7ValRaw}]`;
+                resLabel3DD = `📌 3D Depan [Live: ${h7ValRaw}]`;
+                resLabel2DT = `📌 2D Tengah [Live: ${h7ValRaw}]`;
+            }
+
+            document.getElementById('liveCardTitle').innerText = liveTitleText;
+            document.getElementById('titleRes1').innerText = resLabel1;
+            document.getElementById('titleRes2').innerText = resLabel2;
+            document.getElementById('titleRes3').innerText = resLabel3;
+            document.getElementById('titleRes4').innerText = resLabel4;
+            document.getElementById('titleRes5').innerText = resLabel5;
+            document.getElementById('titleRes4D').innerText = resLabel4D;
+            document.getElementById('titleRes3D').innerText = resLabel3D;
+            document.getElementById('titleRes2D').innerText = resLabel2D;
+            document.getElementById('titleRes3DD').innerText = resLabel3DD;
+            document.getElementById('titleRes2DT').innerText = resLabel2DT;
 
             let useJarak = document.getElementById('chkJarak').checked, useKepala = document.getElementById('chkKepala').checked, useEkor = document.getElementById('chkEkor').checked, useTesson = document.getElementById('chkTesson').checked, useWakSalarabo = document.getElementById('chkWakSalarabo').checked, useKelipatan = document.getElementById('chkKelipatan').checked, useBijiLemah = document.getElementById('chkBijiLemah').checked, useMatiGab = document.getElementById('chkMatiGab').checked, usePasaran = document.getElementById('chkPasaranJawa').checked, useKembar = document.getElementById('chkKembar').checked;
             
@@ -971,7 +1128,6 @@
                 let bbfsRadio = document.querySelector('input[name="bbfs_len"]:checked');
                 if (bbfsRadio) bbfsLength = parseInt(bbfsRadio.value);
 
-                // Formula BBFS Paten: Seimbang (memasukkan proporsi angka kembar yang pas berdasarkan tingkat kekuatan)
                 function getOptimizedBBFS(bbfsArr, dataObjects, targetLen) {
                     let digitFreq = {};
                     dataObjects.forEach(d => {
@@ -990,7 +1146,6 @@
                         });
                     });
 
-                    // Urutkan angka unik berdasarkan frekuensi/kekuatan terbanyak
                     let uniquePool = Array.from(new Set(bbfsArr)).sort((a, b) => {
                         let freqA = digitFreq[a] || 0;
                         let freqB = digitFreq[b] || 0;
@@ -999,13 +1154,11 @@
                     });
 
                     let selected = [];
-                    // Masukkan seluruh angka unik terkuat terlebih dahulu sesuai target panjang
                     for (let num of uniquePool) {
                         if (selected.length >= targetLen) break;
                         selected.push(num);
                     }
 
-                    // Berikan kuota kembar yang seimbang (tidak terlalu banyak, tidak terlalu sedikit: max 1 untuk 4D/5D, max 2 untuk 6D/7D)
                     let twinCount = 0;
                     let maxTwins = targetLen >= 6 ? 2 : 1; 
 
