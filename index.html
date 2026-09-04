@@ -42,7 +42,6 @@
         .clear-icon { position: absolute; right: 12px; color: #94a3b8; font-size: 18px; cursor: pointer; display: none; transition: 0.15s; z-index: 2; }
         .clear-icon:hover { color: var(--danger); transform: scale(1.2); }
         
-        /* Navigasi di bawah input */
         .input-footer-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; margin-bottom: 12px; font-size: 10px; color: var(--text-sub); }
         .nav-btn-group { display: flex; gap: 4px; }
         .nav-btn-inline { background: #e2e8f0; border: none; font-size: 9px; font-weight: 800; color: #475569; padding: 3px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 3px; transition: 0.15s; }
@@ -58,7 +57,9 @@
         .history-indicator { font-size: 10px; color: #fff; background: var(--primary); padding: 1px 6px; border-radius: 4px; font-weight: 800; float: right; letter-spacing: 0.5px; }
 
         .ai-live-card { display: none; background: #fff; border: 1px solid var(--primary); border-radius: 8px; padding: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08); position: relative; transition: background-color 0.3s; }
-        .ai-live-title { font-size: 10px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #bfdbfe; padding-bottom: 4px; }
+        .ai-live-title { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #bfdbfe; padding-bottom: 6px; margin-bottom: 8px; }
+        .live-title-left { display: flex; flex-direction: column; gap: 4px; }
+        .live-title-text { font-size: 10px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; }
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 8px; }
         .ai-item { background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #e2e8f0; text-align: center; display: flex; flex-direction: column; justify-content: center; transition: background-color 0.3s; }
         .ai-item.highlight { background: #eff6ff; border-color: #bfdbfe; }
@@ -68,10 +69,14 @@
         .gj-container { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; width: 100%; margin-top: 4px; }
         .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 0px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; transition: background-color 0.3s; white-space: nowrap; overflow: hidden; }
         .gj-box .gj-title { display: block; color: var(--text-sub); font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
-        .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-left: auto; }
         .btn-copy-prediksi:hover { background: #2563eb; }
+        
         .btn-toggle-filter { width: 100%; padding: 10px; background-color: #f1f5f9; color: var(--primary-dark); border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 10px; margin-bottom: 4px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-toggle-filter:hover { background-color: #e2e8f0; border-color: #94a3b8; }
+        .btn-toggle-db { background-color: #eff6ff; color: #2563eb; border-color: #bfdbfe; margin-top: 0; margin-bottom: 10px; }
+        body.dark-mode .btn-toggle-db { background-color: #1e3a8a; color: #bfdbfe; border-color: #3b82f6; }
+        
         .filter-section { background-color: #f8fafc; border: 1px solid var(--border-color); padding: 12px 14px; border-radius: 10px; margin-top: 10px; margin-bottom: 10px; transition: background-color 0.3s; }
         .filter-title { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .filter-columns { display: flex; gap: 12px; width: 100%; }
@@ -130,6 +135,41 @@
             </div>
         </div>
 
+        <!-- DATABASE HISTORY PASARAN -->
+        <button id="btnToggleDB" class="btn-toggle-filter btn-toggle-db" onclick="toggleDB()">
+            💾 Buka Database Result Pasaran ▼
+        </button>
+        <div id="dbSection" style="display:none; width: 100%; margin-bottom:14px;">
+            <div class="filter-section" style="margin-top:0; padding: 14px;">
+                <div class="filter-title" style="margin-bottom: 10px; font-size: 11px;">
+                    <span>💾 MANAJEMEN DATA PASARAN</span>
+                </div>
+                
+                <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                    <select id="dbSelect" class="input-box" style="padding: 8px; font-size: 12px; flex: 1; letter-spacing:0;" onchange="loadDB()">
+                        <option value="">-- Pilih Data Tersimpan --</option>
+                    </select>
+                    <button class="btn-reset" onclick="deleteDB()" style="padding: 0 12px;" title="Hapus Data">🗑️</button>
+                </div>
+                
+                <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                    <input type="text" id="dbName" class="input-box" placeholder="Nama (Cth: HK)" style="padding: 8px; font-size: 12px; width: 90px; letter-spacing:0;" />
+                    <input type="text" id="dbData" class="input-box" placeholder="Kumpulan 4D (Spasi)" style="padding: 8px; font-size: 12px; flex: 1; letter-spacing: 1px;" />
+                </div>
+                
+                <div style="display: flex; gap: 6px; align-items: stretch;">
+                    <input type="text" id="dbNew" class="input-box" placeholder="Result Baru" style="padding: 8px; font-size: 13px; width: 100px; font-weight:800; border-color: var(--accent);" />
+                    <button class="btn-dark" style="background:#10b981; color:#fff; border:none; padding:0 12px;" onclick="addResultDB()">+ Tambah</button>
+                    <button id="btnSaveDB" class="btn-dark" style="background:var(--primary); color:#fff; border:none; flex:1;" onclick="saveDB()">💾 Simpan</button>
+                </div>
+
+                <div style="display: flex; gap: 6px; margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 12px;">
+                    <button class="btn-dark" style="flex:1; background:#f1f5f9; color:var(--text-main); border:1px solid #cbd5e1; font-size: 11px;" onclick="applyDB('inputH1')">➡️ Pakai di H-1</button>
+                    <button class="btn-dark" style="flex:1; background:#f1f5f9; color:var(--text-main); border:1px solid #cbd5e1; font-size: 11px;" onclick="applyDB('inputH7')">➡️ Pakai di H-7</button>
+                </div>
+            </div>
+        </div>
+
         <div class="filter-columns" style="margin-bottom: 6px;" id="boxInputs">
             <div class="input-group" style="margin:0; flex:1;" id="colH1">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
@@ -140,7 +180,7 @@
                     <span id="indH1" class="history-indicator"></span>
                 </div>
                 <div class="input-wrapper">
-                    <input type="text" id="inputH1" class="input-box" placeholder="Cth: 4321 atau 4321 8765" oninput="handleMultiInput('inputH1'); toggleClear(this); hitungSemua();" onblur="formatInputDisplay('inputH1')" style="padding: 9px 36px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
+                    <input type="text" id="inputH1" class="input-box" placeholder="Cth: 1234 atau 1234 5678" oninput="handleMultiInput('inputH1'); toggleClear(this); hitungSemua();" onblur="formatInputDisplay('inputH1')" style="padding: 9px 36px 9px 12px; font-size: 15px; transition: opacity 0.3s;" />
                     <span class="clear-icon" onclick="clearInput('inputH1')">&times;</span>
                 </div>
                 <div class="input-footer-nav">
@@ -176,7 +216,10 @@
 
         <div id="aiLiveCard" class="ai-live-card">
             <div class="ai-live-title">
-                <span id="liveCardTitle">⚡ Live Analitik AI</span>
+                <div class="live-title-left">
+                    <span id="liveCardTitle" class="live-title-text">⚡ Live Analitik AI</span>
+                    <span id="badgeEvalJP"></span>
+                </div>
                 <div style="display:flex; align-items:center; gap:6px;">
                     <span id="badgeLiveEkor" style="color:var(--primary); font-weight:800; background:#eff6ff; padding:2px 6px; border-radius:4px; font-size: 9px;">-</span>
                     <button class="btn-copy-prediksi" onclick="copyPrediksiTeks(this)">📋 COPY</button>
@@ -511,6 +554,114 @@
             document.getElementById('btnDark').innerText = 'DARK MODE: OFF';
         }
 
+        // --- MANAJEMEN DATABASE PASARAN ---
+        function toggleDB() {
+            let div = document.getElementById('dbSection');
+            let btn = document.getElementById('btnToggleDB');
+            if (div.style.display === 'none') { 
+                div.style.display = 'block'; 
+                btn.innerHTML = '💾 Tutup Database Result ▲'; 
+            } else { 
+                div.style.display = 'none'; 
+                btn.innerHTML = '💾 Buka Database Result Pasaran ▼'; 
+            }
+        }
+
+        function getDBData() {
+            let saved = localStorage.getItem('2d_db_pasaran');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function initDB() {
+            let db = getDBData();
+            let sel = document.getElementById('dbSelect');
+            sel.innerHTML = '<option value="">-- Pilih Data Tersimpan --</option>';
+            for(let key in db) {
+                let opt = document.createElement('option');
+                opt.value = key; opt.text = key;
+                sel.appendChild(opt);
+            }
+        }
+
+        function loadDB() {
+            let db = getDBData();
+            let sel = document.getElementById('dbSelect').value;
+            if(sel && db[sel]) {
+                document.getElementById('dbName').value = sel;
+                document.getElementById('dbData').value = db[sel];
+            } else {
+                document.getElementById('dbName').value = '';
+                document.getElementById('dbData').value = '';
+            }
+        }
+
+        function saveDB() {
+            let name = document.getElementById('dbName').value.trim().toUpperCase();
+            let data = document.getElementById('dbData').value.trim();
+            if(!name) { alert("Nama Pasaran tidak boleh kosong!"); return; }
+            
+            let cleanData = data.replace(/[^0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+            document.getElementById('dbData').value = cleanData;
+
+            let db = getDBData();
+            db[name] = cleanData;
+            localStorage.setItem('2d_db_pasaran', JSON.stringify(db));
+            
+            initDB();
+            document.getElementById('dbSelect').value = name;
+            
+            let btn = document.getElementById('btnSaveDB');
+            let txt = btn.innerText;
+            btn.innerText = "✔ TERSIMPAN";
+            btn.style.background = "#10b981";
+            setTimeout(()=>{ btn.innerText = txt; btn.style.background = "var(--primary)"; }, 1500);
+        }
+
+        function addResultDB() {
+            let name = document.getElementById('dbName').value.trim();
+            if(!name) { alert("Pilih atau isi Nama Pasaran lebih dulu!"); return; }
+            
+            let newRes = document.getElementById('dbNew').value.replace(/[^0-9]/g, '');
+            if(newRes.length === 0) return;
+
+            let currentData = document.getElementById('dbData').value.trim();
+            let combined = currentData ? (currentData + " " + newRes) : newRes;
+            
+            document.getElementById('dbData').value = combined;
+            document.getElementById('dbNew').value = '';
+            saveDB();
+        }
+
+        function deleteDB() {
+            let name = document.getElementById('dbName').value.trim().toUpperCase();
+            if(!name) return;
+            if(confirm("Yakin ingin menghapus history pasaran: " + name + "?")) {
+                let db = getDBData();
+                delete db[name];
+                localStorage.setItem('2d_db_pasaran', JSON.stringify(db));
+                initDB();
+                document.getElementById('dbName').value = '';
+                document.getElementById('dbData').value = '';
+            }
+        }
+
+        function applyDB(targetId) {
+            let data = document.getElementById('dbData').value.trim();
+            if(!data) { alert("Data masih kosong!"); return; }
+            
+            let target = document.getElementById(targetId);
+            target.value = data;
+            
+            let list = parseMultiInput(data);
+            historyIndices[targetId] = Math.max(0, list.length - 1); 
+            
+            handleMultiInput(targetId);
+            formatInputDisplay(targetId);
+            toggleClear(target);
+            hitungSemua();
+        }
+        // --- END DATABASE ---
+
         function saveSettings() {
             const settings = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(el => settings[el.id] = el.checked);
@@ -531,12 +682,14 @@
                     if(settings[el.id] !== undefined) el.checked = settings[el.id];
                 });
                 document.querySelectorAll('select').forEach(el => {
-                    if(el.id !== 'pasaranJawa' && settings[el.id] !== undefined) el.value = settings[el.id];
+                    if(el.id !== 'pasaranJawa' && el.id !== 'dbSelect' && settings[el.id] !== undefined) el.value = settings[el.id];
                 });
                 ['inputMatiKepala', 'inputMatiEkor', 'inputBiji', 'inputH1', 'inputH7'].forEach(id => {
                     if(settings[id] !== undefined) {
                         let el = document.getElementById(id);
                         el.value = settings[id];
+                        let list = parseMultiInput(el.value);
+                        historyIndices[id] = Math.max(0, list.length - 1);
                         toggleClear(el);
                     }
                 });
@@ -640,18 +793,18 @@
         }
 
         function copyPrediksiTeks(btn) {
-            let cbRaw = document.getElementById("liveCB").innerText.trim();
-            let cmRaw = document.getElementById("liveCM").innerText.trim();
+            let cbRaw = document.getElementById("liveCB").innerText.replace(/[✔✖].*/g, '').trim();
+            let cmRaw = document.getElementById("liveCM").innerText.replace(/[✔✖].*/g, '').trim();
             
             let cb = cbRaw.replace(/\s*\/\s*/g, ',');
             let cm = cmRaw.replace(/\s*\/\s*/g, ',');
             
-            let bbfs = document.getElementById("liveBBFS").innerText.replace(/\s+/g, '');
+            let bbfs = document.getElementById("liveBBFS").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
             
-            let as = document.getElementById("predAs").innerText.replace(/\s+/g, '');
-            let kop = document.getElementById("predKop").innerText.replace(/\s+/g, '');
-            let kep = document.getElementById("predKep").innerText.replace(/\s+/g, '');
-            let ek = document.getElementById("predEk").innerText.replace(/\s+/g, '');
+            let as = document.getElementById("predAs").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let kop = document.getElementById("predKop").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let kep = document.getElementById("predKep").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let ek = document.getElementById("predEk").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
 
             let useH1 = document.getElementById('useH1').checked;
             let useH7 = document.getElementById('useH7').checked;
@@ -702,6 +855,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
+            initDB();
             autoSetPasaranJawa();
             loadSettings();
         });
@@ -1017,6 +1171,8 @@
             let mD = (modeTarikan === 'h7') ? d2 : d1; 
             let aD = (modeTarikan === 'gabung') ? d2 : null; 
 
+            if(document.getElementById('badgeEvalJP')) document.getElementById('badgeEvalJP').innerHTML = "";
+
             let liveTitleText = "⚡ Live Analitik AI";
             let resLabel1 = "1. AI 2D Tabel (Otomatis)";
             let resLabel2 = "2. AI Ekor (TOP 95%)";
@@ -1030,7 +1186,7 @@
             let resLabel2DT = "📌 2D Tengah (Kop-Kep)";
 
             if (modeTarikan === 'gabung') {
-                liveTitleText = `⚡ Live Analitik AI [H-1: ${h1ValRaw} + H-7: ${h7ValRaw}]`;
+                liveTitleText = `⚡ Live Analitik AI <br><span style="color:var(--text-sub); font-size:9px;">[H-1: ${h1ValRaw} + H-7: ${h7ValRaw}]</span>`;
                 resLabel1 = `1. AI 2D Tabel [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
@@ -1042,7 +1198,7 @@
                 resLabel3DD = `📌 3D Depan [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel2DT = `📌 2D Tengah [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
             } else if (modeTarikan === 'h1') {
-                liveTitleText = `⚡ Live Analitik AI [Live: ${h1ValRaw} (H-1)]`;
+                liveTitleText = `⚡ Live Analitik AI <br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h1ValRaw} (H-1)]</span>`;
                 resLabel1 = `1. AI 2D Tabel [Live: ${h1ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [Live: ${h1ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [Live: ${h1ValRaw}]`;
@@ -1054,7 +1210,7 @@
                 resLabel3DD = `📌 3D Depan [Live: ${h1ValRaw}]`;
                 resLabel2DT = `📌 2D Tengah [Live: ${h1ValRaw}]`;
             } else if (modeTarikan === 'h7') {
-                liveTitleText = `⚡ Live Analitik AI [Live: ${h7ValRaw} (H-7)]`;
+                liveTitleText = `⚡ Live Analitik AI <br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h7ValRaw} (H-7)]</span>`;
                 resLabel1 = `1. AI 2D Tabel [Live: ${h7ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [Live: ${h7ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [Live: ${h7ValRaw}]`;
@@ -1067,7 +1223,7 @@
                 resLabel2DT = `📌 2D Tengah [Live: ${h7ValRaw}]`;
             }
 
-            document.getElementById('liveCardTitle').innerText = liveTitleText;
+            document.getElementById('liveCardTitle').innerHTML = liveTitleText;
             document.getElementById('titleRes1').innerText = resLabel1;
             document.getElementById('titleRes2').innerText = resLabel2;
             document.getElementById('titleRes3').innerText = resLabel3;
@@ -1138,6 +1294,9 @@
                 document.getElementById('infoEkor').innerText = ''; document.getElementById('infoTesson').innerText = '';
                 return; 
             }
+
+            let gabBBFS = null;
+            let singleBBFS = null;
 
             if (isValid) {
                 let docTesson = document.getElementById('infoTesson'), docJarak = document.getElementById('infoJarak'), docKep = document.getElementById('infoKepala'), docEk = document.getElementById('infoEkor');
@@ -1220,7 +1379,7 @@
                     document.getElementById('liveCM').innerHTML = Array.from(cmSet).slice(0, 2).map(x => colorizeDigits(x, strongSet, weakSet)).join(' / ');
 
                     let bbfsSet = [...mD.bbfsArray, ...aD.bbfsArray];
-                    let gabBBFS = getOptimizedBBFS(bbfsSet, [mD, aD], bbfsLength);
+                    gabBBFS = getOptimizedBBFS(bbfsSet, [mD, aD], bbfsLength);
                     document.getElementById('liveBBFS').innerHTML = colorizeDigits(gabBBFS, strongSet, weakSet);
 
                     let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
@@ -1254,7 +1413,7 @@
                     document.getElementById('predKep').innerHTML = mergedPred(mD.pKep, aD.pKep);
                     document.getElementById('predEk').innerHTML = mergedPred(mD.pEk, aD.pEk);
 
-                    document.getElementById('badgeLiveEkor').innerText = `GABUNGAN H1+H7`;
+                    if(document.getElementById('badgeLiveEkor')) document.getElementById('badgeLiveEkor').innerText = `GABUNGAN H1+H7`;
 
                 } else {
                     strongSet = new Set([mD.cb1, mD.cb2, ...mD.dataAI.ai1]);
@@ -1266,7 +1425,7 @@
                     document.getElementById('liveCB').innerHTML = `${colorizeDigits([mD.cb1], strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits([mD.cb2], strongSet, weakSet)}`;
                     document.getElementById('liveCM').innerHTML = `${colorizeDigits(mD.cm1, strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits(mD.cm2, strongSet, weakSet)}`;
                     
-                    let singleBBFS = getOptimizedBBFS(mD.bbfsArray, [mD], bbfsLength);
+                    singleBBFS = getOptimizedBBFS(mD.bbfsArray, [mD], bbfsLength);
                     document.getElementById('liveBBFS').innerHTML = colorizeDigits(singleBBFS, strongSet, weakSet);
                     
                     document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet)} <span style="color:var(--text-main);">-</span> ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet)}`;
@@ -1288,8 +1447,129 @@
                     document.getElementById('predKep').innerHTML = singlePred(mD.pKep);
                     document.getElementById('predEk').innerHTML = singlePred(mD.pEk);
 
-                    document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
+                    if(document.getElementById('badgeLiveEkor')) document.getElementById('badgeLiveEkor').innerText = `RESULT ${mD.str2D}`;
                 }
+
+                // ==========================================
+                // FITUR EVALUASI JP (AUTO CHECK RESULT SELANJUTNYA)
+                // ==========================================
+                let evalTarget = null;
+                let evalIdx = -1;
+                let evalList = [];
+                
+                if (modeTarikan === 'gabung' || modeTarikan === 'h1') {
+                    evalList = parseMultiInput(document.getElementById('inputH1').value);
+                    evalIdx = historyIndices['inputH1'];
+                } else if (modeTarikan === 'h7') {
+                    evalList = parseMultiInput(document.getElementById('inputH7').value);
+                    evalIdx = historyIndices['inputH7'];
+                }
+
+                // Mengecek ke result SELANJUTNYA (Sebelah Kanan -> index + 1)
+                if (evalIdx >= 0 && evalIdx < evalList.length - 1) {
+                    evalTarget = evalList[evalIdx + 1];
+                }
+
+                if (evalTarget && evalTarget.length === 4) {
+                    let tAs = parseInt(evalTarget[0]), tKop = parseInt(evalTarget[1]), tKep = parseInt(evalTarget[2]), tEk = parseInt(evalTarget[3]);
+                    let t2D = evalTarget.substring(2), t3D = evalTarget.substring(1), t4D = evalTarget;
+
+                    let getBadge = (hits, isKMT = false) => {
+                        if (isKMT) {
+                            return hits.length > 0 
+                                ? `<span style="background:#ef4444; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; opacity:0.9;">✖ PATAH [${hits.join(',')}]</span>` 
+                                : `<span style="background:#10b981; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; box-shadow:0 1px 2px rgba(0,0,0,0.2);">✔ AMAN</span>`;
+                        } else {
+                            return hits.length > 0 
+                                ? `<span style="background:#10b981; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; box-shadow:0 1px 2px rgba(0,0,0,0.2);">✔ JP [${hits.join(',')}]</span>` 
+                                : `<span style="background:#ef4444; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; opacity:0.9;">✖ ZONK</span>`;
+                        }
+                    };
+                    
+                    let getPosBadge = (hitVal) => hitVal !== null 
+                        ? `<span style="color:#10b981; font-weight:900; margin-left:4px; letter-spacing:normal; font-size:11px;">✔ [${hitVal}]</span>` 
+                        : `<span style="color:#ef4444; font-weight:900; margin-left:4px; letter-spacing:normal; font-size:11px;">✖</span>`;
+
+                    document.getElementById('badgeEvalJP').innerHTML = `<span style="background:#f59e0b; color:#fff; padding:3px 8px; border-radius:4px; font-size:9px; letter-spacing:0.5px; font-weight: 800; box-shadow:0 1px 2px rgba(0,0,0,0.1);">🎯 Evaluasi vs Besoknya: ${evalTarget}</span>`;
+
+                    // 1. Cek CB
+                    let cbArr = modeTarikan === 'gabung' ? Array.from(new Set([mD.cb1, mD.cb2, aD.cb1, aD.cb2])).slice(0,3) : [mD.cb1, mD.cb2];
+                    let cbHits = cbArr.filter(c => evalTarget.includes(c.toString()));
+                    document.getElementById('liveCB').innerHTML += getBadge(cbHits);
+
+                    // 2. Cek CM
+                    let cmArr = modeTarikan === 'gabung' ? Array.from(new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2])).slice(0,2) : [mD.cm1, mD.cm2];
+                    let cmHits = cmArr.filter(cm => {
+                        if (!cm) return false;
+                        let temp = evalTarget;
+                        let has1 = temp.includes(cm[0]);
+                        if(has1) temp = temp.replace(cm[0], '');
+                        let has2 = temp.includes(cm[1]);
+                        return has1 && has2;
+                    });
+                    document.getElementById('liveCM').innerHTML += getBadge(cmHits);
+
+                    // 3. Cek BBFS
+                    let activeBBFS = modeTarikan === 'gabung' ? gabBBFS : singleBBFS;
+                    if (activeBBFS) {
+                        let bStr = activeBBFS.join('');
+                        let hit4 = true, hit3 = true, hit2 = true;
+                        for(let d of t4D) if(!bStr.includes(d)) hit4 = false;
+                        for(let d of t3D) if(!bStr.includes(d)) hit3 = false;
+                        for(let d of t2D) if(!bStr.includes(d)) hit2 = false;
+                        
+                        let bbfsBadge = `<span style="background:#ef4444; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; opacity:0.9;">✖ ZONK</span>`;
+                        if (hit4) bbfsBadge = `<span style="background:#10b981; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; box-shadow:0 1px 2px rgba(0,0,0,0.2);">✔ JP 4D!</span>`;
+                        else if (hit3) bbfsBadge = `<span style="background:#10b981; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; box-shadow:0 1px 2px rgba(0,0,0,0.2);">✔ JP 3D!</span>`;
+                        else if (hit2) bbfsBadge = `<span style="background:#10b981; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; box-shadow:0 1px 2px rgba(0,0,0,0.2);">✔ JP 2D!</span>`;
+                        
+                        document.getElementById('liveBBFS').innerHTML += bbfsBadge;
+                    }
+
+                    // 4. Cek Posisi (As, Kop, Kep, Ek)
+                    let asArr = modeTarikan === 'gabung' ? Array.from(new Set([...getExpand(mD.pAs), ...getExpand(aD.pAs)])) : getExpand(mD.pAs);
+                    let kopArr = modeTarikan === 'gabung' ? Array.from(new Set([...getExpand(mD.pKop), ...getExpand(aD.pKop)])) : getExpand(mD.pKop);
+                    let kepArr = modeTarikan === 'gabung' ? Array.from(new Set([...getExpand(mD.pKep), ...getExpand(aD.pKep)])) : getExpand(mD.pKep);
+                    let ekArr = modeTarikan === 'gabung' ? Array.from(new Set([...getExpand(mD.pEk), ...getExpand(aD.pEk)])) : getExpand(mD.pEk);
+
+                    let elAs = document.getElementById('predAs'); elAs.innerHTML = elAs.innerHTML.replace('</div>', getPosBadge(asArr.includes(tAs) ? tAs : null) + '</div>');
+                    let elKop = document.getElementById('predKop'); elKop.innerHTML = elKop.innerHTML.replace('</div>', getPosBadge(kopArr.includes(tKop) ? tKop : null) + '</div>');
+                    let elKep = document.getElementById('predKep'); elKep.innerHTML = elKep.innerHTML.replace('</div>', getPosBadge(kepArr.includes(tKep) ? tKep : null) + '</div>');
+                    let elEk = document.getElementById('predEk'); elEk.innerHTML = elEk.innerHTML.replace('</div>', getPosBadge(ekArr.includes(tEk) ? tEk : null) + '</div>');
+                    
+                    // 5. Cek AI Ekor Utama
+                    let ekorAIArr = modeTarikan === 'gabung' ? Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2])) : [...mD.dataAI.ai1, ...mD.dataAI.ai2];
+                    let ekorAIHits = ekorAIArr.filter(x => x == tEk);
+                    document.getElementById('liveAIEkor').innerHTML += getBadge(ekorAIHits);
+
+                    // 6. Cek Kumpul Mati Ekor
+                    let kmtArr = modeTarikan === 'gabung' ? Array.from(new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt])) : [...mD.dataAI.kmt];
+                    let kmtHits = kmtArr.filter(x => x == tEk);
+                    document.getElementById('liveKMTEkor').innerHTML += getBadge(kmtHits, true);
+
+                    // 7. Cek AI 2D Tabel
+                    let aiTabelArr = modeTarikan === 'gabung' ? Array.from(new Set([...(mD.aiTabel || []), ...(aD.aiTabel || [])])) : [...(mD.aiTabel || [])];
+                    let aiTabelHits = aiTabelArr.filter(x => x == tKep || x == tEk);
+                    document.getElementById('liveAITabel').innerHTML += getBadge(aiTabelHits);
+
+                    // 8. Cek Ekor Main Tabel
+                    let ekorMainArr = modeTarikan === 'gabung' ? Array.from(new Set([...mD.arrEkorMain, ...aD.arrEkorMain])) : [...mD.arrEkorMain];
+                    let ekorMainHits = ekorMainArr.filter(x => x == tEk);
+                    document.getElementById('liveEkorMain').innerHTML += getBadge(ekorMainHits);
+
+                    // 9. Cek Pola 1
+                    let pola1Arr = modeTarikan === 'gabung' ? Array.from(new Set([...mD.aiPola1, ...aD.aiPola1])) : [...mD.aiPola1];
+                    let pola1Hits = pola1Arr.filter(x => x == tKep || x == tEk);
+                    document.getElementById('livePola1').innerHTML += getBadge(pola1Hits);
+
+                    // 10. Cek Pola 2
+                    let pola2Arr = modeTarikan === 'gabung' ? Array.from(new Set([...mD.aiPola2, ...aD.aiPola2])) : [...mD.aiPola2];
+                    let pola2Hits = pola2Arr.filter(x => x == tKep || x == tEk);
+                    document.getElementById('livePola2').innerHTML += getBadge(pola2Hits);
+
+                }
+                // ==========================================
+
                 document.getElementById('aiLiveCard').style.display = 'block';
             } else {
                 document.getElementById('infoJarak').innerText = ''; document.getElementById('infoKepala').innerText = ''; 
