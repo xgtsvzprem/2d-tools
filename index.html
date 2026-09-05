@@ -70,7 +70,7 @@
         .gj-box { background: #ffffff; border: 1px solid #c084fc; border-radius: 4px; padding: 4px 0px; font-size: 8px; font-weight: 700; color: #6b21a8; text-align: center; line-height: 1.4; transition: background-color 0.3s; white-space: nowrap; overflow: hidden; }
         .gj-box .gj-title { display: block; color: var(--text-sub); font-size: 7.5px; margin-bottom: 1px; text-transform: uppercase; }
         .btn-copy-prediksi { background: #3b82f6; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-left: auto; }
-        .btn-copy-prediksi:hover { background: #2563eb; }
+        .btn-copy-prediksi:hover { opacity: 0.8; }
         
         .btn-toggle-filter { width: 100%; padding: 10px; background-color: #f1f5f9; color: var(--primary-dark); border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 10px; margin-bottom: 4px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-toggle-filter:hover { background-color: #e2e8f0; border-color: #94a3b8; }
@@ -103,9 +103,20 @@
         .app-footer { text-align: center; margin-top: 10px; margin-bottom: 20px; color: var(--text-sub); font-size: 11px; width: 100%; max-width: 440px; }
         .app-footer b { color: var(--primary); }
         .visitor-counter { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
+        
+        /* Additions for enhancements */
+        .toast { visibility: hidden; min-width: 250px; background-color: #334155; color: #fff; text-align: center; border-radius: 8px; padding: 12px; position: fixed; z-index: 10000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 12px; font-weight: bold; opacity: 0; transition: opacity 0.3s, bottom 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none; }
+        .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+        .toast.success { background-color: #10b981; }
+        .toast.error { background-color: #ef4444; }
+        body.dark-mode .toast { background-color: #0f172a; border: 1px solid #334155; color: #f8fafc; }
+        .loading-dim { opacity: 0.4; pointer-events: none; transition: opacity 0.2s; filter: grayscale(50%); }
     </style>
 </head>
 <body>
+    <!-- Toast Notification -->
+    <div id="appToast" class="toast">Notifikasi</div>
+
     <div id="infoModal" class="modal-overlay" onclick="closeModal(event, 'infoModal')">
         <div class="modal-box">
             <span class="modal-close" onclick="closeModalForce('infoModal')">&times;</span>
@@ -533,6 +544,18 @@
     </div>
 
     <script>
+        // --- TOAST NOTIFICATION ---
+        function showToast(msg, type='success') {
+            let toast = document.getElementById("appToast");
+            if(toast) {
+                toast.innerText = msg;
+                toast.className = "toast show " + type;
+                setTimeout(function(){ 
+                    toast.className = toast.className.replace("show", ""); 
+                }, 3000);
+            }
+        }
+
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             let isDark = document.body.classList.contains('dark-mode');
@@ -598,7 +621,7 @@
         function saveDB() {
             let name = document.getElementById('dbName').value.trim().toUpperCase();
             let data = document.getElementById('dbData').value.trim();
-            if(!name) { alert("Nama Pasaran tidak boleh kosong!"); return; }
+            if(!name) { showToast("Nama Pasaran tidak boleh kosong!", "error"); return; }
             
             let cleanData = data.replace(/[^0-9\s]/g, '').replace(/\s+/g, ' ').trim();
             document.getElementById('dbData').value = cleanData;
@@ -614,12 +637,13 @@
             let txt = btn.innerText;
             btn.innerText = "✔ TERSIMPAN";
             btn.style.background = "#10b981";
+            showToast("Database berhasil disimpan!", "success");
             setTimeout(()=>{ btn.innerText = txt; btn.style.background = "var(--primary)"; }, 1500);
         }
 
         function addResultDB() {
             let name = document.getElementById('dbName').value.trim();
-            if(!name) { alert("Pilih atau isi Nama Pasaran lebih dulu!"); return; }
+            if(!name) { showToast("Pilih atau isi Nama Pasaran lebih dulu!", "error"); return; }
             
             let newRes = document.getElementById('dbNew').value.replace(/[^0-9]/g, '');
             if(newRes.length === 0) return;
@@ -642,12 +666,13 @@
                 initDB();
                 document.getElementById('dbName').value = '';
                 document.getElementById('dbData').value = '';
+                showToast("Data berhasil dihapus!", "success");
             }
         }
 
         function applyDB(targetId) {
             let data = document.getElementById('dbData').value.trim();
-            if(!data) { alert("Data masih kosong!"); return; }
+            if(!data) { showToast("Data masih kosong!", "error"); return; }
             
             let target = document.getElementById(targetId);
             target.value = data;
@@ -820,18 +845,19 @@
                 judul = `🔥 Angka H-1 (${valH1}) 🔥`;
             }
 
-            let format = `*${judul}*\n\n*CB:* ${cb}\n*CB 2D:* ${cm}\n*BBFS:* ${bbfs}\n*Poltar:* ${as},${kop},${kep},${ek}`;
+            let format = `*${judul}*\n\n*CB:* ${cb}\n*CB 2D:* ${cm}\n*BBFS:* ${bbfs}\n*Poltar:* ${as},${kop},${kep},${ek}\n\n_Generated by 2D Tools & Formulas_`;
 
             navigator.clipboard.writeText(format).then(function() {
                 let textAwal = btn.innerText; 
                 btn.innerText = "✔ TERSALIN"; 
                 btn.style.backgroundColor = "#10b981"; 
+                showToast("Prediksi berhasil disalin!", "success");
                 setTimeout(() => { 
                     btn.innerText = textAwal; 
                     btn.style.backgroundColor = ""; 
                 }, 1400);
             }).catch(function(err) { 
-                alert("Gagal menyalin!"); 
+                showToast("Gagal menyalin!", "error"); 
             });
         }
 
@@ -913,6 +939,7 @@
                 let el = document.getElementById(id); el.value = ''; toggleClear(el);
             });
             hitungSemua();
+            showToast("Filter manual direset!");
         }
         
         function resetMaster() {
@@ -948,6 +975,7 @@
             document.getElementById('hasilGlobal').style.display = 'none'; 
             
             hitungSemua(); 
+            showToast("Semua data direset!");
         }
 
         document.addEventListener('contextmenu', e => e.preventDefault());
@@ -1005,8 +1033,9 @@
             let elem = document.getElementById(elementId); elem.select(); elem.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(elem.value).then(function() {
                 let textAwal = btn.innerText; btn.innerText = "Tersalin ✔"; btn.style.backgroundColor = "#10b981"; 
+                showToast("Berhasil disalin!", "success");
                 setTimeout(() => { btn.innerText = textAwal; btn.style.backgroundColor = ""; }, 1400);
-            }).catch(function(err) { document.execCommand("copy"); alert("Berhasil disalin!"); });
+            }).catch(function(err) { document.execCommand("copy"); showToast("Berhasil disalin (fallback)!", "success"); });
         }
 
         function jadikanSatuDigit(angka) { while (angka > 9) { let jumlah = 0; let str = angka.toString(); for (let i=0; i<str.length; i++) jumlah += parseInt(str[i]); angka = jumlah; } return angka; }
@@ -1139,6 +1168,13 @@
         }
 
         function hitungSemua() {
+            // Animasi dim (loading effect)
+            let elHasil = document.getElementById('hasilGlobal');
+            if (elHasil.style.display !== 'none') {
+                elHasil.classList.add('loading-dim');
+                setTimeout(() => { elHasil.classList.remove('loading-dim'); }, 200);
+            }
+
             const masterFilters = ['chkJarak', 'chkKepala', 'chkEkor', 'chkTesson', 'chkKembar', 'chkWakSalarabo', 'chkKelipatan', 'chkBijiLemah', 'chkMatiGab', 'chkPasaranJawa'];
             const allChecked = masterFilters.every(id => document.getElementById(id).checked);
             document.getElementById('chkAllMaster').checked = allChecked;
@@ -1457,12 +1493,10 @@
                 let evalIdx = -1;
                 let evalList = [];
                 
+                // HANYA BERFUNGSI PADA H-1 (atau Gabungan yang menjadikan H-1 sebagai patokan utama)
                 if (modeTarikan === 'gabung' || modeTarikan === 'h1') {
                     evalList = parseMultiInput(document.getElementById('inputH1').value);
                     evalIdx = historyIndices['inputH1'];
-                } else if (modeTarikan === 'h7') {
-                    evalList = parseMultiInput(document.getElementById('inputH7').value);
-                    evalIdx = historyIndices['inputH7'];
                 }
 
                 // Mengecek ke result SELANJUTNYA (Sebelah Kanan -> index + 1)
