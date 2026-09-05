@@ -178,6 +178,16 @@
                     <button class="btn-dark" style="flex:1; background:#f1f5f9; color:var(--text-main); border:1px solid #cbd5e1; font-size: 11px;" onclick="applyDB('inputH1')">➡️ Pakai di H-1</button>
                     <button class="btn-dark" style="flex:1; background:#f1f5f9; color:var(--text-main); border:1px solid #cbd5e1; font-size: 11px;" onclick="applyDB('inputH7')">➡️ Pakai di H-7</button>
                 </div>
+
+                <!-- EXPORT / IMPORT FITUR -->
+                <div style="display: flex; gap: 6px; margin-top: 6px;">
+                    <button class="btn-dark" style="flex:1; background:#334155; color:#fff; border:none; font-size: 10px;" onclick="exportDB()">📤 Export File (.txt)</button>
+                    <input type="file" id="importFile" accept=".txt" style="display:none;" onchange="importDB(event)">
+                    <button class="btn-dark" style="flex:1; background:#475569; color:#fff; border:none; font-size: 10px;" onclick="document.getElementById('importFile').click()">📥 Import File (.txt)</button>
+                </div>
+                <div style="font-size: 9px; color: var(--text-sub); text-align: center; margin-top: 6px;">
+                    <i>*Format isi txt: NAMA=1234 5678</i>
+                </div>
             </div>
         </div>
 
@@ -599,7 +609,11 @@
             let db = getDBData();
             let sel = document.getElementById('dbSelect');
             sel.innerHTML = '<option value="">-- Pilih Data Tersimpan --</option>';
-            for(let key in db) {
+            
+            // Susun nama pasaran secara alfabetis (A-Z)
+            let sortedKeys = Object.keys(db).sort();
+            
+            for(let key of sortedKeys) {
                 let opt = document.createElement('option');
                 opt.value = key; opt.text = key;
                 sel.appendChild(opt);
@@ -628,7 +642,11 @@
 
             let db = getDBData();
             db[name] = cleanData;
-            localStorage.setItem('2d_db_pasaran', JSON.stringify(db));
+            
+            // Simpan secara terurut
+            let sortedDb = {};
+            Object.keys(db).sort().forEach(k => sortedDb[k] = db[k]);
+            localStorage.setItem('2d_db_pasaran', JSON.stringify(sortedDb));
             
             initDB();
             document.getElementById('dbSelect').value = name;
@@ -662,7 +680,11 @@
             if(confirm("Yakin ingin menghapus history pasaran: " + name + "?")) {
                 let db = getDBData();
                 delete db[name];
-                localStorage.setItem('2d_db_pasaran', JSON.stringify(db));
+                
+                let sortedDb = {};
+                Object.keys(db).sort().forEach(k => sortedDb[k] = db[k]);
+                localStorage.setItem('2d_db_pasaran', JSON.stringify(sortedDb));
+                
                 initDB();
                 document.getElementById('dbName').value = '';
                 document.getElementById('dbData').value = '';
@@ -684,6 +706,75 @@
             formatInputDisplay(targetId);
             toggleClear(target);
             hitungSemua();
+        }
+
+        // --- FITUR EXPORT / IMPORT ---
+        function exportDB() {
+            let db = getDBData();
+            if (Object.keys(db).length === 0) {
+                showToast("Database kosong, tidak ada yang diexport!", "error");
+                return;
+            }
+            let content = "=== BACKUP DATABASE PASARAN 2D ===\n";
+            content += "// Format: NAMA=ANGKA (Spasi)\n\n";
+            
+            // Tulis file txt secara alfabetis
+            let sortedKeys = Object.keys(db).sort();
+            for (let key of sortedKeys) {
+                content += key + "=" + db[key] + "\n";
+            }
+            
+            let blob = new Blob([content], { type: "text/plain" });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "backup_pasaran_2d.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("File TXT berhasil diunduh!", "success");
+        }
+
+        function importDB(event) {
+            let file = event.target.files[0];
+            if (!file) return;
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let text = e.target.result;
+                let lines = text.split('\n');
+                let db = getDBData();
+                let importedCount = 0;
+                
+                for (let line of lines) {
+                    if (line.trim().startsWith('//') || line.trim() === '') continue; // Skip komentar/kosong
+                    if (line.includes('=')) {
+                        let parts = line.split('=');
+                        let name = parts[0].trim().toUpperCase();
+                        let data = parts[1].trim().replace(/[^0-9\s]/g, '').replace(/\s+/g, ' ');
+                        if (name && data) {
+                            db[name] = data; // Overwrite data jika nama pasaran sama
+                            importedCount++;
+                        }
+                    }
+                }
+                
+                if (importedCount > 0) {
+                    // Simpan hasil import secara alfabetis
+                    let sortedDb = {};
+                    Object.keys(db).sort().forEach(key => {
+                        sortedDb[key] = db[key];
+                    });
+                    
+                    localStorage.setItem('2d_db_pasaran', JSON.stringify(sortedDb));
+                    initDB();
+                    showToast(importedCount + " pasaran berhasil diimport!", "success");
+                } else {
+                    showToast("Gagal! Format file tidak valid.", "error");
+                }
+                event.target.value = ""; // reset input
+            };
+            reader.readAsText(file);
         }
         // --- END DATABASE ---
 
