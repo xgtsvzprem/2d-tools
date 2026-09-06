@@ -285,7 +285,7 @@
                     <span class="ai-item-val" id="liveAIEkor">-</span>
                 </div>
                 <div class="ai-item kmt">
-                    <span class="ai-item-label">Kumpul Mati</span>
+                    <span class="ai-item-label">Kumpul Mati (2D)</span>
                     <span class="ai-item-val" id="liveKMTEkor">-</span>
                 </div>
                 
@@ -1659,15 +1659,25 @@
                     // 3. Cek BBFS (Update Posisi Tambahan)
                     let activeBBFS = modeTarikan === 'gabung' ? gabBBFS : singleBBFS;
                     if (activeBBFS) {
-                        let bStr = activeBBFS.join('');
                         let hit4D = true, hit3DB = true, hit2DB = true, hit3DD = true, hit2DD = true, hit2DT = true;
                         
-                        for(let d of t4D) if(!bStr.includes(d)) hit4D = false;
-                        for(let d of t3DB) if(!bStr.includes(d)) hit3DB = false;
-                        for(let d of t2DB) if(!bStr.includes(d)) hit2DB = false;
-                        for(let d of t3DD) if(!bStr.includes(d)) hit3DD = false;
-                        for(let d of t2DD) if(!bStr.includes(d)) hit2DD = false;
-                        for(let d of t2DT) if(!bStr.includes(d)) hit2DT = false;
+                        let checkHit = (bbfs, targetStr) => {
+                            let counts = {};
+                            for(let num of bbfs) counts[num] = (counts[num] || 0) + 1;
+                            for(let char of targetStr) {
+                                let n = parseInt(char);
+                                if(!counts[n] || counts[n] <= 0) return false;
+                                counts[n]--;
+                            }
+                            return true;
+                        };
+
+                        hit4D = checkHit(activeBBFS, t4D);
+                        hit3DB = checkHit(activeBBFS, t3DB);
+                        hit2DB = checkHit(activeBBFS, t2DB);
+                        hit3DD = checkHit(activeBBFS, t3DD);
+                        hit2DD = checkHit(activeBBFS, t2DD);
+                        hit2DT = checkHit(activeBBFS, t2DT);
                         
                         let jpTypes = [];
                         if (hit4D) {
@@ -1706,9 +1716,9 @@
                     let ekorAIHits = ekorAIArr.filter(x => x == tEk);
                     document.getElementById('liveAIEkor').innerHTML += getBadge(ekorAIHits);
 
-                    // 6. Cek Kumpul Mati Ekor
+                    // 6. Cek Kumpul Mati (2D)
                     let kmtArr = modeTarikan === 'gabung' ? Array.from(new Set([...mD.dataAI.kmt, ...aD.dataAI.kmt])) : [...mD.dataAI.kmt];
-                    let kmtHits = kmtArr.filter(x => x == tEk);
+                    let kmtHits = (kmtArr.includes(tKep) && kmtArr.includes(tEk)) ? [`${tKep}${tEk}`] : [];
                     document.getElementById('liveKMTEkor').innerHTML += getBadge(kmtHits, true);
 
                     // 7. Cek AI 2D Tabel
