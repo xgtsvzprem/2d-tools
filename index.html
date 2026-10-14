@@ -142,7 +142,7 @@
             align-items: center; 
             justify-content: center; 
             padding: 7px 4px; 
-            font-size: 10.5px; 
+            font-size: 11px; 
             font-weight: 800; 
             background: #ffffff; 
             border: 1.5px solid #cbd5e1; 
@@ -152,6 +152,7 @@
             white-space: nowrap; 
             box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
             user-select: none; 
+            letter-spacing: 0.5px;
         }
         .pasaran-btn:hover span { 
             border-color: var(--primary); 
@@ -213,10 +214,10 @@
             letter-spacing: 1px;
         }
         .badge-market-big .val {
-            font-size: 14.5px;
+            font-size: 15px;
             font-weight: 900;
             color: #fef08a;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
         body.dark-mode .badge-market-big {
             background: linear-gradient(135deg, #0f172a, #1e3a8a);
@@ -336,31 +337,31 @@
         </div>
 
         <div id="aiLiveCard" class="ai-live-card">
-            <!-- PILIHAN PASARAN DALAM BOX LIVE BERBORDER TEGAS -->
+            <!-- PILIHAN PASARAN NAMA SINGKAT BERBORDER TEGAS -->
             <div class="pasaran-container">
                 <label class="pasaran-btn">
                     <input type="radio" name="jenisPasaran" value="umum" onchange="hitungSemua()" checked>
-                    <span>🌍 UMUM</span>
+                    <span>UMUM</span>
                 </label>
                 <label class="pasaran-btn">
                     <input type="radio" name="jenisPasaran" value="hk" onchange="hitungSemua()">
-                    <span>🇭🇰 HK</span>
+                    <span>HK</span>
                 </label>
                 <label class="pasaran-btn">
                     <input type="radio" name="jenisPasaran" value="sgp" onchange="hitungSemua()">
-                    <span>🇸🇬 SGP</span>
+                    <span>SGP</span>
                 </label>
                 <label class="pasaran-btn">
                     <input type="radio" name="jenisPasaran" value="sdy" onchange="hitungSemua()">
-                    <span>🇦🇺 SDY</span>
+                    <span>SDY</span>
                 </label>
             </div>
 
-            <!-- INDIKATOR PASARAN AKTIF (BESAR & TEPAT DI TENGAH) -->
+            <!-- INDIKATOR PASARAN AKTIF SINGKAT (BESAR & TEPAT DI TENGAH) -->
             <div class="market-indicator-center">
                 <div class="badge-market-big">
                     <span class="lbl">PASARAN AKTIF:</span>
-                    <span class="val" id="txtPasaranAktif">🌍 UMUM</span>
+                    <span class="val" id="txtPasaranAktif">UMUM</span>
                 </div>
             </div>
 
@@ -1321,12 +1322,12 @@
                 baseAs = (asB + ekB) % 10;
                 baseKop = (kopB + asB) % 10;
                 baseKep = (kepB + kopB) % 10;
-                baseEk = (ekB + kepB) % 10;
+                baseEk = (ekB + kopB) % 10;
             } else if (pasaranToggle === 'sgp') {
                 keyEkor = mapIndex[ekB]; key2D = `${mapIndex[kepB]}${mapIndex[ekB]}`;
                 valPola1 = mapIndex[jadikanSatuDigit(asB + kopB)]; valPola2 = mapMistikLama[jadikanSatuDigit(kepB + ekB)];
                 cb1 = mapMistikBaru[kopB]; cb2 = mapIndex[kepB]; if(cb1 === cb2) cb2 = mapMistikLama[ekB];
-                bbfsBase.push(mapMistikBaru[kopB], mapIndex[kepB], j1, mapMistikLama[asB], j2);
+                bbfsBase.push(mapIndex[ekB], j1, mapMistikLama[asB], j2);
                 
                 baseAs = Math.abs(asB - ekB);
                 baseKop = Math.abs(kopB - kepB);
@@ -1436,7 +1437,14 @@
             
             let selectedPasaranEl = document.querySelector('input[name="jenisPasaran"]:checked');
             let pasaranToggle = selectedPasaranEl ? selectedPasaranEl.value : 'umum';
-            let pasaranText = selectedPasaranEl ? selectedPasaranEl.nextElementSibling.innerText.trim() : '🌍 UMUM';
+            
+            let labelSingkat = {
+                'umum': 'UMUM',
+                'hk': 'HK',
+                'sgp': 'SGP',
+                'sdy': 'SDY'
+            };
+            let pasaranText = labelSingkat[pasaranToggle] || pasaranToggle.toUpperCase();
             
             let elTxtPasaran = document.getElementById('txtPasaranAktif');
             if (elTxtPasaran) elTxtPasaran.innerText = pasaranText;
