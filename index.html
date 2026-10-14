@@ -111,6 +111,76 @@
         .toast.error { background-color: #ef4444; }
         body.dark-mode .toast { background-color: #0f172a; border: 1px solid #334155; color: #f8fafc; }
         .loading-dim { opacity: 0.4; pointer-events: none; transition: opacity 0.2s; filter: grayscale(50%); }
+
+        /* Styling Tombol Pasaran Berborder Jelas */
+        .pasaran-container { 
+            display: flex; 
+            gap: 6px; 
+            width: 100%; 
+            margin-bottom: 10px; 
+            background: #f1f5f9; 
+            padding: 5px; 
+            border-radius: 8px; 
+            border: 1.5px solid #cbd5e1; 
+            box-sizing: border-box; 
+            transition: background 0.3s, border-color 0.3s; 
+        }
+        body.dark-mode .pasaran-container { 
+            background: #0f172a; 
+            border-color: #334155; 
+        }
+        .pasaran-btn { 
+            flex: 1; 
+            cursor: pointer; 
+            text-align: center; 
+            margin: 0; 
+        }
+        .pasaran-btn input { 
+            display: none; 
+        }
+        .pasaran-btn span { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 7px 4px; 
+            font-size: 10.5px; 
+            font-weight: 800; 
+            background: #ffffff; 
+            border: 1.5px solid #cbd5e1; 
+            border-radius: 6px; 
+            color: #475569; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            white-space: nowrap; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+            user-select: none; 
+        }
+        .pasaran-btn:hover span { 
+            border-color: var(--primary); 
+            color: var(--primary); 
+        }
+        .pasaran-btn input:checked + span { 
+            background: var(--primary) !important; 
+            color: #ffffff !important; 
+            border-color: var(--primary-dark) !important; 
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.35), 0 2px 5px rgba(37, 99, 235, 0.3) !important; 
+            transform: translateY(-1px); 
+        }
+        body.dark-mode .pasaran-btn span { 
+            background: #1e293b; 
+            border-color: #475569; 
+            color: #94a3b8; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3); 
+        }
+        body.dark-mode .pasaran-btn:hover span { 
+            border-color: #60a5fa; 
+            color: #60a5fa; 
+        }
+        body.dark-mode .pasaran-btn input:checked + span { 
+            background: var(--primary) !important; 
+            color: #ffffff !important; 
+            border-color: #60a5fa !important; 
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4), 0 2px 6px rgba(0, 0, 0, 0.4) !important; 
+        }
     </style>
 </head>
 <body>
@@ -131,18 +201,6 @@
             <div style="display: flex; gap: 6px;">
                 <button class="btn-reset" onclick="resetMaster()">🔄 RESET</button>
                 <button class="btn-dark" id="btnDark" onclick="toggleDarkMode()">DARK MODE: OFF</button>
-            </div>
-        </div>
-
-        <div class="filter-columns" style="margin-bottom: 12px;">
-            <div class="input-group" style="margin:0; flex:1;">
-                <label>Pilih Pasaran:</label>
-                <select id="jenisPasaran" class="input-box" onchange="hitungSemua()" style="padding:9px; font-size:12px; font-weight:700;">
-                    <option value="umum">🌍 UMUM</option>
-                    <option value="hk">🇭🇰 HK POOLS</option>
-                    <option value="sgp">🇸🇬 SGP POOLS</option>
-                    <option value="sdy">🇦🇺 SDY POOLS</option>
-                </select>
             </div>
         </div>
 
@@ -236,6 +294,26 @@
         </div>
 
         <div id="aiLiveCard" class="ai-live-card">
+            <!-- PILIHAN PASARAN DALAM BOX LIVE BERBORDER TEGAS -->
+            <div class="pasaran-container">
+                <label class="pasaran-btn">
+                    <input type="radio" name="jenisPasaran" value="umum" onchange="hitungSemua()" checked>
+                    <span>🌍 UMUM</span>
+                </label>
+                <label class="pasaran-btn">
+                    <input type="radio" name="jenisPasaran" value="hk" onchange="hitungSemua()">
+                    <span>🇭🇰 HK</span>
+                </label>
+                <label class="pasaran-btn">
+                    <input type="radio" name="jenisPasaran" value="sgp" onchange="hitungSemua()">
+                    <span>🇸🇬 SGP</span>
+                </label>
+                <label class="pasaran-btn">
+                    <input type="radio" name="jenisPasaran" value="sdy" onchange="hitungSemua()">
+                    <span>🇦🇺 SDY</span>
+                </label>
+            </div>
+
             <div class="ai-live-title">
                 <div class="live-title-left">
                     <span id="liveCardTitle" class="live-title-text">⚡ Live Analitik AI</span>
@@ -781,6 +859,9 @@
             
             let selectedBbfs = document.querySelector('input[name="bbfs_len"]:checked');
             if(selectedBbfs) settings['bbfs_len'] = selectedBbfs.value;
+
+            let selectedPasaran = document.querySelector('input[name="jenisPasaran"]:checked');
+            if(selectedPasaran) settings['jenisPasaran'] = selectedPasaran.value;
             
             localStorage.setItem('2d_settings', JSON.stringify(settings));
         }
@@ -807,6 +888,11 @@
                 
                 if(settings['bbfs_len']) {
                     let el = document.querySelector('input[name="bbfs_len"][value="'+settings['bbfs_len']+'"]');
+                    if(el) el.checked = true;
+                }
+
+                if(settings['jenisPasaran']) {
+                    let el = document.querySelector('input[name="jenisPasaran"][value="'+settings['jenisPasaran']+'"]');
                     if(el) el.checked = true;
                 }
                 
@@ -1040,7 +1126,7 @@
             document.getElementById('useH1').checked = true;
             document.getElementById('useH7').checked = true;
 
-            document.getElementById('jenisPasaran').value = 'umum';
+            document.querySelector('input[name="jenisPasaran"][value="umum"]').checked = true;
             document.getElementById('pilihanPosisi').value = 'bebas';
             autoSetPasaranJawa();
 
@@ -1151,7 +1237,7 @@
 
         function process4D(inputStr, pasaranToggle) {
             let asB = parseInt(inputStr[0]), kopB = parseInt(inputStr[1]), kepB = parseInt(inputStr[2]), ekB = parseInt(inputStr[3]);
-            let str2D = `${kepB}${ekB}`; let num2D = parseInt(str2D);
+            let str2D = `${kepB}${ekB}`; num2D = parseInt(str2D);
             let taysenVal = tabelTaysen[num2D] || 0; let matiEkorTesson = jadikanSatuDigit(taysenVal);
             
             let arrWakSalarabo = [];
@@ -1275,7 +1361,6 @@
         }
 
         function hitungSemua() {
-            // Animasi dim (loading effect)
             let elHasil = document.getElementById('hasilGlobal');
             if (elHasil.style.display !== 'none') {
                 elHasil.classList.add('loading-dim');
@@ -1301,7 +1386,11 @@
             else if (useH1 && h1ValRaw.length === 4) modeTarikan = 'h1';
             else if (useH7 && h7ValRaw.length === 4) modeTarikan = 'h7';
             
-            let pasaranToggle = document.getElementById('jenisPasaran').value;
+            let selectedPasaranEl = document.querySelector('input[name="jenisPasaran"]:checked');
+            let pasaranToggle = selectedPasaranEl ? selectedPasaranEl.value : 'umum';
+            let pasaranText = selectedPasaranEl ? selectedPasaranEl.nextElementSibling.innerText.trim() : '🌍 UMUM';
+            let marketBadge = `<span style="background:var(--accent); color:#fff; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:800; margin-left:6px; vertical-align: middle;">${pasaranText}</span>`;
+            
             let pasaranFilter = document.getElementById('pasaranJawa').value;
             let posisiPilihan = document.getElementById('pilihanPosisi').value; 
 
@@ -1316,7 +1405,7 @@
 
             if(document.getElementById('badgeEvalJP')) document.getElementById('badgeEvalJP').innerHTML = "";
 
-            let liveTitleText = "⚡ Live Analitik AI";
+            let liveTitleText = "⚡ Live Analitik AI " + marketBadge;
             let resLabel1 = "1. AI 2D Tabel (Otomatis)";
             let resLabel2 = "2. AI Ekor (TOP 95%)";
             let resLabel3 = "3. AI Ekor (Cadangan)";
@@ -1329,7 +1418,7 @@
             let resLabel2DT = "📌 2D Tengah (Kop-Kep)";
 
             if (modeTarikan === 'gabung') {
-                liveTitleText = `⚡ Live Analitik AI <br><span style="color:var(--text-sub); font-size:9px;">[H-1: ${h1ValRaw} + H-7: ${h7ValRaw}]</span>`;
+                liveTitleText = `⚡ Live Analitik AI ${marketBadge}<br><span style="color:var(--text-sub); font-size:9px;">[H-1: ${h1ValRaw} + H-7: ${h7ValRaw}]</span>`;
                 resLabel1 = `1. AI 2D Tabel [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
@@ -1341,7 +1430,7 @@
                 resLabel3DD = `📌 3D Depan [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel2DT = `📌 2D Tengah [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
             } else if (modeTarikan === 'h1') {
-                liveTitleText = `⚡ Live Analitik AI <br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h1ValRaw} (H-1)]</span>`;
+                liveTitleText = `⚡ Live Analitik AI ${marketBadge}<br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h1ValRaw} (H-1)]</span>`;
                 resLabel1 = `1. AI 2D Tabel [Live: ${h1ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [Live: ${h1ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [Live: ${h1ValRaw}]`;
@@ -1353,7 +1442,7 @@
                 resLabel3DD = `📌 3D Depan [Live: ${h1ValRaw}]`;
                 resLabel2DT = `📌 2D Tengah [Live: ${h1ValRaw}]`;
             } else if (modeTarikan === 'h7') {
-                liveTitleText = `⚡ Live Analitik AI <br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h7ValRaw} (H-7)]</span>`;
+                liveTitleText = `⚡ Live Analitik AI ${marketBadge}<br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h7ValRaw} (H-7)]</span>`;
                 resLabel1 = `1. AI 2D Tabel [Live: ${h7ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [Live: ${h7ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [Live: ${h7ValRaw}]`;
@@ -1601,13 +1690,11 @@
                 let evalIdx = -1;
                 let evalList = [];
                 
-                // HANYA BERFUNGSI PADA H-1 (atau Gabungan yang menjadikan H-1 sebagai patokan utama)
                 if (modeTarikan === 'gabung' || modeTarikan === 'h1') {
                     evalList = parseMultiInput(document.getElementById('inputH1').value);
                     evalIdx = historyIndices['inputH1'];
                 }
 
-                // Mengecek ke result SELANJUTNYA (Sebelah Kanan -> index + 1)
                 if (evalIdx >= 0 && evalIdx < evalList.length - 1) {
                     evalTarget = evalList[evalIdx + 1];
                 }
@@ -1656,7 +1743,7 @@
                     });
                     document.getElementById('liveCM').innerHTML += getBadge(cmHits);
 
-                    // 3. Cek BBFS (Update Posisi Tambahan)
+                    // 3. Cek BBFS
                     let activeBBFS = modeTarikan === 'gabung' ? gabBBFS : singleBBFS;
                     if (activeBBFS) {
                         let hit4D = true, hit3DB = true, hit2DB = true, hit3DD = true, hit2DD = true, hit2DT = true;
@@ -1685,8 +1772,6 @@
                         } else {
                             if (hit3DB) jpTypes.push("3D");
                             if (hit3DD) jpTypes.push("3D Dpn");
-                            
-                            // Hanya tampilkan 2D jika 3D di area yang sama tidak tembus untuk menghemat ruang
                             if (hit2DB && !hit3DB) jpTypes.push("2D");
                             if (hit2DD && !hit3DD) jpTypes.push("2D Dpn");
                             if (hit2DT && !hit3DB && !hit3DD) jpTypes.push("2D Tgh");
