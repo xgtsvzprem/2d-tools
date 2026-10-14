@@ -24,6 +24,7 @@
         body.dark-mode .gj-box { background-color: #0f172a; border-color: #6b21a8; }
         body.dark-mode .btn-toggle-filter { background-color: #0f172a; border-color: #334155; color: #60a5fa; }
         body.dark-mode .btn-toggle-filter:hover { background-color: #334155; }
+        body.dark-mode .btn-toggle-db { background-color: #1e3a8a; color: #bfdbfe; border-color: #3b82f6; }
         input, textarea, select { user-select: text; }
         .container { background-color: var(--card-bg); width: 100%; max-width: 440px; padding: 18px; border-radius: 14px; border: 1px solid var(--border-color); box-shadow: 0 4px 16px rgba(0,0,0,0.03); margin-bottom: 12px; box-sizing: border-box; transition: background-color 0.3s, border-color 0.3s; }
         .header-container { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; transition: border-color 0.3s; }
@@ -75,7 +76,6 @@
         .btn-toggle-filter { width: 100%; padding: 10px; background-color: #f1f5f9; color: var(--primary-dark); border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 10px; margin-bottom: 4px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-toggle-filter:hover { background-color: #e2e8f0; border-color: #94a3b8; }
         .btn-toggle-db { background-color: #eff6ff; color: #2563eb; border-color: #bfdbfe; margin-top: 0; margin-bottom: 10px; }
-        body.dark-mode .btn-toggle-db { background-color: #1e3a8a; color: #bfdbfe; border-color: #3b82f6; }
         
         .filter-section { background-color: #f8fafc; border: 1px solid var(--border-color); padding: 12px 14px; border-radius: 10px; margin-top: 10px; margin-bottom: 10px; transition: background-color 0.3s; }
         .filter-title { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
@@ -104,7 +104,6 @@
         .app-footer b { color: var(--primary); }
         .visitor-counter { display: flex; justify-content: center; align-items: center; margin-top: 10px; }
         
-        /* Additions for enhancements */
         .toast { visibility: hidden; min-width: 250px; background-color: #334155; color: #fff; text-align: center; border-radius: 8px; padding: 12px; position: fixed; z-index: 10000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 12px; font-weight: bold; opacity: 0; transition: opacity 0.3s, bottom 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none; }
         .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
         .toast.success { background-color: #10b981; }
@@ -112,7 +111,7 @@
         body.dark-mode .toast { background-color: #0f172a; border: 1px solid #334155; color: #f8fafc; }
         .loading-dim { opacity: 0.4; pointer-events: none; transition: opacity 0.2s; filter: grayscale(50%); }
 
-        /* Styling Tombol Pasaran Berborder Jelas */
+        /* Styling Tombol Pasaran Berborder Tegas */
         .pasaran-container { 
             display: flex; 
             gap: 6px; 
@@ -180,6 +179,49 @@
             color: #ffffff !important; 
             border-color: #60a5fa !important; 
             box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4), 0 2px 6px rgba(0, 0, 0, 0.4) !important; 
+        }
+
+        /* Banner Indikator Pasaran Aktif di Tengah */
+        .market-indicator-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2px 0 10px 0;
+            width: 100%;
+        }
+        .badge-market-big {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 6px 20px;
+            border-radius: 24px;
+            border: 2px solid #93c5fd;
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+        .badge-market-big .lbl {
+            font-size: 10px;
+            font-weight: 700;
+            color: #bfdbfe;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .badge-market-big .val {
+            font-size: 14.5px;
+            font-weight: 900;
+            color: #fef08a;
+            letter-spacing: 1px;
+        }
+        body.dark-mode .badge-market-big {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
@@ -312,6 +354,14 @@
                     <input type="radio" name="jenisPasaran" value="sdy" onchange="hitungSemua()">
                     <span>🇦🇺 SDY</span>
                 </label>
+            </div>
+
+            <!-- INDIKATOR PASARAN AKTIF (BESAR & TEPAT DI TENGAH) -->
+            <div class="market-indicator-center">
+                <div class="badge-market-big">
+                    <span class="lbl">PASARAN AKTIF:</span>
+                    <span class="val" id="txtPasaranAktif">🌍 UMUM</span>
+                </div>
             </div>
 
             <div class="ai-live-title">
@@ -1226,7 +1276,6 @@
             } return res;
         }
 
-        // Formula Baru Posisi Poltar (Base, Index, ML, MB)
         function generatePosAI(base) {
             let idx = mapIndex[base];
             let ml = mapMistikLama[base];
@@ -1258,7 +1307,6 @@
 
             let bbfsBase = [asB, kopB, kepB, ekB];
             
-            // Rumusan Poltar Base
             let baseAs = (asB + kopB) % 10;
             let baseKop = (kopB + kepB) % 10;
             let baseKep = (kepB + ekB) % 10;
@@ -1389,7 +1437,9 @@
             let selectedPasaranEl = document.querySelector('input[name="jenisPasaran"]:checked');
             let pasaranToggle = selectedPasaranEl ? selectedPasaranEl.value : 'umum';
             let pasaranText = selectedPasaranEl ? selectedPasaranEl.nextElementSibling.innerText.trim() : '🌍 UMUM';
-            let marketBadge = `<span style="background:var(--accent); color:#fff; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:800; margin-left:6px; vertical-align: middle;">${pasaranText}</span>`;
+            
+            let elTxtPasaran = document.getElementById('txtPasaranAktif');
+            if (elTxtPasaran) elTxtPasaran.innerText = pasaranText;
             
             let pasaranFilter = document.getElementById('pasaranJawa').value;
             let posisiPilihan = document.getElementById('pilihanPosisi').value; 
@@ -1405,7 +1455,7 @@
 
             if(document.getElementById('badgeEvalJP')) document.getElementById('badgeEvalJP').innerHTML = "";
 
-            let liveTitleText = "⚡ Live Analitik AI " + marketBadge;
+            let liveTitleText = "⚡ Live Analitik AI";
             let resLabel1 = "1. AI 2D Tabel (Otomatis)";
             let resLabel2 = "2. AI Ekor (TOP 95%)";
             let resLabel3 = "3. AI Ekor (Cadangan)";
@@ -1418,7 +1468,7 @@
             let resLabel2DT = "📌 2D Tengah (Kop-Kep)";
 
             if (modeTarikan === 'gabung') {
-                liveTitleText = `⚡ Live Analitik AI ${marketBadge}<br><span style="color:var(--text-sub); font-size:9px;">[H-1: ${h1ValRaw} + H-7: ${h7ValRaw}]</span>`;
+                liveTitleText = `⚡ Live Analitik AI<br><span style="color:var(--text-sub); font-size:9px;">[H-1: ${h1ValRaw} + H-7: ${h7ValRaw}]</span>`;
                 resLabel1 = `1. AI 2D Tabel [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
@@ -1430,7 +1480,7 @@
                 resLabel3DD = `📌 3D Depan [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
                 resLabel2DT = `📌 2D Tengah [H-1: ${h1ValRaw} | H-7: ${h7ValRaw}]`;
             } else if (modeTarikan === 'h1') {
-                liveTitleText = `⚡ Live Analitik AI ${marketBadge}<br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h1ValRaw} (H-1)]</span>`;
+                liveTitleText = `⚡ Live Analitik AI<br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h1ValRaw} (H-1)]</span>`;
                 resLabel1 = `1. AI 2D Tabel [Live: ${h1ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [Live: ${h1ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [Live: ${h1ValRaw}]`;
@@ -1442,7 +1492,7 @@
                 resLabel3DD = `📌 3D Depan [Live: ${h1ValRaw}]`;
                 resLabel2DT = `📌 2D Tengah [Live: ${h1ValRaw}]`;
             } else if (modeTarikan === 'h7') {
-                liveTitleText = `⚡ Live Analitik AI ${marketBadge}<br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h7ValRaw} (H-7)]</span>`;
+                liveTitleText = `⚡ Live Analitik AI<br><span style="color:var(--text-sub); font-size:9px;">[Live: ${h7ValRaw} (H-7)]</span>`;
                 resLabel1 = `1. AI 2D Tabel [Live: ${h7ValRaw}]`;
                 resLabel2 = `2. AI Ekor (TOP 95%) [Live: ${h7ValRaw}]`;
                 resLabel3 = `3. AI Ekor (Cadangan) [Live: ${h7ValRaw}]`;
