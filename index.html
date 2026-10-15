@@ -231,6 +231,26 @@
             border-color: #3b82f6;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
+
+        /* Tombol Hide/Show Hasil Line */
+        .btn-toggle-results {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+            transition: 0.2s;
+        }
+        .btn-toggle-results:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -557,6 +577,11 @@
         </div>
     </div>
 
+    <!-- TOMBOL HIDE/SHOW HASIL LINE SIAP BET (DEFAULT HIDE AKTIF) -->
+    <button id="btnToggleResults" class="btn-toggle-results" onclick="toggleResultsContainer()">
+        👁️ Tampilkan Hasil Line Siap Bet (Hidden)
+    </button>
+
     <div id="hasilGlobal" class="container" style="display:none; border-top: 4px solid var(--accent);">
         <h2 style="font-size: 15px; color:var(--accent); margin-bottom: 12px; text-align: left;">🎯 Hasil Line Siap Bet</h2>
         
@@ -703,6 +728,21 @@
                 setTimeout(function(){ 
                     toast.className = toast.className.replace("show", ""); 
                 }, 3000);
+            }
+        }
+
+        // --- FUNGSI HIDE/SHOW HASIL LINE ---
+        function toggleResultsContainer() {
+            let container = document.getElementById('hasilGlobal');
+            let btn = document.getElementById('btnToggleResults');
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                btn.innerHTML = '👁️ Sembunyikan Hasil Line Siap Bet (Shown)';
+                btn.style.background = 'linear-gradient(135deg, #334155, #1e293b)';
+            } else {
+                container.style.display = 'none';
+                btn.innerHTML = '👁️ Tampilkan Hasil Line Siap Bet (Hidden)';
+                btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
             }
         }
 
@@ -1760,7 +1800,6 @@
 
                 if (evalTarget && evalTarget.length === 4) {
                     let tAs = parseInt(evalTarget[0]), tKop = parseInt(evalTarget[1]), tKep = parseInt(evalTarget[2]), tEk = parseInt(evalTarget[3]);
-                    let t4D = evalTarget;
 
                     let getBadge = (hits, isKMT = false) => {
                         if (isKMT) {
@@ -1927,7 +1966,7 @@
             let bomLines = Object.keys(crashCounts).filter(num => crashCounts[num] >= 2);
             renderHasil(bomLines, 'lineBom', 'hasilBom');
 
-            document.getElementById('hasilGlobal').style.display = 'block';
+            document.getElementById('hasilGlobal').style.display = 'none'; // Tetap hidden secara default
             saveSettings();
         }
     </script>
