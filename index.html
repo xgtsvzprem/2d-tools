@@ -424,27 +424,27 @@
                     <span class="ai-item-label" style="color: #6b21a8; font-weight: 800; margin-bottom: 2px;">🎲 BBFS (4D - 7D) & GABUNGAN</span>
                     <div class="bbfs-all-container">
                         <div class="bbfs-all-box">
-                            <span class="bbfs-title">BBFS 4D</span>
+                            <span class="bbfs-title">BBFS 4D <span id="evalBbfs4"></span></span>
                             <div id="bbfs4D" class="bbfs-val">-</div>
                             <button class="btn-copy-bbfs" onclick="copySingleText('bbfs4D', this)">Copy</button>
                         </div>
                         <div class="bbfs-all-box">
-                            <span class="bbfs-title">BBFS 5D</span>
+                            <span class="bbfs-title">BBFS 5D <span id="evalBbfs5"></span></span>
                             <div id="bbfs5D" class="bbfs-val">-</div>
                             <button class="btn-copy-bbfs" onclick="copySingleText('bbfs5D', this)">Copy</button>
                         </div>
                         <div class="bbfs-all-box">
-                            <span class="bbfs-title">BBFS 6D</span>
+                            <span class="bbfs-title">BBFS 6D <span id="evalBbfs6"></span></span>
                             <div id="bbfs6D" class="bbfs-val">-</div>
                             <button class="btn-copy-bbfs" onclick="copySingleText('bbfs6D', this)">Copy</button>
                         </div>
                         <div class="bbfs-all-box">
-                            <span class="bbfs-title">BBFS 7D</span>
+                            <span class="bbfs-title">BBFS 7D <span id="evalBbfs7"></span></span>
                             <div id="bbfs7D" class="bbfs-val">-</div>
                             <button class="btn-copy-bbfs" onclick="copySingleText('bbfs7D', this)">Copy</button>
                         </div>
                         <div class="bbfs-all-box bbfs-gabung-box">
-                            <span class="bbfs-title">🔥 Prediksi Gabungan (BBFS 4D + CB + CM1 + CM2)</span>
+                            <span class="bbfs-title">🔥 Prediksi Gabungan (BBFS 4D + CB + CM1 + CM2) <span id="evalBbfsGab"></span></span>
                             <div id="bbfsGabung" class="bbfs-val">-</div>
                             <button class="btn-copy-bbfs" style="background:#15803d;" onclick="copySingleText('bbfsGabung', this)">Copy</button>
                         </div>
@@ -1656,6 +1656,8 @@
                 return; 
             }
 
+            let b4Global = [], b5Global = [], b6Global = [], b7Global = [], gabunganSetGlobal = [];
+
             if (isValid) {
                 let docTesson = document.getElementById('infoTesson'), docJarak = document.getElementById('infoJarak'), docKep = document.getElementById('infoKepala'), docEk = document.getElementById('infoEkor');
                 
@@ -1744,19 +1746,19 @@
                     let bbfsSet = [...mD.bbfsArray, ...aD.bbfsArray];
                     let objSource = [mD, aD];
                     
-                    let b4 = getOptimizedBBFS(bbfsSet, objSource, 4);
-                    let b5 = getOptimizedBBFS(bbfsSet, objSource, 5);
-                    let b6 = getOptimizedBBFS(bbfsSet, objSource, 6);
-                    let b7 = getOptimizedBBFS(bbfsSet, objSource, 7);
+                    b4Global = getOptimizedBBFS(bbfsSet, objSource, 4);
+                    b5Global = getOptimizedBBFS(bbfsSet, objSource, 5);
+                    b6Global = getOptimizedBBFS(bbfsSet, objSource, 6);
+                    b7Global = getOptimizedBBFS(bbfsSet, objSource, 7);
 
-                    document.getElementById('bbfs4D').innerHTML = colorizeDigits(b4, strongSet, weakSet, '');
-                    document.getElementById('bbfs5D').innerHTML = colorizeDigits(b5, strongSet, weakSet, '');
-                    document.getElementById('bbfs6D').innerHTML = colorizeDigits(b6, strongSet, weakSet, '');
-                    document.getElementById('bbfs7D').innerHTML = colorizeDigits(b7, strongSet, weakSet, '');
+                    document.getElementById('bbfs4D').innerHTML = colorizeDigits(b4Global, strongSet, weakSet, '');
+                    document.getElementById('bbfs5D').innerHTML = colorizeDigits(b5Global, strongSet, weakSet, '');
+                    document.getElementById('bbfs6D').innerHTML = colorizeDigits(b6Global, strongSet, weakSet, '');
+                    document.getElementById('bbfs7D').innerHTML = colorizeDigits(b7Global, strongSet, weakSet, '');
 
                     // BBFS Gabung (BBFS 4D + CB + CM1 & CM2)
-                    let gabunganSet = Array.from(new Set([...b4, cbVal1, cbVal2, ...cmDigits])).sort((a,b)=>a-b);
-                    document.getElementById('bbfsGabung').innerHTML = colorizeDigits(gabunganSet, strongSet, weakSet, '');
+                    gabunganSetGlobal = Array.from(new Set([...b4Global, cbVal1, cbVal2, ...cmDigits])).sort((a,b)=>a-b);
+                    document.getElementById('bbfsGabung').innerHTML = colorizeDigits(gabunganSetGlobal, strongSet, weakSet, '');
 
                     let mergeAIEkor = Array.from(new Set([...mD.dataAI.ai1, ...mD.dataAI.ai2, ...aD.dataAI.ai1, ...aD.dataAI.ai2]));
                     document.getElementById('liveAIEkor').innerHTML = `<span style="color:var(--text-main);">Merge:</span> ` + colorizeDigits(mergeAIEkor, strongSet, weakSet);
@@ -1789,19 +1791,19 @@
                     document.getElementById('liveCB').innerHTML = `${colorizeDigits([mD.cb1], strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits([mD.cb2], strongSet, weakSet)}`;
                     document.getElementById('liveCM').innerHTML = `${colorizeDigits(mD.cm1, strongSet, weakSet)} <span style="color:var(--text-main);">/</span> ${colorizeDigits(mD.cm2, strongSet, weakSet)}`;
                     
-                    let b4 = getOptimizedBBFS(mD.bbfsArray, [mD], 4);
-                    let b5 = getOptimizedBBFS(mD.bbfsArray, [mD], 5);
-                    let b6 = getOptimizedBBFS(mD.bbfsArray, [mD], 6);
-                    let b7 = getOptimizedBBFS(mD.bbfsArray, [mD], 7);
+                    b4Global = getOptimizedBBFS(mD.bbfsArray, [mD], 4);
+                    b5Global = getOptimizedBBFS(mD.bbfsArray, [mD], 5);
+                    b6Global = getOptimizedBBFS(mD.bbfsArray, [mD], 6);
+                    b7Global = getOptimizedBBFS(mD.bbfsArray, [mD], 7);
 
-                    document.getElementById('bbfs4D').innerHTML = colorizeDigits(b4, strongSet, weakSet, '');
-                    document.getElementById('bbfs5D').innerHTML = colorizeDigits(b5, strongSet, weakSet, '');
-                    document.getElementById('bbfs6D').innerHTML = colorizeDigits(b6, strongSet, weakSet, '');
-                    document.getElementById('bbfs7D').innerHTML = colorizeDigits(b7, strongSet, weakSet, '');
+                    document.getElementById('bbfs4D').innerHTML = colorizeDigits(b4Global, strongSet, weakSet, '');
+                    document.getElementById('bbfs5D').innerHTML = colorizeDigits(b5Global, strongSet, weakSet, '');
+                    document.getElementById('bbfs6D').innerHTML = colorizeDigits(b6Global, strongSet, weakSet, '');
+                    document.getElementById('bbfs7D').innerHTML = colorizeDigits(b7Global, strongSet, weakSet, '');
 
                     // BBFS Gabung (BBFS 4D + CB + CM1 & CM2)
-                    let gabunganSet = Array.from(new Set([...b4, mD.cb1, mD.cb2, ...cmDigits])).sort((a,b)=>a-b);
-                    document.getElementById('bbfsGabung').innerHTML = colorizeDigits(gabunganSet, strongSet, weakSet, '');
+                    gabunganSetGlobal = Array.from(new Set([...b4Global, mD.cb1, mD.cb2, ...cmDigits])).sort((a,b)=>a-b);
+                    document.getElementById('bbfsGabung').innerHTML = colorizeDigits(gabunganSetGlobal, strongSet, weakSet, '');
                     
                     document.getElementById('liveAIEkor').innerHTML = `${colorizeDigits(mD.dataAI.ai1, strongSet, weakSet)} <span style="color:var(--text-main);">-</span> ${colorizeDigits(mD.dataAI.ai2, strongSet, weakSet)}`;
                     document.getElementById('liveKMTEkor').innerHTML = colorizeDigits(mD.dataAI.kmt, strongSet, weakSet);
@@ -1816,7 +1818,7 @@
                 }
 
                 // ==========================================
-                // FITUR EVALUASI JP (AUTO CHECK RESULT SELANJUTNYA)
+                // EVALUASI JP (AUTO CHECK RESULT SELANJUTNYA)
                 // ==========================================
                 let evalTarget = null;
                 let evalIdx = -1;
@@ -1830,6 +1832,12 @@
                 if (evalIdx >= 0 && evalIdx < evalList.length - 1) {
                     evalTarget = evalList[evalIdx + 1];
                 }
+
+                // Reset evaluasi badge BBFS
+                ['evalBbfs4', 'evalBbfs5', 'evalBbfs6', 'evalBbfs7', 'evalBbfsGab'].forEach(id => {
+                    let el = document.getElementById(id);
+                    if(el) el.innerHTML = "";
+                });
 
                 if (evalTarget && evalTarget.length === 4) {
                     let tAs = parseInt(evalTarget[0]), tKop = parseInt(evalTarget[1]), tKep = parseInt(evalTarget[2]), tEk = parseInt(evalTarget[3]);
@@ -1845,6 +1853,46 @@
                                 : `<span style="background:#ef4444; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; margin-left:6px; font-weight:900; vertical-align:middle; letter-spacing:normal; opacity:0.9;">✖ ZONK</span>`;
                         }
                     };
+
+                    // Fungsi Evaluasi Detail BBFS dengan Hierarki Eksklusif
+                    let checkBbfsJP = (bbfsArr) => {
+                        let bSet = new Set(bbfsArr.map(x => parseInt(x)));
+                        let hasAs = bSet.has(tAs), hasKop = bSet.has(tKop), hasKep = bSet.has(tKep), hasEk = bSet.has(tEk);
+                        
+                        let jpList = [];
+                        let is4D = hasAs && hasKop && hasKep && hasEk;
+                        let is3DDepan = hasAs && hasKop && hasKep;
+                        let is3DBelakang = hasKop && hasKep && hasEk;
+
+                        if (is4D) {
+                            jpList.push("4D Full");
+                        } else {
+                            if (is3DDepan) {
+                                jpList.push("3D Depan");
+                            } else {
+                                if (hasAs && hasKop) jpList.push("2D Depan");
+                                if (hasKop && hasKep) jpList.push("2D Tengah");
+                            }
+
+                            if (is3DBelakang) {
+                                jpList.push("3D Belakang");
+                            } else {
+                                if (hasKep && hasEk) jpList.push("2D Belakang");
+                            }
+                        }
+
+                        if (jpList.length > 0) {
+                            return `<span style="background:#10b981; color:#fff; font-size:8px; padding:1px 5px; border-radius:3px; margin-left:4px; font-weight:800; vertical-align:middle;">✔ JP: ${jpList.join(', ')}</span>`;
+                        } else {
+                            return `<span style="background:#ef4444; color:#fff; font-size:8px; padding:1px 5px; border-radius:3px; margin-left:4px; font-weight:800; vertical-align:middle;">✖ ZONK</span>`;
+                        }
+                    };
+
+                    if(b4Global.length > 0) document.getElementById('evalBbfs4').innerHTML = checkBbfsJP(b4Global);
+                    if(b5Global.length > 0) document.getElementById('evalBbfs5').innerHTML = checkBbfsJP(b5Global);
+                    if(b6Global.length > 0) document.getElementById('evalBbfs6').innerHTML = checkBbfsJP(b6Global);
+                    if(b7Global.length > 0) document.getElementById('evalBbfs7').innerHTML = checkBbfsJP(b7Global);
+                    if(gabunganSetGlobal.length > 0) document.getElementById('evalBbfsGab').innerHTML = checkBbfsJP(gabunganSetGlobal);
 
                     document.getElementById('badgeEvalJP').innerHTML = `<span style="background:#f59e0b; color:#fff; padding:3px 8px; border-radius:4px; font-size:9px; letter-spacing:0.5px; font-weight: 800; box-shadow:0 1px 2px rgba(0,0,0,0.1);">🎯 Evaluasi vs Besoknya: ${evalTarget}</span>`;
 
