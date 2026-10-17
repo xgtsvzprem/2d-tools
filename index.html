@@ -1854,30 +1854,56 @@
                         }
                     };
 
-                    // Fungsi Evaluasi Detail BBFS dengan Hierarki Eksklusif
+                    // Fungsi Evaluasi Detail BBFS dengan Validasi Frekuensi & Hierarki Eksklusif
                     let checkBbfsJP = (bbfsArr) => {
-                        let bSet = new Set(bbfsArr.map(x => parseInt(x)));
-                        let hasAs = bSet.has(tAs), hasKop = bSet.has(tKop), hasKep = bSet.has(tKep), hasEk = bSet.has(tEk);
-                        
-                        let jpList = [];
-                        let is4D = hasAs && hasKop && hasKep && hasEk;
-                        let is3DDepan = hasAs && hasKop && hasKep;
-                        let is3DBelakang = hasKop && hasKep && hasEk;
+                        let bCount = {};
+                        bbfsArr.forEach(x => {
+                            let d = parseInt(x);
+                            bCount[d] = (bCount[d] || 0) + 1;
+                        });
 
-                        if (is4D) {
+                        let targetDigits = evalTarget.split('').map(x => parseInt(x));
+                        let targetCount = {};
+                        targetDigits.forEach(d => {
+                            targetCount[d] = (targetCount[d] || 0) + 1;
+                        });
+
+                        let canMakeFull = true;
+                        for (let d in targetCount) {
+                            if ((bCount[d] || 0) < targetCount[d]) {
+                                canMakeFull = false;
+                                break;
+                            }
+                        }
+
+                        let jpList = [];
+                        let hasSubSegment = (subStr) => {
+                            let subDigits = subStr.split('').map(x => parseInt(x));
+                            let subCount = {};
+                            subDigits.forEach(d => { subCount[d] = (subCount[d] || 0) + 1; });
+                            for (let d in subCount) {
+                                if ((bCount[d] || 0) < subCount[d]) return false;
+                            }
+                            return true;
+                        };
+
+                        let is3DDepan = hasSubSegment(evalTarget.substring(0, 3));
+                        let is3DBelakang = hasSubSegment(evalTarget.substring(1, 4));
+
+                        if (canMakeFull) {
                             jpList.push("4D Full");
                         } else {
                             if (is3DDepan) {
                                 jpList.push("3D Depan");
                             } else {
-                                if (hasAs && hasKop) jpList.push("2D Depan");
-                                if (hasKop && hasKep) jpList.push("2D Tengah");
+                                if (hasSubSegment(evalTarget.substring(0, 2))) jpList.push("2D Depan");
+                                if (hasSubSegment(evalTarget.substring(1, 3))) jpList.push("2D Tengah");
                             }
 
                             if (is3DBelakang) {
                                 jpList.push("3D Belakang");
                             } else {
-                                if (hasKep && hasEk) jpList.push("2D Belakang");
+                                if (hasSubSegment(evalTarget.substring(2, 4))) jpList.push("2D Belakang");
                             }
                         }
 
