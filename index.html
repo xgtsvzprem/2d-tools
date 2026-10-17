@@ -1114,32 +1114,38 @@
         }
 
         function copyPrediksiTeks(btn) {
-            let cbRaw = document.getElementById("liveCB").innerText.replace(/[✔✖].*/g, '').trim();
-            let cmRaw = document.getElementById("liveCM").innerText.replace(/[✔✖].*/g, '').trim();
-            
-            let cb = cbRaw.replace(/\s*\/\s*/g, ',');
-            let cm = cmRaw.replace(/\s*\/\s*/g, ',');
-            
-            let bbfs4 = document.getElementById("bbfs4D").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
-            let bbfs5 = document.getElementById("bbfs5D").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
-            let bbfs6 = document.getElementById("bbfs6D").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
-            let bbfs7 = document.getElementById("bbfs7D").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
-            let bbfsGabung = document.getElementById("bbfsGabung").innerText.replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let cbContainer = document.getElementById("liveCB");
+            let cbRedItems = cbContainer.querySelectorAll("span[style*='color:#ef4444']");
+            let cb = Array.from(cbRedItems).map(el => el.innerText.trim()).join(',');
+            if(!cb) cb = cbContainer.innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').trim();
 
-            let useH1 = document.getElementById('useH1').checked;
-            let useH7 = document.getElementById('useH7').checked;
-            let valH1 = getActive4D('inputH1');
-            let valH7 = getActive4D('inputH7');
+            let cmContainer = document.getElementById("liveCM");
+            let cmRedItems = cmContainer.querySelectorAll("span[style*='color:#ef4444']");
+            let cm = Array.from(cmRedItems).map(el => el.innerText.trim()).join(',');
+            if(!cm) cm = cmContainer.innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').trim().replace(/\s*\/\s*/g, ',');
+
+            // Ambil hanya angka yang berwarna merah (#ef4444) dari area live analitik (CB, CM & BBFS)
+            let redSpans = document.querySelectorAll("#aiLiveCard span[style*='color:#ef4444']");
+            let redDigits = Array.from(redSpans).map(el => el.innerText.trim()).filter(t => /^\d$/.test(t));
+            let uniqueRedDigits = Array.from(new Set(redDigits)).join('');
+
+            let bbfs4 = document.getElementById("bbfs4D").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let bbfs5 = document.getElementById("bbfs5D").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let bbfs6 = document.getElementById("bbfs6D").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let bbfs7 = document.getElementById("bbfs7D").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let bbfsGabung = document.getElementById("bbfsGabung").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+
             let pasaranAktif = document.getElementById('txtPasaranAktif').innerText;
 
             let format = `🔥 PREDIKSI ANALITIK AI (${pasaranAktif}) 🔥\n\n` +
-                         `🎯 *Colok Bebas:* ${cb}\n` +
-                         `🎯 *Colok Macau:* ${cm}\n\n` +
-                         `🎲 *BBFS 4D:* ${bbfs4}\n` +
-                         `🎲 *BBFS 5D:* ${bbfs5}\n` +
-                         `🎲 *BBFS 6D:* ${bbfs6}\n` +
-                         `🎲 *BBFS 7D:* ${bbfs7}\n\n` +
-                         `🔥 *BBFS Gabung (4D+CB+CM):* ${bbfsGabung}`;
+                         `🎯 Colok Bebas: ${cb}\n` +
+                         `🎯 Colok Macau: ${cm}\n` +
+                         `❌ Angka Merah: ${uniqueRedDigits}\n\n` +
+                         `🎲 BBFS 4D: ${bbfs4}\n` +
+                         `🎲 BBFS 5D: ${bbfs5}\n` +
+                         `🎲 BBFS 6D: ${bbfs6}\n` +
+                         `🎲 BBFS 7D: ${bbfs7}\n\n` +
+                         `🔥 BBFS Gabung (4D+CB+CM): ${bbfsGabung}`;
 
             navigator.clipboard.writeText(format).then(function() {
                 let textAwal = btn.innerText; 
