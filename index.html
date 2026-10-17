@@ -1114,26 +1114,44 @@
         }
 
         function copyPrediksiTeks(btn) {
-            let cbContainer = document.getElementById("liveCB");
-            let cbRedItems = cbContainer.querySelectorAll("span[style*='color:#ef4444']");
-            let cb = Array.from(cbRedItems).map(el => el.innerText.trim()).join(',');
-            if(!cb) cb = cbContainer.innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').trim();
+            // Helper function untuk mengambil teks bersih dan mempertahankan angka/format aslinya
+            let cleanText = (id, isCbCm) => {
+                let el = document.getElementById(id);
+                if(!el) return "-";
+                let clone = el.cloneNode(true);
+                clone.querySelectorAll('span[style*="background"]').forEach(e => e.remove()); // Hapus badge ZONK/JP
+                let txt = clone.innerText.replace(/[✔✖].*/g, '').trim();
+                if (isCbCm) {
+                    return txt.replace(/\s*\/\s*/g, ' / '); // Pertahankan format "2 / 9" atau "8,6"
+                }
+                return txt.replace(/\s+/g, '');
+            };
 
-            let cmContainer = document.getElementById("liveCM");
-            let cmRedItems = cmContainer.querySelectorAll("span[style*='color:#ef4444']");
-            let cm = Array.from(cmRedItems).map(el => el.innerText.trim()).join(',');
-            if(!cm) cm = cmContainer.innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').trim().replace(/\s*\/\s*/g, ',');
+            let cb = cleanText("liveCB", true);
+            let cm = cleanText("liveCM", true);
+            
+            // Ambil "Angka Merah" khusus dari container CB, CM, dan BBFS 4D-7D
+            let redDigitsSet = new Set();
+            let sourceIds = ["liveCB", "liveCM", "bbfs4D", "bbfs5D", "bbfs6D", "bbfs7D", "bbfsGabung"];
+            sourceIds.forEach(id => {
+                let el = document.getElementById(id);
+                if(el) {
+                    let redSpans = el.querySelectorAll("span[style*='color:#ef4444']");
+                    redSpans.forEach(span => {
+                        let matches = span.innerText.match(/\d/g);
+                        if(matches) matches.forEach(m => redDigitsSet.add(m));
+                    });
+                }
+            });
+            
+            let uniqueRedDigits = Array.from(redDigitsSet).sort().join('');
+            if(!uniqueRedDigits) uniqueRedDigits = "-";
 
-            // Ambil hanya angka yang berwarna merah (#ef4444) dari area live analitik (CB, CM & BBFS)
-            let redSpans = document.querySelectorAll("#aiLiveCard span[style*='color:#ef4444']");
-            let redDigits = Array.from(redSpans).map(el => el.innerText.trim()).filter(t => /^\d$/.test(t));
-            let uniqueRedDigits = Array.from(new Set(redDigits)).join('');
-
-            let bbfs4 = document.getElementById("bbfs4D").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
-            let bbfs5 = document.getElementById("bbfs5D").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
-            let bbfs6 = document.getElementById("bbfs6D").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
-            let bbfs7 = document.getElementById("bbfs7D").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
-            let bbfsGabung = document.getElementById("bbfsGabung").innerText.replace(/✔ JP:.*/g, '').replace(/✖ ZONK.*/g, '').replace(/[✔✖].*/g, '').replace(/\s+/g, '');
+            let bbfs4 = cleanText("bbfs4D", false);
+            let bbfs5 = cleanText("bbfs5D", false);
+            let bbfs6 = cleanText("bbfs6D", false);
+            let bbfs7 = cleanText("bbfs7D", false);
+            let bbfsGabung = cleanText("bbfsGabung", false);
 
             let pasaranAktif = document.getElementById('txtPasaranAktif').innerText;
 
@@ -1739,11 +1757,11 @@
                     let cbArr = Array.from(cbSet);
                     cbVal1 = cbArr[0] !== undefined ? cbArr[0] : '';
                     cbVal2 = cbArr[1] !== undefined ? cbArr[1] : '';
-                    document.getElementById('liveCB').innerHTML = cbArr.slice(0, 3).map(x => colorizeDigits([x], strongSet, weakSet)).join(' / ');
+                    document.getElementById('liveCB').innerHTML = cbArr.slice(0, 3).map(x => colorizeDigits([x], strongSet, weakSet)).join(' <span style="color:var(--text-main);">/</span> ');
                     
                     let cmSet = new Set([mD.cm1, mD.cm2, aD.cm1, aD.cm2]);
                     let cmArr = Array.from(cmSet);
-                    document.getElementById('liveCM').innerHTML = cmArr.slice(0, 2).map(x => colorizeDigits(x, strongSet, weakSet)).join(' / ');
+                    document.getElementById('liveCM').innerHTML = cmArr.slice(0, 2).map(x => colorizeDigits(x, strongSet, weakSet)).join(' <span style="color:var(--text-main);">/</span> ');
 
                     cmArr.forEach(cm => {
                         if (cm) cm.split('').forEach(d => cmDigits.push(parseInt(d)));
